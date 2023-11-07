@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 MultimediaBlock can render and process MultimediaIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.multimediaidevice import MultimediaIdevice
 import logging
-from exe.webui.block    import Block
-from exe.webui.element  import TextAreaElement, MultimediaElement
-from exe.webui          import common
+from exe.webui.block import Block
+from exe.webui.element import TextAreaElement, MultimediaElement
+from exe.webui import common
 from exe.engine.idevice import Idevice
 
 log = logging.getLogger(__name__)
@@ -44,13 +46,12 @@ class MultimediaBlock(Block):
         Block.__init__(self, parent, idevice)
         self.mediaElement = MultimediaElement(idevice.media)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
         # (only applies to the image-embeddable ones, not MultimediaElement)
-        if idevice.text.idevice is None: 
+        if idevice.text.idevice is None:
             idevice.text.idevice = idevice
-        self.textElement  = TextAreaElement(idevice.text)
-
+        self.textElement = TextAreaElement(idevice.text)
 
     def process(self, request):
         """
@@ -61,30 +62,31 @@ class MultimediaBlock(Block):
         Block.process(self, request)
 
         if ("action" not in request.args or
-            request.args["action"][0] != "delete"):
+                request.args["action"][0] != "delete"):
             self.mediaElement.process(request)
             self.textElement.process(request)
 
-        if 'emphasis'+self.id in request.args:
-            self.idevice.emphasis = int(request.args['emphasis'+self.id][0])
-            
-        if "float"+self.id in request.args:
-            self.idevice.float = request.args["float"+self.id][0]
-            
-        if "title"+self.id in request.args:
-            self.idevice.title = request.args["title"+self.id][0]
-      
+        if 'emphasis' + self.id in request.args:
+            self.idevice.emphasis = int(request.args['emphasis' + self.id][0])
+
+        if "float" + self.id in request.args:
+            self.idevice.float = request.args["float" + self.id][0]
+
+        if "title" + self.id in request.args:
+            self.idevice.title = request.args["title" + self.id][0]
+
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form elements for editing this block
         """
         log.debug("renderEdit")
-        html  = "<div class=\"iDevice\">\n"
-        html += common.textInput("title"+self.id, self.idevice.title) + '<br/><br/>'
-        html += self.mediaElement.renderEdit()       
-        floatArr    = [[_('Left'), 'left'],
-                      [_('Right'), 'right'],
-                      [_('None'),  'none']]
+        html = "<div class=\"iDevice\">\n"
+        html += common.textInput("title" + self.id,
+                                 self.idevice.title) + '<br/><br/>'
+        html += self.mediaElement.renderEdit()
+        floatArr = [[_('Left'), 'left'],
+                    [_('Right'), 'right'],
+                    [_('None'), 'none']]
 
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
@@ -93,22 +95,21 @@ class MultimediaBlock(Block):
                                  "float" + self.id, '',
                                  self.idevice.alignInstruc,
                                  floatArr, self.idevice.float)
-        #html += u'<div class="block">' #<b>%s</b></div>' % _(u"Caption:")
-        #html += common.textInput("caption" + self.id, self.idevice.media.caption)
-        #html += common.elementInstruc(self.idevice.media.captionInstruc)
+        # html += u'<div class="block">' #<b>%s</b></div>' % _(u"Caption:")
+        # html += common.textInput("caption" + self.id, self.idevice.media.caption)
+        # html += common.elementInstruc(self.idevice.media.captionInstruc)
         html += "<br/>" + self.textElement.renderEdit()
-        emphasisValues = [(_("No emphasis"),     Idevice.NoEmphasis),
-                          (_("Some emphasis"),   Idevice.SomeEmphasis)]
+        emphasisValues = [(_("No emphasis"), Idevice.NoEmphasis),
+                          (_("Some emphasis"), Idevice.SomeEmphasis)]
 
         html += common.formField('select', this_package, _('Emphasis'),
-                                 'emphasis', self.id, 
-                                 '', # TODO: Instructions
+                                 'emphasis', self.id,
+                                 '',  # TODO: Instructions
                                  emphasisValues,
                                  self.idevice.emphasis)
         html += self.renderEditButtons()
         html += "</div>\n"
         return html
-
 
     def renderPreview(self, style):
         """
@@ -120,14 +121,13 @@ class MultimediaBlock(Block):
         html += self.mediaElement.renderPreview()
         html += "</div>"
         html += self.textElement.renderPreview()
-        html += common.ideviceFooter(self, style, "preview")        
+        html += common.ideviceFooter(self, style, "preview")
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """        
+        """
         log.debug("renderView")
         html = common.ideviceHeader(self, style, "view")
         html += "<div class=\"media\">"
@@ -136,11 +136,9 @@ class MultimediaBlock(Block):
         html += self.textElement.renderView()
         html += common.ideviceFooter(self, style, "view")
         return html
-    
 
-from exe.engine.multimediaidevice import MultimediaIdevice
-from exe.webui.blockfactory       import g_blockFactory
-g_blockFactory.registerBlockType(MultimediaBlock, MultimediaIdevice)    
+
+g_blockFactory.registerBlockType(MultimediaBlock, MultimediaIdevice)
 
 
 # ===========================================================================

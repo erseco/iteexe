@@ -23,15 +23,15 @@ This class transforms an eXe node into a page on a self-contained website
 
 import logging
 import re
-from html                      import escape
-from urllib.parse                   import quote
-from exe.webui.blockfactory   import g_blockFactory
-from exe.engine.error         import Error
-from exe.engine.path          import Path
-from exe.engine.version       import release
-from exe.export.pages         import Page, uniquifyNames
-from exe.webui                import common
-from exe                      import globals as G
+from html import escape
+from urllib.parse import quote
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.error import Error
+from exe.engine.path import Path
+from exe.engine.version import release
+from exe.export.pages import Page, uniquifyNames
+from exe.webui import common
+from exe import globals as G
 log = logging.getLogger(__name__)
 
 
@@ -54,118 +54,126 @@ class WebsitePage(Page):
         outfile.write(self.render(prevPage, nextPage, pages))
         outfile.close()
 
-
     def render(self, prevPage, nextPage, pages):
         """
         Returns an XHTML string rendering this page.
         """
         lenguaje = G.application.config.locale
-        if self.node.package.dublinCore.language!="":
+        if self.node.package.dublinCore.language != "":
             lenguaje = self.node.package.dublinCore.language
 
         dT = common.getExportDocType()
         themeHasXML = common.themeHasConfigXML(self.node.package.style)
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         sectionTag = "div"
         articleTag = "div"
         headerTag = "div"
         navTag = "div"
         if dT == "HTML5":
-            html = '<!doctype html>'+lb
-            html += '<html lang="'+lenguaje+'">'+lb
+            html = '<!doctype html>' + lb
+            html += '<html lang="' + lenguaje + '">' + lb
             sectionTag = "section"
             articleTag = "article"
             headerTag = "header"
             navTag = "nav"
         else:
-            html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'+lb
-            html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">"+lb
-        html += "<head>"+lb
-        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />"+lb
+            html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' + lb
+            html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + \
+                lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">" + lb
+        html += "<head>" + lb
+        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />" + lb
         if common.hasWikipediaIdevice(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_wikipedia.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_wikipedia.css\" />" + lb
         if common.hasGalleryIdevice(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_lightbox.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_lightbox.css\" />" + lb
         if common.hasFX(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_effects.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_effects.css\" />" + lb
         if common.hasSH(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_highlighter.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_highlighter.css\" />" + lb
         if common.hasGames(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_games.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_games.css\" />" + lb
         if common.hasABCMusic(self.node):
-            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_abcmusic.css\" />"+lb
-        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"content.css\" />"+lb
-        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"nav.css\" />"+lb
+            html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_abcmusic.css\" />" + lb
+        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"content.css\" />" + lb
+        html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"nav.css\" />" + lb
         html += "<meta http-equiv=\"content-type\" content=\"text/html; "
-        html += " charset=utf-8\" />"+lb
+        html += " charset=utf-8\" />" + lb
         html += "<title>"
-        if self.node.id=='0':
-            if self.node.package.title!='':
+        if self.node.id == '0':
+            if self.node.package.title != '':
                 html += escape(self.node.package.title)
             else:
                 html += escape(self.node.titleLong)
         else:
-            if self.node.package.title!='':
-                html += escape(self.node.titleLong)+" | "+escape(self.node.package.title)
+            if self.node.package.title != '':
+                html += escape(self.node.titleLong) + " | " + \
+                    escape(self.node.package.title)
             else:
                 html += escape(self.node.titleLong)
-        html += " </title>"+lb
-        html += "<link rel=\"shortcut icon\" href=\"favicon.ico\" type=\"image/x-icon\" />"+lb
-        if dT != "HTML5" and self.node.package.dublinCore.language!="":
-            html += '<meta http-equiv="content-language" content="'+lenguaje+'" />'+lb
-        if self.node.package.author!="":
-            html += '<meta name="author" content="'+escape(self.node.package.author, True)+'" />'+lb
+        html += " </title>" + lb
+        html += "<link rel=\"shortcut icon\" href=\"favicon.ico\" type=\"image/x-icon\" />" + lb
+        if dT != "HTML5" and self.node.package.dublinCore.language != "":
+            html += '<meta http-equiv="content-language" content="' + lenguaje + '" />' + lb
+        if self.node.package.author != "":
+            html += '<meta name="author" content="' + \
+                escape(self.node.package.author, True) + '" />' + lb
         html += common.getLicenseMetadata(self.node.package.license)
-        html += '<meta name="generator" content="eXeLearning '+release+' - exelearning.net" />'+lb
-        if self.node.id=='0':
-            if self.node.package.description!="":
+        html += '<meta name="generator" content="eXeLearning ' + \
+            release + ' - exelearning.net" />' + lb
+        if self.node.id == '0':
+            if self.node.package.description != "":
                 desc = self.node.package.description
                 desc = desc.replace('"', '&quot;')
-                html += '<meta name="description" content="'+desc+'" />'+lb
+                html += '<meta name="description" content="' + desc + '" />' + lb
         if dT == "HTML5" or common.nodeHasMediaelement(self.node):
-            html += '<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->'+lb
-        style = G.application.config.styleStore.getStyle(self.node.package.style)
+            html += '<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->' + lb
+        style = G.application.config.styleStore.getStyle(
+            self.node.package.style)
 
         # jQuery
         if style.hasValidConfig():
-            if style.get_jquery()==True:
-                html += '<script type="text/javascript" src="exe_jquery.js"></script>'+lb
+            if style.get_jquery():
+                html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
             else:
-                html += '<script type="text/javascript" src="'+style.get_jquery()+'"></script>'+lb
+                html += '<script type="text/javascript" src="' + \
+                    style.get_jquery() + '"></script>' + lb
         else:
-            html += '<script type="text/javascript" src="exe_jquery.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
 
         if common.hasGalleryIdevice(self.node):
-            html += '<script type="text/javascript" src="exe_lightbox.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_lightbox.js"></script>' + lb
         if common.hasFX(self.node):
-            html += '<script type="text/javascript" src="exe_effects.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_effects.js"></script>' + lb
         if common.hasSH(self.node):
-            html += '<script type="text/javascript" src="exe_highlighter.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_highlighter.js"></script>' + lb
         html += '<script type="text/javascript" src="common_i18n.js"></script>' + lb
         if common.hasGames(self.node):
-            html += '<script type="text/javascript" src="exe_games.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_games.js"></script>' + lb
         if common.hasABCMusic(self.node):
-            html += '<script type="text/javascript" src="exe_abcmusic.js"></script>'+lb
-        html += '<script type="text/javascript" src="common.js"></script>'+lb
+            html += '<script type="text/javascript" src="exe_abcmusic.js"></script>' + lb
+        html += '<script type="text/javascript" src="common.js"></script>' + lb
         html += common.printJavaScriptIdevicesScripts('export', self)
         if common.hasMagnifier(self.node):
-            html += '<script type="text/javascript" src="mojomagnify.js"></script>'+lb
-        # Some styles might have their own JavaScript files (see their config.xml file)
+            html += '<script type="text/javascript" src="mojomagnify.js"></script>' + lb
+        # Some styles might have their own JavaScript files (see their
+        # config.xml file)
         if style.hasValidConfig():
             html += style.get_extra_head()
         html += common.getExtraHeadContent(self.node.package)
-        html += "</head>"+lb
+        html += "</head>" + lb
         extraCSS = ''
         if self.node.package.get_addSearchBox() and self.node.package.exportSource:
             extraCSS = ' exe-search-bar'
         if self.node.package.get_loadMathEngine():
             extraCSS += ' exe-auto-math'
-        html += '<body class="exe-web-site'+extraCSS+'" id="exe-node-'+self.node.id+'"><script type="text/javascript">document.body.className+=" js"</script>'+lb
-        html += "<div id=\"content\">"+lb
-        html += '<p id="skipNav"><a href="#main" class="sr-av">' + c_('Skip navigation')+'</a></p>'+lb
+        html += '<body class="exe-web-site' + extraCSS + '" id="exe-node-' + self.node.id + \
+            '"><script type="text/javascript">document.body.className+=" js"</script>' + lb
+        html += "<div id=\"content\">" + lb
+        html += '<p id="skipNav"><a href="#main" class="sr-av">' + \
+            c_('Skip navigation') + '</a></p>' + lb
 
         if self.node.package.backgroundImg or self.node.package.title:
-            html += "<"+headerTag+" id=\"header\" "
+            html += "<" + headerTag + " id=\"header\" "
 
             if self.node.package.backgroundImg:
                 html += " style=\"background-image: url("
@@ -182,41 +190,43 @@ class WebsitePage(Page):
             html += '<div id="headerContent">'
             html += escape(self.node.package.title)
             html += '</div>'
-            html += "</"+headerTag+">"+lb
+            html += "</" + headerTag + ">" + lb
         else:
-            html += "<"+sectionTag+" id=\"emptyHeader\"></"+sectionTag+">"+lb
+            html += "<" + sectionTag + " id=\"emptyHeader\"></" + sectionTag + ">" + lb
 
         # add left navigation html
-        html += "<"+navTag+" id=\"siteNav\">"+lb
+        html += "<" + navTag + " id=\"siteNav\">" + lb
         html += self.leftNavigationBar(pages)
-        html += "</"+navTag+">"+lb
-        html += "<div id='topPagination'>"+lb
+        html += "</" + navTag + ">" + lb
+        html += "<div id='topPagination'>" + lb
         html += self.getNavigationLink(prevPage, nextPage, pages)
-        html += "</div>"+lb
-        html += "<div id=\"main-wrapper\">"+lb
-        html += "<"+sectionTag+" id=\"main\">"
+        html += "</div>" + lb
+        html += "<div id=\"main-wrapper\">" + lb
+        html += "<" + sectionTag + " id=\"main\">"
         if dT != "HTML5":
             html += "<a name=\"main\"></a>"
         html += lb
 
-        html += '<'+headerTag+' id=\"nodeDecoration\">'
+        html += '<' + headerTag + ' id=\"nodeDecoration\">'
         html += '<h1 id=\"nodeTitle\">'
         html += escape(self.node.titleLong)
         html += '</h1>'
-        html += '</'+headerTag+'>'+lb
+        html += '</' + headerTag + '>' + lb
 
         self.node.exportType = 'website'
 
         for idevice in self.node.idevices:
             if idevice.klass != 'NotaIdevice':
-                e=" em_iDevice"
+                e = " em_iDevice"
                 if idevice.icon and idevice.icon != "":
-                    _iconNameToClass = re.sub('[^A-Za-z0-9_-]+', '', idevice.icon) # Allowed CSS classNames only
-                    if _iconNameToClass!="":        
-                        e += ' em_iDevice_'+_iconNameToClass
-                if str(idevice.emphasis)=='0':
-                    e=""
-                html += '<'+articleTag+' class="iDevice_wrapper %s%s" id="id%s">%s' %  (idevice.klass, e, idevice.id, lb)
+                    _iconNameToClass = re.sub(
+                        '[^A-Za-z0-9_-]+', '', idevice.icon)  # Allowed CSS classNames only
+                    if _iconNameToClass != "":
+                        e += ' em_iDevice_' + _iconNameToClass
+                if str(idevice.emphasis) == '0':
+                    e = ""
+                html += '<' + articleTag + \
+                    ' class="iDevice_wrapper %s%s" id="id%s">%s' % (idevice.klass, e, idevice.id, lb)
                 block = g_blockFactory.createBlock(None, idevice)
                 if not block:
                     log.critical("Unable to render iDevice.")
@@ -224,31 +234,32 @@ class WebsitePage(Page):
                 if hasattr(idevice, "isQuiz"):
                     html += block.renderJavascriptForWeb()
                 if idevice.title != "Forum Discussion":
-                    html += self.processInternalLinks(self.node.package,
-                        block.renderView(self.node.package.style))
-                html += '</'+articleTag+'>'+lb # iDevice div
+                    html += self.processInternalLinks(
+                        self.node.package, block.renderView(
+                            self.node.package.style))
+                html += '</' + articleTag + '>' + lb  # iDevice div
 
         if not themeHasXML:
-            html += "<div id='bottomPagination'>"+lb
+            html += "<div id='bottomPagination'>" + lb
             html += self.getNavigationLink(prevPage, nextPage, pages)
-            html += "</div>"+lb
+            html += "</div>" + lb
         # writes the footer for each page
         html += self.renderLicense()
         if not themeHasXML:
-        #if not style.hasValidConfig():
+            # if not style.hasValidConfig():
             html += self.renderFooter()
-        html += "</"+sectionTag+">"+lb # /main
-        html += "</div>"+lb # /main-wrapper
+        html += "</" + sectionTag + ">" + lb  # /main
+        html += "</div>" + lb  # /main-wrapper
         if themeHasXML:
-        #if style.hasValidConfig():
-            html += "<div id='bottomPagination'>"+lb
+            # if style.hasValidConfig():
+            html += "<div id='bottomPagination'>" + lb
             html += self.getNavigationLink(prevPage, nextPage, pages)
-            html += "</div>"+lb
+            html += "</div>" + lb
             html += self.renderFooter()
-        html += "</div>"+lb # /content
+        html += "</div>" + lb  # /content
         html += common.renderExeLink(self.node.package)
         if themeHasXML:
-        #if style.hasValidConfig():
+            # if style.hasValidConfig():
             html += style.get_extra_body()
         html += '</body></html>'
         html = html.encode('utf8')
@@ -257,30 +268,38 @@ class WebsitePage(Page):
         html = aux.sub("", html)
         aux = re.compile("exe_math_size=\"[^\"]*\"")
         html = aux.sub("", html)
-        #JR: Cambio el & en los enlaces del glosario
+        # JR: Cambio el & en los enlaces del glosario
         html = html.replace("&concept", "&amp;concept")
         # Remove "resources/" from data="resources/ and the url param
-        html = html.replace("video/quicktime\" data=\"resources/", "video/quicktime\" data=\"")
-        html = html.replace("application/x-mplayer2\" data=\"resources/", "application/x-mplayer2\" data=\"")
-        html = html.replace("audio/x-pn-realaudio-plugin\" data=\"resources/", "audio/x-pn-realaudio-plugin\" data=\"")
-        html = html.replace("<param name=\"url\" value=\"resources/", "<param name=\"url\" value=\"")
+        html = html.replace(
+            "video/quicktime\" data=\"resources/",
+            "video/quicktime\" data=\"")
+        html = html.replace(
+            "application/x-mplayer2\" data=\"resources/",
+            "application/x-mplayer2\" data=\"")
+        html = html.replace(
+            "audio/x-pn-realaudio-plugin\" data=\"resources/",
+            "audio/x-pn-realaudio-plugin\" data=\"")
+        html = html.replace(
+            "<param name=\"url\" value=\"resources/",
+            "<param name=\"url\" value=\"")
         # embed tags
         html = html.replace("></embed>", " />")
         return html
 
-    def indent(self,level):
+    def indent(self, level):
         i = 0
         indent_text = ""
         while i < level:
             indent_text += "   "
-            i+=1
+            i += 1
         return indent_text
 
     def leftNavigationBar(self, pages):
         """
         Generate the left navigation string for this page
         """
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         depth = 1
         nodePath = [None] + list(self.node.ancestors()) + [self.node]
 
@@ -288,18 +307,21 @@ class WebsitePage(Page):
         html = "<ul>"
 
         for page in pages:
-            # If this node is deeper than the previous one, we must open a new list
+            # If this node is deeper than the previous one, we must open a new
+            # list
             while depth < page.depth:
-                html += lb+self.indent(depth)+"<ul"
+                html += lb + self.indent(depth) + "<ul"
 
                 if page.node.parent not in nodePath:
                     html += " class=\"other-section\""
                 html += ">"
                 depth += 1
 
-            # If this node is higher than the previous one, we must close the list (unless we are in the first level)
+            # If this node is higher than the previous one, we must close the
+            # list (unless we are in the first level)
             while depth > page.depth and page.depth > 0:
-                html += lb+self.indent(depth-1)+"</ul>"+lb+self.indent(depth-1)+"</li>"
+                html += lb + self.indent(depth - 1) + "</ul>" + \
+                    lb + self.indent(depth - 1) + "</li>"
                 depth -= 1
             # If checked ISO 9660 change the file extension
             ext = 'html'
@@ -307,7 +329,8 @@ class WebsitePage(Page):
                 ext = 'htm'
             # The active node must have a special style
             if page.node == self.node:
-                html += lb + self.indent(depth) + "<li id=\"active\"><a href=\"" + quote(page.name) + '.' + ext + "\""
+                html += lb + \
+                    self.indent(depth) + "<li id=\"active\"><a href=\"" + quote(page.name) + '.' + ext + "\""
 
                 if page.node.children:
                     html += " class=\"active daddy"
@@ -315,41 +338,46 @@ class WebsitePage(Page):
                     html += " class=\"active no-ch"
 
             # A node in the path of the active node (but not the main one)
-            elif page.node in nodePath and page.node.parent != None:
-                html += lb + self.indent(depth) + "<li class=\"current-page-parent\"><a href=\"" + quote(page.name) + '.' + ext + "\""
+            elif page.node in nodePath and page.node.parent is not None:
+                html += lb + self.indent(depth) + "<li class=\"current-page-parent\"><a href=\"" + quote(
+                    page.name) + '.' + ext + "\""
 
                 if page.node.children:
                     html += " class=\"current-page-parent daddy"
 
             else:
-                html += lb + self.indent(depth) + "<li><a href=\"" + quote(page.name) + '.' + ext + "\" class=\""
+                html += lb + self.indent(depth) + "<li><a href=\"" + \
+                    quote(page.name) + '.' + ext + "\" class=\""
                 if page.node.children:
                     html += "daddy"
                 else:
                     html += "no-ch"
 
-            if page.depth==0:
+            if page.depth == 0:
                 html += " main-node"
 
             html += "\">"
             html += escape(page.node.titleShort)
             html += "</a>"
 
-            # Closing the main node is just closing a li because we want to place first level children as 'brothers' of the main node
-            if page.depth==0:
+            # Closing the main node is just closing a li because we want to
+            # place first level children as 'brothers' of the main node
+            if page.depth == 0:
                 html += "</li>"
 
             # Closing a node without children
-            if not page.node.children and page.depth!=0:
+            if not page.node.children and page.depth != 0:
                 html += "</li>"
 
-        # If last node is not in the first level, some lists must be closed (as many as unclosed levels)
+        # If last node is not in the first level, some lists must be closed (as
+        # many as unclosed levels)
         while depth > 1:
-            html += lb+self.indent(depth-1)+"</ul>"+lb+self.indent(depth-1)+"</li>"
+            html += lb + self.indent(depth - 1) + "</ul>" + \
+                lb + self.indent(depth - 1) + "</li>"
             depth -= 1
 
         # Just close the main ul
-        html += lb+self.indent(depth-1)+"</ul>"+lb
+        html += lb + self.indent(depth - 1) + "</ul>" + lb
 
         return html
 
@@ -358,34 +386,35 @@ class WebsitePage(Page):
         return the next link url of this page
         """
         dT = common.getExportDocType()
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         navTag = "div"
         if dT == "HTML5":
             navTag = "nav"
-        html = "<"+navTag+" class=\"pagination noprt\">"+lb
+        html = "<" + navTag + " class=\"pagination noprt\">" + lb
         ext = 'html'
         if G.application.config.cutFileName == '1':
             ext = 'htm'
 
         if prevPage:
-            html += "<a href=\"" + quote(prevPage.name) + '.' + ext + "\" class=\"prev\"><span>"
+            html += "<a href=\"" + \
+                quote(prevPage.name) + '.' + ext + "\" class=\"prev\"><span>"
             html += "<span>&laquo; </span>%s</span></a>" % c_('Previous')
 
         if self.node.package.get_addPagination():
             if prevPage:
                 html += ' <span class="sep">| </span>'
-            html += "<span class=\"page-counter\">" + c_('Page %s of %s') % ('<strong>'+str(pages.index(self) + 1)+'</strong>','<strong>'+str(len(pages))+'</strong>')+ "</span>"
+            html += "<span class=\"page-counter\">" + c_('Page %s of %s') % ('<strong>' + str(
+                pages.index(self) + 1) + '</strong>', '<strong>' + str(len(pages)) + '</strong>') + "</span>"
 
         if nextPage:
             if self.node.package.get_addPagination() or prevPage:
                 html += ' <span class="sep">| </span>'
-            html += "<a href=\"" + quote(nextPage.name) + '.' + ext + "\" class=\"next\"><span>"
+            html += "<a href=\"" + \
+                quote(nextPage.name) + '.' + ext + "\" class=\"next\"><span>"
             html += "%s<span> &raquo;</span></span></a>" % c_('Next')
 
         html += lb + "</" + navTag + ">" + lb
         return html
-
-
 
     def processInternalLinks(self, package, html):
         """
@@ -395,4 +424,3 @@ class WebsitePage(Page):
         using the fully exported (and unique) file names for each node.
         """
         return common.renderInternalLinkNodeFilenames(package, html)
-

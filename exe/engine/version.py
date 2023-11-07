@@ -34,18 +34,19 @@ pkg_version = None
 try:
     pkg_version = open('version').readline()
     release = pkg_version[0:].strip()
-except:
+except BaseException:
     # If it doesn't exist, we try to get it from debian/changelog
     try:
         line = open('debian/changelog').readline()
         release = line.split(':')[1].split(')')[0]
-    except:
-        # If the changelog doesn't exist either, we try to use pkg_resources to get the version
+    except BaseException:
+        # If the changelog doesn't exist either, we try to use pkg_resources to
+        # get the version
         try:
             import pkg_resources
             pkg_version = pkg_resources.require(project)[0].version
             release = pkg_version[0:].strip()
-        except:
+        except BaseException:
             # If everything else fails, it may be Windows fault
             import sys
             if sys.platform[:3] == "win":
@@ -56,7 +57,7 @@ except:
                 try:
                     pkg_version = open('../Resources/exe/version').readline()
                     release = pkg_version[0:].strip()
-                except:
+                except BaseException:
                     release = "unknown"
 
 # We try to get the revision from the version file (if it exists)
@@ -70,12 +71,13 @@ snap_environ = os.environ.get('SNAP')
 if snap_environ:
     try:
         snap_base_path = Path(snap_environ)
-        changelog_path = snap_base_path / 'lib'/ 'python2.7' / 'site-packages' / 'usr' / 'share' / 'exe' / 'ChangeLog'
+        changelog_path = snap_base_path / 'lib' / 'python2.7' / \
+            'site-packages' / 'usr' / 'share' / 'exe' / 'ChangeLog'
         line = open(changelog_path).readline()
         release = line.split(':')[1].split(')')[0]
         version = release
         revision = release
-    except:
+    except BaseException:
         pass
 
 # If this file is executed directly, we print the project and version info

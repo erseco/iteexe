@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,63 +22,60 @@ A ImageMagnifier Idevice is one built up from an image and free text.
 """
 
 import logging
-from exe.engine.idevice   import Idevice
-from exe.engine.field     import TextAreaField, MultimediaField
+from exe.engine.idevice import Idevice
+from exe.engine.field import TextAreaField, MultimediaField
 from exe.engine.translate import lateTranslate
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class MultimediaIdevice(Idevice):
     """
     A Multimedia Idevice is one built up from an Multimedia file and free text.
     """
 
     persistenceVersion = 2
-    
-    def __init__(self, defaultMedia = None):
-        Idevice.__init__(self, 
-                         x_("MP3"), 
-                         x_("Auckland University of Technology"), 
-                         x_("The MP3 iDevice allows you to attach an MP3 " 
-                            "media file to your content along with relevant textual"
-                            "learning instructions."),
-                         "", 
-                         "")
-        self.emphasis                    = Idevice.NoEmphasis
-        self.media                       = MultimediaField(
-                                           x_("Choose an MP3 file"),
-                                           x_(""
-            "<ol>"
-            "  <li>Click &lt;Select an MP3&gt; and browse to the MP3 "
-            "      file you wish to insert</li>"
-            " <li>Click on the dropdown menu to select the position "
-            "       that you want the file displayed on screen.</li>"
-            "  <li>Enter an optional caption for your file.</li>"
-            " <li>Associate any relevant text to the MP3 file.</li>"
-            " <li>Choose the type of style you would like the iDevice to"
-            "       display e.g. 'Some emphasis' "
-            "applies a border and icon to the iDevice content displayed.</li>"
-            "</ol>"
-            ))
-        self.media.idevice               = self
-        self.text                        = TextAreaField(x_("Text"),
-                                           x_("""Enter the text you wish to 
+
+    def __init__(self, defaultMedia=None):
+        Idevice.__init__(
+            self, x_("MP3"), x_("Auckland University of Technology"), x_(
+                "The MP3 iDevice allows you to attach an MP3 "
+                "media file to your content along with relevant textual"
+                "learning instructions."), "", "")
+        self.emphasis = Idevice.NoEmphasis
+        self.media = MultimediaField(
+            x_("Choose an MP3 file"), x_(
+                ""
+                "<ol>"
+                "  <li>Click &lt;Select an MP3&gt; and browse to the MP3 "
+                "      file you wish to insert</li>"
+                " <li>Click on the dropdown menu to select the position "
+                "       that you want the file displayed on screen.</li>"
+                "  <li>Enter an optional caption for your file.</li>"
+                " <li>Associate any relevant text to the MP3 file.</li>"
+                " <li>Choose the type of style you would like the iDevice to"
+                "       display e.g. 'Some emphasis' "
+                "applies a border and icon to the iDevice content displayed.</li>"
+                "</ol>"))
+        self.media.idevice = self
+        self.text = TextAreaField(x_("Text"),
+                                  x_("""Enter the text you wish to
 associate with the file."""))
-        self.text.idevice                = self
-        self.float                       = "left"
-        self.caption                     = ""
-        self.icon                        = "multimedia"
-        self._captionInstruc             = x_("""Provide a caption for the 
+        self.text.idevice = self
+        self.float = "left"
+        self.caption = ""
+        self.icon = "multimedia"
+        self._captionInstruc = x_("""Provide a caption for the
 MP3 file. This will appear in the players title bar as well.""")
-       
-        self._alignInstruc               = x_("""Alignment allows you to 
+
+        self._alignInstruc = x_("""Alignment allows you to
 choose where on the screen the media player will be positioned.""")
         self.systemResources += ['xspf_player.swf']
-       
-    # Properties
-    captionInstruc     = lateTranslate('captionInstruc')
-    alignInstruc       = lateTranslate('alignInstruc')
 
+    # Properties
+    captionInstruc = lateTranslate('captionInstruc')
+    alignInstruc = lateTranslate('alignInstruc')
 
     def getResourcesField(self, this_resource):
         """
@@ -93,23 +90,21 @@ choose where on the screen the media player will be positioned.""")
         if hasattr(self, 'text') and hasattr(self.text, 'images'):
             for this_image in self.text.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.text
 
         return None
-       
-      
+
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'text'):
             fields_list.append(self.text)
         return fields_list
-        
 
     def upgradeToVersion2(self):
         """
@@ -117,7 +112,6 @@ choose where on the screen the media player will be positioned.""")
         Upgrades to 0.22
         """
         self.systemResources += ['xspf_player.swf']
-    
 
-   
+
 # ===========================================================================

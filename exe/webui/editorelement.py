@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2007 eXe Project, http://eXeLearning.org/
 #
@@ -27,10 +27,13 @@ from exe.webui.element import Element
 
 log = logging.getLogger(__name__)
 # ===========================================================================
+
+
 class EditorElement(Element):
     """
     EditorElement is responsible for a block of field.  Used by iDevice Editor
     """
+
     def __init__(self, field):
         """
         Initialize
@@ -39,139 +42,140 @@ class EditorElement(Element):
 
     def process(self, request):
         """
-        Process arguments from the webserver.  Return any which apply to this 
+        Process arguments from the webserver.  Return any which apply to this
         element.
         """
         log.debug('process ' + repr(request.args))
-        
-        if "name"+self.id in request.args:
-            self.field.name = str(request.args["name"+self.id][0], 'utf8')
 
-        if "instruc"+self.id in request.args:
-            self.field.instruc = str(request.args["instruc"+self.id][0], 
-                                         'utf8')
-                        
-        if "object" in request.args and str(request.args["object"][0], 'utf8') == self.id:
+        if "name" + self.id in request.args:
+            self.field.name = str(request.args["name" + self.id][0], 'utf8')
+
+        if "instruc" + self.id in request.args:
+            self.field.instruc = str(request.args["instruc" + self.id][0],
+                                     'utf8')
+
+        if "object" in request.args and str(
+                request.args["object"][0], 'utf8') == self.id:
             if request.args["action"][0] == "deleteField":
                 self.field.idevice.fields.remove(self.field)
-                
-        if "btnCaption"+self.id in request.args:
-            self.field.buttonCaption = str(request.args["btnCaption"+self.id][0],
-                                         'utf8')
-            
+
+        if "btnCaption" + self.id in request.args:
+            self.field.buttonCaption = str(
+                request.args["btnCaption" + self.id][0], 'utf8')
 
 
 # ===========================================================================
 
 class TextEditorElement(EditorElement):
-    """ 
+    """
     TextElement is a single line of text
     """
+
     def renderEdit(self):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = "<b>%s</b><br/>" % _("Text Line")
-        html += common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = "<b>%s</b><br/>" % _("Text Line")
+        html += common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.richTextArea("instruc"+self.id, self.field.instruc, 
-                package=this_package)
+        html += common.richTextArea("instruc" + self.id, self.field.instruc,
+                                    package=this_package)
         html += "<br/>"
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
+        html = "<b>" + self.field.name + "</b> "
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
-        html += "<br/>\n"  
+        html += "<br/>\n"
         html += common.textInput(self.id, self.field.content)
         html += "<br/>\n"
         return html
-    
-    
+
+
 # ===========================================================================
 
 class TextAreaEditorElement(EditorElement):
-    """ 
+    """
     TextElement is a single line of text
     """
+
     def renderEdit(self):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = "<b>%s</b><br/>" % _("Text Box")
-        html += common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = "<b>%s</b><br/>" % _("Text Box")
+        html += common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
-                                 self.id, '', 
+        html += common.formField('richTextArea', this_package, '', 'instruc',
+                                 self.id, '',
                                  self.field.instruc)
         html += "<br/>"
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
+        html = "<b>" + self.field.name + "</b> "
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
-        html += "<br/>\n" 
+        html += "<br/>\n"
         html += common.textArea(self.id, self.field.content)
         html += "<br/>\n"
         return html
 
 # ===========================================================================
 
+
 class FeedbackEditorElement(EditorElement):
-    """ 
+    """
     FeedbackElement is a feedback text which can be show or hide
     """
+
     def renderEdit(self):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = "<b>%s</b><br/>" % _("Feedback")
+        html = "<b>%s</b><br/>" % _("Feedback")
         html += "<b>%s </b>" % _("Button Caption")
-        html += common.textInput("btnCaption"+self.id, 
+        html += common.textInput("btnCaption" + self.id,
                                  self.field.buttonCaption, 25)
         html += "<br/><br/>"
-        html += common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html += common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
+        html += common.formField('richTextArea', this_package, '', 'instruc',
                                  self.id, '',
                                  self.field.instruc)
         html += "<br/>"
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
+        html = "<b>" + self.field.name + "</b> "
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
-        html += "<br/>\n" 
+        html += "<br/>\n"
 
         html += common.textArea(self.id, self.field.feedback)
 
@@ -180,8 +184,9 @@ class FeedbackEditorElement(EditorElement):
 
 # ===========================================================================
 
+
 class ImageEditorElement(EditorElement):
-    """ 
+    """
     ImageElement is an image
     """
     DefaultImage = "sunflowers.jpg"
@@ -190,39 +195,38 @@ class ImageEditorElement(EditorElement):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
-        html += common.image("img"+self.id, 
-                             "/images/"+ImageEditorElement.DefaultImage,
+        html += common.image("img" + self.id,
+                             "/images/" + ImageEditorElement.DefaultImage,
                              self.field.width,
                              self.field.height)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
+        html += common.formField('richTextArea', this_package, '', 'instruc',
                                  self.id, '',
                                  self.field.instruc)
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
+        html = "<b>" + self.field.name + "</b> "
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
-        html += "<br/>" 
-        html += common.image("img"+self.id, 
-                             "/images/"+ImageEditorElement.DefaultImage,
+        html += "<br/>"
+        html += common.image("img" + self.id,
+                             "/images/" + ImageEditorElement.DefaultImage,
                              self.field.width,
                              self.field.height)
-        floatArr    = [[_('Left'), 'left'],
-                      [_('Right'), 'right'],
-                      [_('None'),  'none']]
+        floatArr = [[_('Left'), 'left'],
+                    [_('Right'), 'right'],
+                    [_('None'), 'none']]
 
         this_package = None
         html += common.formField('select', this_package, _("Align:"),
@@ -231,11 +235,12 @@ class ImageEditorElement(EditorElement):
                                  floatArr, '')
         html += "<br/>\n"
         return html
-    
+
 # ===========================================================================
 
+
 class FlashEditorElement(EditorElement):
-    """ 
+    """
     FlashElement is an flash video
     """
 
@@ -243,38 +248,38 @@ class FlashEditorElement(EditorElement):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
+        html += common.formField('richTextArea', this_package, '', 'instruc',
                                  self.id, '',
                                  self.field.instruc)
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
-        
-        html += "<br/>" 
-        html += common.textInput("path"+self.id, "", 50)
+        html = "<b>" + self.field.name + "</b> "
+
+        html += "<br/>"
+        html += common.textInput("path" + self.id, "", 50)
         html += '<input type="button" '
         html += ' value="%s" />' % _("Select Flash Object")
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
         html += "<br/>\n"
         return html
-    
+
 # ===========================================================================
 
+
 class MultimediaEditorElement(EditorElement):
-    """ 
+    """
     MultimediaElement is a mp3
     """
 
@@ -282,29 +287,28 @@ class MultimediaEditorElement(EditorElement):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = "<b>%s</b><br/>" % _("MP3")
-        html += common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = "<b>%s</b><br/>" % _("MP3")
+        html += common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
+        html += common.formField('richTextArea', this_package, '', 'instruc',
                                  self.id, '',
                                  self.field.instruc)
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
-        
-        html += "<br/>" 
-        html += common.textInput("path"+self.id, "", 50)
-        html += '<input type="button" ' 
+        html = "<b>" + self.field.name + "</b> "
+
+        html += "<br/>"
+        html += common.textInput("path" + self.id, "", 50)
+        html += '<input type="button" '
         html += ' value="%s" />' % _("Select MP3 file")
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
@@ -313,11 +317,12 @@ class MultimediaEditorElement(EditorElement):
         html += common.elementInstruc(self.field.captionInstruc)
         html += "<br/>\n"
         return html
-    
-#==================================================================================
+
+# ==================================================================================
+
 
 class AttachmentEditorElement(EditorElement):
-    """ 
+    """
     AttachmentElement is an attachment
     """
 
@@ -325,32 +330,30 @@ class AttachmentEditorElement(EditorElement):
         """
         Returns an XHTML string with the form element for editing this field
         """
-        html  = "<b>%s</b><br/>" % _("Attachment")
-        html += common.textInput("name"+self.id, self.field.name, 25)
-        html += common.submitImage("deleteField", self.id, 
-                                   "/images/stock-cancel.png", 
+        html = "<b>%s</b><br/>" % _("Attachment")
+        html += common.textInput("name" + self.id, self.field.name, 25)
+        html += common.submitImage("deleteField", self.id,
+                                   "/images/stock-cancel.png",
                                    _("Delete"), 1)
         html += "<br/>\n"
 
         this_package = None
-        html += common.formField('richTextArea', this_package, '','instruc',
+        html += common.formField('richTextArea', this_package, '', 'instruc',
                                  self.id, '',
                                  self.field.instruc)
         return html
-    
 
     def renderPreview(self):
         """
         Returns an XHTML string with the form element for previewing this field
         """
-        html  = "<b>" + self.field.name + "</b> "
-        
-        html += "<br/>" 
-        html += common.textInput("path"+self.id, "", 50)
-        html += '<input type="button" ' 
+        html = "<b>" + self.field.name + "</b> "
+
+        html += "<br/>"
+        html += common.textInput("path" + self.id, "", 50)
+        html += '<input type="button" '
         html += ' value="%s" />' % _("Select a file")
         if self.field.instruc != "":
             html += common.elementInstruc(self.field.instruc)
         html += "<br/>\n"
         return html
-

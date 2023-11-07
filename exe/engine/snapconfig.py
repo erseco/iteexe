@@ -22,64 +22,69 @@
 The Snap config overrides the Config class with Snap Package specific configuration
 """
 
-import sys, os
+import sys
+import os
 from exe.engine.config import Config
 from exe.engine.path import Path
 
 # ===========================================================================
+
+
 class SnapConfig(Config):
     """
     The SnapConfig overrides the Config class with ready-to-run specific configuration
     """
-    
+
     def _overrideDefaultVals(self):
         """
         Setup with our default settings
         """
 
-        homePath                = Path(os.environ.get('HOME'))
+        homePath = Path(os.environ.get('HOME'))
 
-        xdg_config_home         = Path(os.environ.get('XDG_CONFIG_HOME'))
+        xdg_config_home = Path(os.environ.get('XDG_CONFIG_HOME'))
 
         if xdg_config_home:
             try:
-                user_dirs_path      = xdg_config_home / 'user-dirs.dirs'
-                user_dirs_data      = user_dirs_path.lines()
+                user_dirs_path = xdg_config_home / 'user-dirs.dirs'
+                user_dirs_data = user_dirs_path.lines()
                 for line in user_dirs_data:
                     if line[:3] == 'XDG':
                         environ_name = line.split('=')[0]
-                        enviton_value = line.split('=')[1].strip().replace('$HOME',homePath).strip('"')
+                        enviton_value = line.split('=')[1].strip().replace(
+                            '$HOME', homePath).strip('"')
                         os.environ[environ_name] = enviton_value
-            except:
+            except BaseException:
                 pass
-            
+
         # SNAP Directories
-        snapBasePath            = Path(os.environ.get('SNAP'))
-        #snapBasePath            = Path('/snap/exelearning/current')
-        snapUserPath            = Path(os.environ.get('SNAP_USER_COMMON'))
-        #snapUserPath            = Path(os.environ.get('HOME'))
+        snapBasePath = Path(os.environ.get('SNAP'))
+        # snapBasePath            = Path('/snap/exelearning/current')
+        snapUserPath = Path(os.environ.get('SNAP_USER_COMMON'))
+        # snapUserPath            = Path(os.environ.get('HOME'))
 
-        snapSharePath           = snapBasePath / 'lib' / 'python2.7' / 'site-packages' / 'usr' /  'share'
-        exePath                 = snapSharePath / 'exe'
-        userConfigDir           = homePath / '.exe'
+        snapSharePath = snapBasePath / 'lib' / \
+            'python2.7' / 'site-packages' / 'usr' / 'share'
+        exePath = snapSharePath / 'exe'
+        userConfigDir = homePath / '.exe'
 
-        self.exePath            = exePath
-        self.jsDir              = exePath
-        self.webDir             = exePath
-        self.mediaProfilePath   = exePath / 'exe/mediaprofiles'
+        self.exePath = exePath
+        self.jsDir = exePath
+        self.webDir = exePath
+        self.mediaProfilePath = exePath / 'exe/mediaprofiles'
 
-        self.localeDir          = snapSharePath / 'locale'
+        self.localeDir = snapSharePath / 'locale'
 
         try:
-            self.lastDir            = Path("/".join(snapUserPath.split("/")[:3]))
-            self.dataDir            = Path("/".join(snapUserPath.split("/")[:3]))
-        except:
-            self.lastDir            = snapUserPath
-            self.dataDir            = snapUserPath
+            self.lastDir = Path("/".join(snapUserPath.split("/")[:3]))
+            self.dataDir = Path("/".join(snapUserPath.split("/")[:3]))
+        except BaseException:
+            self.lastDir = snapUserPath
+            self.dataDir = snapUserPath
 
-        self.configDir          = userConfigDir
-        self.stylesDir          = userConfigDir / 'style'
-        self.templatesDir       = userConfigDir / 'content_template'
+        self.configDir = userConfigDir
+        self.stylesDir = userConfigDir / 'style'
+        self.templatesDir = userConfigDir / 'content_template'
 
         # Media converters - defaults for now
         self.videoMediaConverter_ogv = ""
@@ -95,7 +100,7 @@ class SnapConfig(Config):
         """
         Returns the best places for a linux config file
         """
-        return [self.configDir/'exe.conf']
+        return [self.configDir / 'exe.conf']
 
 
 # ===========================================================================

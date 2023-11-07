@@ -26,23 +26,23 @@ class Typed(TestCase):
 
         s = formless.String(required=True)
         self.assertRaises(formless.InputError, process, s, "")
-        
+
         s = formless.String(required=False)
         self.assertEqual(process(s, "Bar"), "Bar")
         self.assertEqual(process(s, ""), None)
-    
+
         s = formless.String()
         self.assertEqual(process(s, ' abc '), ' abc ')
-        
+
         s = formless.String(strip=True, required=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertEqual(process(s, '\t abc \t  \n '), 'abc')
         self.assertRaises(formless.InputError, process, s, ' ')
-        
+
         s = formless.String(required=False, strip=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertEqual(process(s, ' '), None)
-        
+
     def testText(self):
         s = formless.Text()
         self.assertEqual(process(s, ""), None)
@@ -55,26 +55,27 @@ class Typed(TestCase):
 
         s = formless.Text(required=True)
         self.assertRaises(formless.InputError, process, s, "")
-        
+
         s = formless.Text(required=False)
         self.assertEqual(process(s, "Bar"), "Bar")
         self.assertEqual(process(s, ""), None)
-        
+
         s = formless.Text()
         self.assertEqual(process(s, ' abc '), ' abc ')
-        
+
         s = formless.Text(strip=True, required=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertRaises(formless.InputError, process, s, ' ')
-        
+
         s = formless.Text(required=False, strip=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertEqual(process(s, ' '), None)
-        
+
     def testPassword(self):
 
         def process(pw, val, val2=None):
-            if val2 is None: val2 = val
+            if val2 is None:
+                val2 = val
             return flpr(
                 formless.Property('password', pw),
                 {'password': [val], 'password____2': [val2]})['password']
@@ -90,22 +91,22 @@ class Typed(TestCase):
 
         s = formless.Password(required=True)
         self.assertRaises(formless.ValidateError, process, s, "")
-        
+
         s = formless.Password(required=False)
         self.assertEqual(process(s, "Bar"), "Bar")
         self.assertEqual(process(s, ""), None)
-    
+
         s = formless.Password()
         self.assertEqual(process(s, ' abc '), ' abc ')
-        
+
         s = formless.Password(strip=True, required=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertRaises(formless.ValidateError, process, s, ' ')
-        
+
         s = formless.Password(required=False, strip=True)
         self.assertEqual(process(s, ' abc '), 'abc')
         self.assertEqual(process(s, ' '), None)
-        
+
     def testPasswordEntry(self):
         s = formless.PasswordEntry()
         self.assertEqual(process(s, ''), None)
@@ -126,7 +127,7 @@ class Typed(TestCase):
         self.assertRaises(formless.InputError, process, s, '   ')
         self.assertEqual(process(s, 'abc'), 'abc')
         self.assertEqual(process(s, ' blah blah blah  '), 'blah blah blah')
-        
+
     def testInteger(self):
         i = formless.Integer(required=True)
         self.assertEqual(process(i, "0"), 0)
@@ -134,11 +135,11 @@ class Typed(TestCase):
         self.assertRaises(formless.InputError, process, i, "")
         self.assertRaises(formless.InputError, process, i, "a string")
         self.assertRaises(formless.InputError, process, i, "1.5")
-        
+
         i = formless.Integer(required=False)
         self.assertEqual(process(i, "1234567"), 1234567)
         self.assertEqual(process(i, ""), None)
-        
+
     def testReal(self):
         i = formless.Real(required=True)
         self.assertApproximates(process(i, "0.0"), 0.0, 1e-10)
@@ -165,7 +166,7 @@ class Typed(TestCase):
         self.assertEqual(process(b, ""), None)
         self.assertEqual(process(b, "True"), True)
         self.assertEqual(process(b, "False"), False)
-        
+
     def testFixedDigitInteger(self):
         d = formless.FixedDigitInteger(3, required=True)
         self.assertEqual(process(d, "123"), 123)
@@ -186,12 +187,12 @@ class Typed(TestCase):
         p1 = self.mktemp()
         os.mkdir(p1)
         p2 = self.mktemp()
-        
+
         d = formless.Directory(required=True)
         self.assertEqual(process(d, p1), p1)
         self.assertRaises(formless.InputError, process, d, p2)
         self.assertRaises(formless.InputError, process, d, "")
-        
+
         d = formless.Directory(required=False)
         self.assertEqual(process(d, p1), p1)
         self.assertRaises(formless.InputError, process, d, p2)
@@ -202,6 +203,7 @@ class Annotation(TestCase):
     def testTypedInterfaceProperties(self):
         class Other(formless.TypedInterface):
             pass
+
         class Test(formless.TypedInterface):
             foo = formless.String()
             bar = formless.Text()
@@ -223,7 +225,6 @@ class Annotation(TestCase):
 
         self.assertEqual(quux.typedValue.iface, Other)
 
-
     def testTypedInterfaceMethods(self):
         class IFoo(formless.TypedInterface):
             pass
@@ -235,11 +236,14 @@ class Annotation(TestCase):
             foo = formless.autocallable(foo)
 
             def bar(barbaz=formless.Integer(label="The Baz")):
-                ## this has no docstring, make sure it doesn't fail
+                # this has no docstring, make sure it doesn't fail
                 return formless.String()
             bar = formless.autocallable(bar, someAttribute="Hello")
 
-            def baz(bazfoo=formless.Boolean(label="The Foo", description="The foo to baz.")):
+            def baz(
+                bazfoo=formless.Boolean(
+                    label="The Foo",
+                    description="The foo to baz.")):
                 """The Label
 
                 The description"""
@@ -353,10 +357,12 @@ class Annotation(TestCase):
         self.assertEqual(Test.__methods__, Test.__spec__)
         self.assertEqual(Test.__methods__, [])
 
+
 class IListWithActions(formless.TypedInterface):
-    def actionOne(theSubset = formless.List()):
+    def actionOne(theSubset=formless.List()):
         pass
-    def actionTwo(theSubset = formless.List()):
+
+    def actionTwo(theSubset=formless.List()):
         pass
 
     theListOfStuff = formless.List(actions=[actionOne, actionTwo])
@@ -364,8 +370,8 @@ class IListWithActions(formless.TypedInterface):
 
 class TestListActions(TestCase):
     def test_listActionMetadata(self):
-        ## IListWithActions only has one binding, a Property binding
-        ## of theListOfStuff to a List with some actions.
+        # IListWithActions only has one binding, a Property binding
+        # of theListOfStuff to a List with some actions.
         actions = IListWithActions.__spec__[0].typedValue.actions
         self.assertTrue(reduce, (lambda x: x.name == 'actionOne', actions))
         self.assertTrue(reduce, (lambda x: x.name == 'actionTwo', actions))
@@ -378,7 +384,7 @@ class TestPropertyGroups(TestCase):
 
             class Inner(formless.TypedInterface):
                 """Docstring
-                
+
                 This is a docstring.
                 """
                 anInnerProperty = formless.Integer()

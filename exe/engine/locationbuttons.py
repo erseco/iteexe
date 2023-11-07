@@ -28,16 +28,16 @@ class LocationButtons(object):
     def __init__(self):
         if sys.platform[:3] == "win":
             self.names_map = {0: x_('Desktop'),
-                         5: x_('My Documents'),
-                         40: x_('Home Folder')}
+                              5: x_('My Documents'),
+                              40: x_('Home Folder')}
         elif sys.platform[:6] == "darwin":
             self.names_map = {'kDesktopFolderType': x_('Desktop'),
-                         'kDocumentsFolderType': x_('Documents'),
-                         'kCurrentUserFolderType': x_('Home Folder')}
+                              'kDocumentsFolderType': x_('Documents'),
+                              'kCurrentUserFolderType': x_('Home Folder')}
         else:
             self.names_map = {'DESKTOP': x_('Desktop'),
-                         'DOCUMENTS': x_('Documents'),
-                         'HOME': x_('Home Folder')}
+                              'DOCUMENTS': x_('Documents'),
+                              'HOME': x_('Home Folder')}
         self.compute()
 
     def compute(self):
@@ -47,7 +47,7 @@ class LocationButtons(object):
                 button = {'xtype': 'button', 'text': _(value),
                           'location': self.MapDir(key)}
                 self.buttons.append(button)
-            except:
+            except BaseException:
                 pass
 
     def updateText(self):
@@ -68,7 +68,7 @@ class LocationButtons(object):
                     raise Exception
                 else:
                     path = result.value
-            except:
+            except BaseException:
                 if code == 0:
                     path = os.environ['HOMEPATH']
                 else:
@@ -77,9 +77,9 @@ class LocationButtons(object):
             try:
                 from Carbon import Folder, Folders
                 folderref = Folder.FSFindFolder(Folders.kUserDomain,
-                    getattr(Folders, code), False)
+                                                getattr(Folders, code), False)
                 path = folderref.as_pathname()
-            except:
+            except BaseException:
                 if code == 'kCurrentUserFolderType':
                     path = os.environ['HOME']
                 else:
@@ -92,7 +92,7 @@ class LocationButtons(object):
                                      stdout=subprocess.PIPE)
                 path, _ = p.communicate()
                 path = path.rstrip('\n')
-            except:
+            except BaseException:
                 if code == 'HOME':
                     path = os.environ['HOME']
                 elif G.application.snap and code == 'DESKTOP':

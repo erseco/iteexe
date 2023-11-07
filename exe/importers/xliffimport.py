@@ -18,22 +18,22 @@
 # ===========================================================================
 
 
-
 import logging
 from bs4 import BeautifulSoup
 
 log = logging.getLogger(__name__)
 
 # XML namespace, currently not used, see "Just in case we need XML parser..." below
-#NS = 'urn:oasis:names:tc:xliff:document:1.2'
+# NS = 'urn:oasis:names:tc:xliff:document:1.2'
 CDATA_BEGIN = "<![CDATA["
 CDATA_END = "]]>"
 
+
 class XliffImport(object):
     """
-    Control the import process for a XLIFF file 
+    Control the import process for a XLIFF file
     """
-    
+
     def __init__(self, package, filename):
         """
         Class initialization
@@ -47,14 +47,19 @@ class XliffImport(object):
         """
         # Open the file, read it and then close the stream
         file_obj = open(self.filename)
-        xml_tree = BeautifulSoup(file_obj.read().replace(CDATA_BEGIN, "").replace(CDATA_END, ""))
+        xml_tree = BeautifulSoup(
+            file_obj.read().replace(
+                CDATA_BEGIN,
+                "").replace(
+                CDATA_END,
+                ""))
         file_obj.close()
-        
+
         # We go through all trans-units in the tree
         for transunit in xml_tree.find_all('trans-unit'):
             # Get the ID
             item_id = transunit.get('id', None)
-            
+
             # If we don't find an ID, we can't do anything
             if item_id is None:
                 log.info('Item id not found: %s' % item_id)
@@ -62,14 +67,14 @@ class XliffImport(object):
 
             # Try to get the field
             field = self.getFieldFromPackage(self.package, item_id)
-            
+
             # If no field is found, we can't do anything
             if field is None:
                 log.info('Field not found: %s' % item_id)
                 continue
 
             # Get content either from source or from target
-            unit_content = None; 
+            unit_content = None
             if import_from_source:
                 unit_content = transunit.find('source')
             else:
@@ -78,42 +83,53 @@ class XliffImport(object):
             # Check the unit type
             if item_id.endswith('title'):
                 # It's a idevice, set the title
-                field.set_title(' '.join([str(u) for u in unit_content.contents]))
+                field.set_title(' '.join([str(u)
+                                for u in unit_content.contents]))
                 log.debug('Title set for: %s' % item_id)
             elif item_id.endswith('nodename'):
                 # It's a node, set the title
-                field.setTitle(' '.join([str(u) for u in unit_content.contents]))
+                field.setTitle(' '.join([str(u)
+                               for u in unit_content.contents]))
                 log.debug('Title set for: %s' % item_id)
             else:
                 # It's a field
-                field.content_w_resourcePaths = ' '.join([str(u) for u in unit_content.contents])
+                field.content_w_resourcePaths = ' '.join(
+                    [str(u) for u in unit_content.contents])
                 # We need to re-replace everything back to normal
                 # It's important to do it in opposite order than when exporting as otherwise we could replace
                 # things put there by the user
-                field.content_w_resourcePaths = field.content_w_resourcePaths.replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<').replace('&amp;', '&')
+                field.content_w_resourcePaths = field.content_w_resourcePaths.replace(
+                    '&quot;',
+                    '"').replace(
+                    '&gt;',
+                    '>').replace(
+                    '&lt;',
+                    '<').replace(
+                    '&amp;',
+                    '&')
                 field.TwistedRePersist()
                 log.debug('Content set for: %s' % item_id)
 
             # Mark the package as changed in order to refresh it later
             self.package.isChanged = True
-            
-            ## Just in case we need XML parser...
+
+            # Just in case we need XML parser...
             ##
-            ## from lxml import etree
-            ## doc = etree.parse(self.filename)
-            ## root = doc.getroot()
-            ## for transunit in root.xpath('//n:trans-unit', namespaces={'n': NS}):
-            ##     item_id = transunit.get('id', None)
-            ##     if item_id is None:
-            ##         continue
+            # from lxml import etree
+            # doc = etree.parse(self.filename)
+            # root = doc.getroot()
+            # for transunit in root.xpath('//n:trans-unit', namespaces={'n': NS}):
+            # item_id = transunit.get('id', None)
+            # if item_id is None:
+            # continue
 
-            ##     field = self.getFieldFromPackage(self.package, item_id)
-            ##     if field is None:
-            ##         continue
+            # field = self.getFieldFromPackage(self.package, item_id)
+            # if field is None:
+            # continue
 
-            ##     content = transunit.xpath('n:target', namespaces={'n': NS})[0].text
-            ##     field.content_w_resourcePaths = content
-            ##     field.TwistedRePersist()
+            # content = transunit.xpath('n:target', namespaces={'n': NS})[0].text
+            # field.content_w_resourcePaths = content
+            # field.TwistedRePersist()
 
     def getNodeFrom(self, somewhere, raw_id):
         # raw_id == 'node5'
@@ -150,7 +166,8 @@ class XliffImport(object):
             if what is None:
                 return None
             else:
-                if id_item.startswith('node') and not id_item.startswith('nodename'):
+                if id_item.startswith(
+                        'node') and not id_item.startswith('nodename'):
                     what = self.getNodeFrom(what, id_item)
                 elif id_item.startswith('idev'):
                     what = self.getIdeviceFromNode(what, id_item)
@@ -160,5 +177,5 @@ class XliffImport(object):
                     # This is the item's title (the last one),
                     # so return the previous item: the IDevice
                     return what
-                    
+
         return what

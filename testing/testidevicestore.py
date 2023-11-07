@@ -45,12 +45,15 @@ class TestIdeviceStore(utils.SuperTestCase):
             for idevice in self.app.ideviceStore.getIdevices():
                 if idevice.title in titles:
                     if lang in langsWithDuplicateIdeviceTitles:
-                        langsWithDuplicateIdeviceTitles[lang].append(idevice._title)
+                        langsWithDuplicateIdeviceTitles[lang].append(
+                            idevice._title)
                     else:
-                        langsWithDuplicateIdeviceTitles[lang] = [idevice._title]
+                        langsWithDuplicateIdeviceTitles[lang] = [
+                            idevice._title]
                 titles.add(idevice.title)
         if langsWithDuplicateIdeviceTitles:
             raise Exception(langsWithDuplicateIdeviceTitles)
+
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()

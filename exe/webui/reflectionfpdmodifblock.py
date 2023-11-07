@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,10 +22,12 @@
 ReflectionfpdmodifBlock can render and process ReflectionIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
 import logging
-from exe.webui.block               import Block
-from exe.webui                     import common
-from exe.webui.element      import TextAreaElement
+from exe.webui.block import Block
+from exe.webui import common
+from exe.webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +37,7 @@ class ReflectionfpdmodifBlock(Block):
     """
     ReflectionfpdmodifBlock can render and process ReflectionIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize a new Block object
@@ -43,21 +46,20 @@ class ReflectionfpdmodifBlock(Block):
         self.activityInstruc = idevice.activityInstruc
 #        self.answerInstruc   = idevice.answerInstruc
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.activityTextArea.idevice is None: 
+        if idevice.activityTextArea.idevice is None:
             idevice.activityTextArea.idevice = idevice
-#        if idevice.answerTextArea.idevice is None: 
+#        if idevice.answerTextArea.idevice is None:
 #            idevice.answerTextArea.idevice = idevice
 
-        self.activityElement  = TextAreaElement(idevice.activityTextArea)
+        self.activityElement = TextAreaElement(idevice.activityTextArea)
 #        self.answerElement    = TextAreaElement(idevice.answerTextArea)
 
-        self.previewing        = False # In view or preview render
+        self.previewing = False  # In view or preview render
 
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -70,23 +72,22 @@ class ReflectionfpdmodifBlock(Block):
         if not is_cancel:
             self.activityElement.process(request)
 #            self.answerElement.process(request)
-            if "title"+self.id in request.args:
-                self.idevice.title = request.args["title"+self.id][0]
-        
+            if "title" + self.id in request.args:
+                self.idevice.title = request.args["title" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = "<div class=\"iDevice\"><br/>\n"
+        html = "<div class=\"iDevice\"><br/>\n"
 
    # JR
-	# Quitamos el prefijo "FPD -"
-	# (let's remove the "FPD -" prefix)
-	if self.idevice.title.find("FPD - ") == 0:
-		self.idevice.title = x_("Think About It")
+        # Quitamos el prefijo "FPD -"
+        # (let's remove the "FPD -" prefix)
+        if self.idevice.title.find("FPD - ") == 0:
+            self.idevice.title = x_("Think About It")
 
-        html += common.textInput("title"+self.id, self.idevice.title)
+        html += common.textInput("title" + self.id, self.idevice.title)
         html += self.activityElement.renderEdit()
 #        html += self.answerElement.renderEdit()
         html += "<br/>" + self.renderEditButtons()
@@ -94,27 +95,26 @@ class ReflectionfpdmodifBlock(Block):
         return html
 
     def renderPreview(self, style):
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = True 
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = True
         return Block.renderPreview(self, style)
 
-    def renderView(self, style): 
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = False 
+    def renderView(self, style):
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = False
         return Block.renderView(self, style)
-
 
     def renderViewContent(self):
         """
         Returns an XHTML string for this block
         """
-        if self.previewing: 
+        if self.previewing:
             html = self.activityElement.renderPreview()
         else:
             html = self.activityElement.renderView()
@@ -122,7 +122,7 @@ class ReflectionfpdmodifBlock(Block):
 #        html += '<div id="view%s" style="display:block;">' % self.id
 #        html += common.feedbackButton("btnshow"+self.id, _(u"Click here"),
 #                    onclick="showAnswer('%s',1)" % self.id)
-#        html += '</div>\n' 
+#        html += '</div>\n'
 #        html += '<div id="hide%s" style="display:none;">' % self.id
 #        html += common.feedbackButton("btnshow"+self.id, _(u"Hide"),
 #                    onclick="showAnswer('%s',0)" % self.id)
@@ -130,17 +130,17 @@ class ReflectionfpdmodifBlock(Block):
 #        html += '<div id="s%s" class="feedback" style=" ' % self.id
 #        html += 'display: none;">'
 
-#        if self.previewing: 
+#        if self.previewing:
 #            html += self.answerElement.renderPreview()
 #        else:
 #            html += self.answerElement.renderView()
 
 #        html += "</div>\n"
         return html
-    
 
-from exe.engine.reflectionfpdmodifidevice  import ReflectionfpdmodifIdevice
-from exe.webui.blockfactory        import g_blockFactory
-g_blockFactory.registerBlockType(ReflectionfpdmodifBlock, ReflectionfpdmodifIdevice)    
+
+g_blockFactory.registerBlockType(
+    ReflectionfpdmodifBlock,
+    ReflectionfpdmodifIdevice)
 
 # ===========================================================================

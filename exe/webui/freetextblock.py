@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 FreeTextBlock can render and process FreeTextIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.freetextidevice import FreeTextIdevice
 import logging
-from exe.webui.block            import Block
-from exe.webui.element          import TextAreaElement
-from exe.webui                     import common
+from exe.webui.block import Block
+from exe.webui.element import TextAreaElement
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
@@ -34,18 +36,18 @@ class FreeTextBlock(Block):
     FreeTextBlock can render and process FreeTextIdevices as XHTML
     GenericBlock will replace it..... one day
     """
+
     def __init__(self, parent, idevice):
         Block.__init__(self, parent, idevice)
-        if idevice.content.idevice is None: 
-            # due to the loading process's timing, idevice wasn't yet set; 
-            # set it here for the TextAreaElement's tinyMCE editor 
+        if idevice.content.idevice is None:
+            # due to the loading process's timing, idevice wasn't yet set;
+            # set it here for the TextAreaElement's tinyMCE editor
             idevice.content.idevice = idevice
 
         self.contentElement = TextAreaElement(idevice.content)
         self.contentElement.height = 250
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -65,60 +67,58 @@ class FreeTextBlock(Block):
 
         Block.process(self, request)
 
-        if ("action" not in request.args or 
-            request.args["action"][0] != "delete"): 
-            content = self.contentElement.process(request) 
-            if content: 
+        if ("action" not in request.args or
+                request.args["action"][0] != "delete"):
+            content = self.contentElement.process(request)
+            if content:
                 self.idevice.content = content
-
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = "<div>\n"
+        html = "<div>\n"
         html += self.contentElement.renderEdit()
         html += self.renderEditButtons()
         html += "</div>\n"
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
-        if hasattr(self.idevice, 'parent') and self.idevice.parent and not self.idevice.parent.edit:
+        if hasattr(
+                self.idevice,
+                'parent') and self.idevice.parent and not self.idevice.parent.edit:
             return ""
         html = common.ideviceHeader(self, style, "preview")
         html += self.contentElement.renderPreview()
-        html += common.ideviceFooter(self, style, "preview")                
+        html += common.ideviceFooter(self, style, "preview")
         return html
-
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
         """
-        html  = "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\">\n"
+        html = "<div class=\"iDevice "
+        html += "emphasis" + str(self.idevice.emphasis) + "\">\n"
         html += self.contentElement.renderView()
         html += "</div>\n"
         return html
-    
+
     def renderXML(self, style):
         xml = ""
-        
+
         """
         If we are effectively just one large image then make just an img tag and sound
-        tag if appropriate.  If not output all the html 
+        tag if appropriate.  If not output all the html
         """
-        
-        xmlStr = self.contentElement.renderXML(None, "idevice", self.idevice.id) 
+
+        xmlStr = self.contentElement.renderXML(
+            None, "idevice", self.idevice.id)
         return xmlStr
-    
-    
-from exe.engine.freetextidevice import FreeTextIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(FreeTextBlock, FreeTextIdevice)    
+
+
+g_blockFactory.registerBlockType(FreeTextBlock, FreeTextIdevice)
 
 # ===========================================================================

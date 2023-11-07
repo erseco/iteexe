@@ -26,12 +26,21 @@ from nevow import inevow, tags, compy, flat
 
 log = logging.getLogger(__name__)
 
+
 class DefaultClientHandleFactory:
     def __init__(self):
         self.handleCounter = itertools.count()
 
+
 def jquote(jscript):
-    return jscript.replace('\\', '\\\\').replace("'", "\\'").replace('\n', '\\n')
+    return jscript.replace(
+        '\\',
+        '\\\\').replace(
+        "'",
+        "\\'").replace(
+            '\n',
+        '\\n')
+
 
 class IClientHandle(compy.Interface):
     def hookupOutput(self, output, finisher=None):
@@ -48,6 +57,7 @@ class IClientHandle(compy.Interface):
         """route some input from the browser to the appropriate
         destination.
         """
+
 
 class ClientHandle(object):
     """An object which represents the client-side webbrowser.
@@ -81,11 +91,11 @@ class ClientHandle(object):
             self.firstTime = False
             return
         if self.outputConduit is not None:
-            ## The browser is waiting for us, send a noop.
+            # The browser is waiting for us, send a noop.
             self.sendScript('null;')
         self.timeoutCount += 1
         if self.timeoutCount >= self.targetTimeoutCount:
-            ## This connection timed out.
+            # This connection timed out.
             self.outputGone(None, self.outputConduit)
 
     def outputGone(self, failure, output):
@@ -115,19 +125,22 @@ class ClientHandle(object):
         """
         output = str(script)
         if len(output) and output[0] == '<':
-            #import pdb; pdb.Pdb().set_trace()
-            ## This will catch exception pages, html pages written as javascript to this response, etc
+            # import pdb; pdb.Pdb().set_trace()
+            # This will catch exception pages, html pages written as javascript
+            # to this response, etc
             err = "ERROR: Attempting to send invalid javascript to browser: %s" % output
             log.err(RuntimeError(err))
             return
         if self.outputConduit:
-            if DEBUG: print("SENDING SCRIPT", script)
+            if DEBUG:
+                print("SENDING SCRIPT", script)
             output = str(script)
             self.outputConduit.callback(output)
             self.outputConduit = None
         else:
             self.outputBuffer.append(script)
-            if DEBUG: print("Output buffered!", script)
+            if DEBUG:
+                print("Output buffered!", script)
 
     def handleInput(self, identifier, *args):
         if self.closed:
@@ -139,14 +152,16 @@ class ClientHandle(object):
             # the output-side xmlhttp request, so .outputConduit will be
             # None and stay that way. This means we don't need to worry
             # about self.outputGone firing later on.
-            if DEBUG: print("CLIENT ACKED CLOSE")
-            ## This happens in a callLater(0) from the original request
+            if DEBUG:
+                print("CLIENT ACKED CLOSE")
+            # This happens in a callLater(0) from the original request
             self._closeComplete(None)
             return
-        if DEBUG: print("Dispatching event to observer", identifier, args)
+        if DEBUG:
+            print("Dispatching event to observer", identifier, args)
         try:
             self.events.publish(identifier, *(self, ) + args)
-        except:
+        except BaseException:
             log.err()
 
     def notifyOnClose(self):
@@ -161,13 +176,14 @@ class ClientHandle(object):
         return d
 
     def close(self, executeScriptBeforeClose=""):
-        if DEBUG: print("CLOSE WAS CALLED")
+        if DEBUG:
+            print("CLOSE WAS CALLED")
         d = self.notifyOnClose()
         self.call('nevow_closeLive', self.flt(executeScriptBeforeClose))
         return d
 
-    ## Here is some api your handlers can use to more easily manipulate the
-    ## live page
+    # Here is some api your handlers can use to more easily manipulate the
+    # live page
     def flt(self, what, quote=True):
         return flt(what, quote=quote, client=self)
 
@@ -247,7 +263,7 @@ class _js(object):
 
     def __getattr__(self, name):
         if self._name:
-            return self.__class__(self._name+'.'+name)
+            return self.__class__(self._name + '.' + name)
         return self.__class__(name)
 
     def __call__(self, *args):
@@ -259,7 +275,8 @@ class _js(object):
     def __getitem__(self, args):
         if not isinstance(args, tuple):
             args = (args,)
-        return self.__class__(self._name+'['+','.join(map(str, _quoteJSArguments(args)))+']')
+        return self.__class__(
+            self._name + '[' + ','.join(map(str, _quoteJSArguments(args))) + ']')
 
     def __str__(self):
         return self._name
@@ -275,7 +292,6 @@ this = _js('this')
 self = _js('self')
 
 
-
 class DefaultClientHandleFactory(object):
     clientHandleClass = ClientHandle
 
@@ -285,7 +301,6 @@ class DefaultClientHandleFactory(object):
 
     def next_handle(self):
         return next(self.handleCounter)
-
 
     def newClientHandle(self, ctx, refreshInterval, targetTimeoutCount):
         handleid = inevow.ISession(ctx).uid + '-' + str(self.handleCounter())
@@ -304,26 +319,41 @@ class DefaultClientHandleFactory(object):
             log.msg("No handle for ID %s" % handleId)
         return self.clientHandles[handleId]
 
+
 clientHandleFactory = DefaultClientHandleFactory()
 
 
 def allClients(client1, client2):
     return True
 
+
 def otherClients(client1, client2):
     return client1.handleId != client2.handleId
+
 
 def allSessionClients(client1, client2):
     return client1.handleId[:32] == client2.handleId[:32]
 
+
 def otherSessionClients(client1, client2):
-    return otherClients(client1, client2) and allSessionClients(client1, client2)
+    return otherClients(
+        client1,
+        client2) and allSessionClients(
+        client1,
+        client2)
+
 
 def allSessionPackageClients(client1, client2):
-    return client1.packageName == client2.packageName and allSessionClients(client1, client2)
+    return client1.packageName == client2.packageName and allSessionClients(
+        client1, client2)
+
 
 def otherSessionPackageClients(client1, client2):
-    return otherClients(client1, client2) and allSessionPackageClients(client1, client2)
+    return otherClients(
+        client1,
+        client2) and allSessionPackageClients(
+        client1,
+        client2)
 
 
 class eXeClientHandle(ClientHandle):
@@ -331,7 +361,8 @@ class eXeClientHandle(ClientHandle):
 
     def sendScript(self, script, filter_func=None):
         if filter_func:
-            for client in list(nevow.livepage.clientHandleFactory.clientHandles.values()):
+            for client in list(
+                    nevow.livepage.clientHandleFactory.clientHandles.values()):
                 if filter_func(client, self):
                     ClientHandle.sendScript(client, script)
         else:
@@ -343,37 +374,49 @@ class eXeClientHandle(ClientHandle):
         if not isinstance(what, _js):
             what = "'%s'" % (self.flt(what), )
         if onDone:
-            script = "Ext.Msg.alert('%s',%s, function() { %s });" % (title, what, onDone)
+            script = "Ext.Msg.alert('%s',%s, function() { %s });" % (
+                title, what, onDone)
         else:
             script = "Ext.Msg.alert('%s',%s);" % (title, what)
         if filter_func and onDone:
-            for client in list(nevow.livepage.clientHandleFactory.clientHandles.values()):
+            for client in list(
+                    nevow.livepage.clientHandleFactory.clientHandles.values()):
                 if filter_func(client, self):
                     client.sendScript(onDone)
         self.sendScript(script)
 
     def notifyStatus(self, title, msg):
-        self.sendScript("eXe.controller.eXeViewport.prototype.eXeNotificationStatus('%s', '%s');" % (jquote(title), jquote(msg)), filter_func=allSessionClients)
+        self.sendScript(
+            "eXe.controller.eXeViewport.prototype.eXeNotificationStatus('%s', '%s');" %
+            (jquote(title), jquote(msg)), filter_func=allSessionClients)
 
     def hideStatus(self):
-        self.sendScript('Ext.ComponentQuery.query("#eXeNotification")[0].hide();', filter_func=allSessionClients)
+        self.sendScript(
+            'Ext.ComponentQuery.query("#eXeNotification")[0].hide();',
+            filter_func=allSessionClients)
 
     def notifyNotice(self, title, msg, type):
-        self.sendScript("eXe.controller.eXeViewport.prototype.eXeNotificationNotice('%s','%s', '%s');" % (jquote(title), jquote(msg), jquote(type)), filter_func=allSessionClients)
+        self.sendScript(
+            "eXe.controller.eXeViewport.prototype.eXeNotificationNotice('%s','%s', '%s');" %
+            (jquote(title), jquote(msg), jquote(type)), filter_func=allSessionClients)
 
 
 class eXeClientHandleFactory(DefaultClientHandleFactory):
     clientHandleClass = eXeClientHandle
 
     def newClientHandle(self, ctx, refreshInterval, targetTimeoutCount):
-        handle = DefaultClientHandleFactory.newClientHandle(self, ctx, refreshInterval, targetTimeoutCount)
+        handle = DefaultClientHandleFactory.newClientHandle(
+            self, ctx, refreshInterval, targetTimeoutCount)
         handle.currentNodeId = ctx.tag.package.currentNode.id
         handle.packageName = ctx.tag.package.name
         handle.session = inevow.ISession(ctx)
-        log.debug('New client handle %s. Handles %s' % (handle.handleId, self.clientHandles))
+        log.debug('New client handle %s. Handles %s' %
+                  (handle.handleId, self.clientHandles))
         return handle
 
+
 LivePage.clientHandleFactory = eXeClientHandleFactory()
+
 
 class RenderableLivePage(_RenderablePage, LivePage):
     """
@@ -391,7 +434,9 @@ class RenderableLivePage(_RenderablePage, LivePage):
     def renderHTTP(self, ctx):
         request = inevow.IRequest(ctx)
         request.setHeader('Expires', 'Fri, 25 Nov 1966 08:22:00 EST')
-        request.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
+        request.setHeader(
+            "Cache-Control",
+            "no-store, no-cache, must-revalidate")
         request.setHeader("Pragma", "no-cache")
         return LivePage.renderHTTP(self, ctx)
 

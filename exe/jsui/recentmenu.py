@@ -31,6 +31,8 @@ from xml.sax.saxutils import escape
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class RecentMenu(Renderable, Resource):
     """
     RecentMenu provides a list of Recent Projects used in eXe and handle related client events
@@ -38,9 +40,9 @@ class RecentMenu(Renderable, Resource):
     name = 'recentMenu'
 
     def __init__(self, parent):
-        """ 
+        """
         Initialize
-        """ 
+        """
         Renderable.__init__(self, parent)
         if parent:
             self.parent.putChild(self.name, self)

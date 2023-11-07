@@ -25,19 +25,19 @@ import re
 import datetime
 import uuid
 import platform
-from html                           import escape
-from zipfile                       import ZipFile, ZIP_DEFLATED, ZIP_STORED
-from exe.webui                     import common
-from exe.webui.blockfactory        import g_blockFactory
-from exe.engine.error              import Error
-from exe.engine.path               import Path, TempDirPath
-from exe.engine.version            import release
-from exe.export.pages              import Page, uniquifyNames
-from exe                      	   import globals as G
-from bs4                 import BeautifulSoup
-from html.entities                import name2codepoint
-from .helper                        import exportMinFileJS, exportMinFileCSS
-from exe.webui.common              import getFilesCSSToMinify, getFilesJSToMinify
+from html import escape
+from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
+from exe.webui import common
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.error import Error
+from exe.engine.path import Path, TempDirPath
+from exe.engine.version import release
+from exe.export.pages import Page, uniquifyNames
+from exe import globals as G
+from bs4 import BeautifulSoup
+from html.entities import name2codepoint
+from .helper import exportMinFileJS, exportMinFileCSS
+from exe.webui.common import getFilesCSSToMinify, getFilesJSToMinify
 
 log = logging.getLogger(__name__)
 
@@ -89,18 +89,18 @@ class PublicationEpub3(object):
                 div = block.renderView(self.package.style)
 
                 # Find iframes
-                src_list = re.findall(r'<iframe[^>]*\ssrc="(.*?)"', div);
+                src_list = re.findall(r'<iframe[^>]*\ssrc="(.*?)"', div)
                 if src_list:
                     self.specialResources['external'].append(page.name)
 
                 # Find links
-                src_list = re.findall(r'<a[^>]*\shref="(.*?)"', div);
+                src_list = re.findall(r'<a[^>]*\shref="(.*?)"', div)
                 if src_list:
                     for src in src_list:
                         # Only include it if is a internal link
-                        if Path(self.outputDir/src).exists():
-                            self.specialResources['linked_resources'].append(src)
-
+                        if Path(self.outputDir / src).exists():
+                            self.specialResources['linked_resources'].append(
+                                src)
 
     def save(self, filename):
         """
@@ -133,7 +133,10 @@ class PublicationEpub3(object):
         xmlStr += '<item id="fallback" href="fallback.xhtml" media-type="application/xhtml+xml" />\n'
 
         for epubFile in self.outputDir.walk():
-            if epubFile.basename() in ['package.opf', 'nav.xhtml', 'fallback.xhtml']:
+            if epubFile.basename() in [
+                'package.opf',
+                'nav.xhtml',
+                    'fallback.xhtml']:
                 continue
 
             ext = epubFile.ext
@@ -170,15 +173,12 @@ class PublicationEpub3(object):
             # must have a fallback element. In this case we have a general "fallback.xhtml" file.
             # We add it to all resources as we still don't know which of them will be added to the spine (if any).
             # http://www.idpf.org/epub/30/spec/epub30-publications.html#sec-fallback-processing-flow
-            fallback = '';
+            fallback = ''
             if mimetype not in ['application/xhtml+xml', 'image/svg+xml']:
                 fallback = ' fallback="fallback"'
 
-            xmlStr += '<item id="%s" href="%s" media-type="%s"%s%s />\n' % (name,
-                                                                       self.outputDir.relpathto(epubFile),
-                                                                       mimetype,
-                                                                       properties,
-                                                                       fallback)
+            xmlStr += '<item id="%s" href="%s" media-type="%s"%s%s />\n' % (
+                name, self.outputDir.relpathto(epubFile), mimetype, properties, fallback)
 
         xmlStr += "</manifest>\n"
 
@@ -192,9 +192,11 @@ class PublicationEpub3(object):
             if key == 'identifier':
                 pub_id = ' id="pub-id"'
                 if not value:
-                    self.package.dublinCore.identifier = value = str(uuid.uuid4())
+                    self.package.dublinCore.identifier = value = str(
+                        uuid.uuid4())
             if value:
-                xml += '<dc:%s%s>%s</dc:%s>\n' % (key, pub_id, escape(value), key)
+                xml += '<dc:%s%s>%s</dc:%s>\n' % (key,
+                                                  pub_id, escape(value), key)
         # Add title (required property)
         # http://www.idpf.org/epub/30/spec/epub30-publications.html#sec-metadata-elem
         xml += '<dc:title>%s</dc:title>\n' % self.package.title
@@ -213,7 +215,8 @@ class PublicationEpub3(object):
                 continue
             xml_str += self.genItemResStr(page)
 
-        # We need to add an itemref tag for each linked element included in the package (images, external HTMLs...)
+        # We need to add an itemref tag for each linked element included in the
+        # package (images, external HTMLs...)
         for linked_resource in self.specialResources['linked_resources']:
             name = self.generate_item_id(linked_resource)
             xml_str += '<itemref idref="%s" />\n' % name
@@ -306,7 +309,8 @@ class NavEpub3(object):
             while currentDepth > page.depth:
                 xmlStr += '</ol>\n</li>\n'
                 currentDepth -= 1
-            xmlStr += "<li><a href=\"%s\">%s</a>\n" % (page.name + ".xhtml", escape(page.node.title))
+            xmlStr += "<li><a href=\"%s\">%s</a>\n" % (
+                page.name + ".xhtml", escape(page.node.title))
 
         while currentDepth > 1:
             xmlStr += '</li>\n</ol>\n'
@@ -323,6 +327,7 @@ class Epub3Page(Page):
     """
     This class transforms an eXe node into a SCO
     """
+
     def __init__(self, name, depth, node):
         super(Epub3Page, self).__init__(name, depth, node)
 
@@ -358,7 +363,8 @@ class Epub3Page(Page):
         lenguaje = G.application.config.locale
         if self.node.package.lang != "":
             lenguaje = self.node.package.lang
-        html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">" + lb
+        html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + \
+            lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">" + lb
         html += "<head>" + lb
         html += "<title>"
         if self.node.id == '0':
@@ -368,7 +374,8 @@ class Epub3Page(Page):
                 html += escape(self.node.titleLong)
         else:
             if self.node.package.title != '':
-                html += escape(self.node.titleLong) + " | " + escape(self.node.package.title)
+                html += escape(self.node.titleLong) + " | " + \
+                    escape(self.node.package.title)
             else:
                 html += escape(self.node.titleLong)
         html += " </title>" + lb
@@ -376,12 +383,15 @@ class Epub3Page(Page):
         if dT != "HTML5" and self.node.package.lang != "":
             html += '<meta http-equiv="content-language" content="' + lenguaje + '" />' + lb
         if self.node.package.author != "":
-            html += '<meta name="author" content="' + escape(self.node.package.author, True) + '" />' + lb
+            html += '<meta name="author" content="' + \
+                escape(self.node.package.author, True) + '" />' + lb
         html += common.getLicenseMetadata(self.node.package.license)
-        html += '<meta name="generator" content="eXeLearning ' + release + ' - exelearning.net" />' + lb
+        html += '<meta name="generator" content="eXeLearning ' + \
+            release + ' - exelearning.net" />' + lb
         if self.node.id == '0':
             if self.node.package.description != "":
-                html += '<meta name="description" content="' + escape(self.node.package.description, True) + '" />' + lb
+                html += '<meta name="description" content="' + \
+                    escape(self.node.package.description, True) + '" />' + lb
         html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />" + lb
         if common.hasWikipediaIdevice(self.node):
             html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"exe_wikipedia.css\" />" + lb
@@ -398,14 +408,16 @@ class Epub3Page(Page):
         html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"content.css\" />" + lb
         if dT == "HTML5" or common.nodeHasMediaelement(self.node):
             html += '<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->' + lb
-        style = G.application.config.styleStore.getStyle(self.node.package.style)
+        style = G.application.config.styleStore.getStyle(
+            self.node.package.style)
 
         # jQuery
         if style.hasValidConfig():
-            if style.get_jquery() == True:
+            if style.get_jquery():
                 html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
             else:
-                html += '<script type="text/javascript" src="' + style.get_jquery() + '"></script>' + lb
+                html += '<script type="text/javascript" src="' + \
+                    style.get_jquery() + '"></script>' + lb
         else:
             html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
 
@@ -426,7 +438,8 @@ class Epub3Page(Page):
 
         if common.hasMagnifier(self.node):
             html += '<script type="text/javascript" src="mojomagnify.js"></script>' + lb
-        # Some styles might have their own JavaScript files (see their config.xml file)
+        # Some styles might have their own JavaScript files (see their
+        # config.xml file)
         if style.hasValidConfig():
             html += style.get_extra_head()
         html += common.getExtraHeadContent(self.node.package)
@@ -434,7 +447,8 @@ class Epub3Page(Page):
         extraCSS = ''
         if self.node.package.get_loadMathEngine():
             extraCSS = ' exe-auto-math'
-        html += '<body class="exe-epub3'+extraCSS+'" id="exe-node-'+self.node.id+'">' + lb
+        html += '<body class="exe-epub3' + extraCSS + \
+            '" id="exe-node-' + self.node.id + '">' + lb
         html += "<div id=\"outer\">" + lb
         html += "<" + sectionTag + " id=\"main\">" + lb
         html += "<" + headerTag + " id=\"nodeDecoration\">"
@@ -451,12 +465,14 @@ class Epub3Page(Page):
             if idevice.klass != 'NotaIdevice':
                 e = " em_iDevice"
                 if idevice.icon and idevice.icon != "":
-                    _iconNameToClass = re.sub('[^A-Za-z0-9_-]+', '', idevice.icon) # Allowed CSS classNames only
-                    if _iconNameToClass!="":        
-                        e += ' em_iDevice_'+_iconNameToClass
+                    _iconNameToClass = re.sub(
+                        '[^A-Za-z0-9_-]+', '', idevice.icon)  # Allowed CSS classNames only
+                    if _iconNameToClass != "":
+                        e += ' em_iDevice_' + _iconNameToClass
                 if str(idevice.emphasis) == '0':
                     e = ""
-                html += '<' + articleTag + ' class="iDevice_wrapper %s%s" id="id%s">%s' % (idevice.klass, e, idevice.id, lb)
+                html += '<' + articleTag + \
+                    ' class="iDevice_wrapper %s%s" id="id%s">%s' % (idevice.klass, e, idevice.id, lb)
                 block = g_blockFactory.createBlock(None, idevice)
                 if not block:
                     log.critical("Unable to render iDevice.")
@@ -468,16 +484,20 @@ class Epub3Page(Page):
                         block.renderView(self.node.package.style)))
                 html += '</' + articleTag + '>' + lb  # iDevice div
 
-            html = re.sub("(<iframe[^>]*)(src=\"//)", "\g<1>src=\"https://", html)
+            html = re.sub(
+                "(<iframe[^>]*)(src=\"//)",
+                "\\g<1>src=\"https://",
+                html)
 
         html += "</" + sectionTag + ">" + lb  # /#main
 
         if self.node.package.get_addPagination():
-            html += "<p class='pagination page-counter'>" + c_('Page %s of %s') % ('<strong>'+str(pages.index(self))+'</strong>','<strong>'+str((len(pages) -1))+'</strong>')+ "</p>"+lb
+            html += "<p class='pagination page-counter'>" + c_('Page %s of %s') % ('<strong>' + str(
+                pages.index(self)) + '</strong>', '<strong>' + str((len(pages) - 1)) + '</strong>') + "</p>" + lb
 
         printPageFooter = False
-        if pages.index(self)==1 or len(pages)-1==pages.index(self):
-            printPageFooter = True # First and last pages
+        if pages.index(self) == 1 or len(pages) - 1 == pages.index(self):
+            printPageFooter = True  # First and last pages
         if printPageFooter:
             html += self.renderLicense()
             html += str(BeautifulSoup(self.renderFooter()))
@@ -495,10 +515,18 @@ class Epub3Page(Page):
         # JR: Cambio el & en los enlaces del glosario
         html = html.replace("&concept", "&amp;concept")
         # Remove "resources/" from data="resources/ and the url param
-        html = html.replace("video/quicktime\" data=\"resources/", "video/quicktime\" data=\"")
-        html = html.replace("application/x-mplayer2\" data=\"resources/", "application/x-mplayer2\" data=\"")
-        html = html.replace("audio/x-pn-realaudio-plugin\" data=\"resources/", "audio/x-pn-realaudio-plugin\" data=\"")
-        html = html.replace("<param name=\"url\" value=\"resources/", "<param name=\"url\" value=\"")
+        html = html.replace(
+            "video/quicktime\" data=\"resources/",
+            "video/quicktime\" data=\"")
+        html = html.replace(
+            "application/x-mplayer2\" data=\"resources/",
+            "application/x-mplayer2\" data=\"")
+        html = html.replace(
+            "audio/x-pn-realaudio-plugin\" data=\"resources/",
+            "audio/x-pn-realaudio-plugin\" data=\"")
+        html = html.replace(
+            "<param name=\"url\" value=\"resources/",
+            "<param name=\"url\" value=\"")
         # embed tags
         html = html.replace("></embed>", " />")
 
@@ -550,6 +578,7 @@ class Epub3Export(object):
         Content/HelloWorld.opf
         Content/HelloWorld.xhtml
     """
+
     def __init__(self, config, styleDir, filename):
         """
         Initialize
@@ -602,31 +631,32 @@ class Epub3Export(object):
 
         # Copy the style files to the output dir
         # But not nav.css
-        styleFiles = [self.styleDir /'..'/ 'popup_bg.gif']
+        styleFiles = [self.styleDir / '..' / 'popup_bg.gif']
         if package.get_addExeLink():
-            styleFiles += [self.styleDir/'..'/'exe_powered_logo.png']        
-        styleFiles += [f for f in self.styleDir.files("*.*") if f.basename() not in ['nav.css']]
+            styleFiles += [self.styleDir / '..' / 'exe_powered_logo.png']
+        styleFiles += [f for f in self.styleDir.files(
+            "*.*") if f.basename() not in ['nav.css']]
 
         # FIXME for now, only copy files referenced in Common Cartridge
         # this really should apply to all exports, but without a manifest
         # of the files needed by an included stylesheet it is too restrictive
 
         # Add fallback document for possible image links
-        if Path(self.styleDir/'fallback.xhtml').exists():
-            styleFiles += [self.styleDir /'fallback.xhtml']
+        if Path(self.styleDir / 'fallback.xhtml').exists():
+            styleFiles += [self.styleDir / 'fallback.xhtml']
         else:
-            styleFiles += [self.styleDir/'..'/'fallback.xhtml']
+            styleFiles += [self.styleDir / '..' / 'fallback.xhtml']
 
         # copy the package's resource files
         for resourceFile in package.resourceDir.walkfiles():
             fn = package.resourceDir.relpathto(resourceFile)
 
             if ("/" in fn):
-                Dir = Path(contentPages/fn[:fn.rindex("/")])
+                Dir = Path(contentPages / fn[:fn.rindex("/")])
                 if not Dir.exists():
                     Dir.makedirs()
 
-                resourceFile.copy(contentPages/Dir)
+                resourceFile.copy(contentPages / Dir)
             else:
                 resourceFile.copy(contentPages)
 
@@ -672,7 +702,7 @@ class Epub3Export(object):
                 if not hasGames:
                     hasGames = common.ideviceHasGames(idevice)
                 if not hasElpLink:
-                    hasElpLink = common.ideviceHasElpLink(idevice,package)
+                    hasElpLink = common.ideviceHasElpLink(idevice, package)
                 if not hasWikipedia:
                     if 'WikipediaIdevice' == idevice.klass:
                         hasWikipedia = True
@@ -684,7 +714,8 @@ class Epub3Export(object):
                 if not hasABCMusic:
                     hasABCMusic = common.ideviceHasABCMusic(idevice)
 
-            common.exportJavaScriptIdevicesFiles(page.node.idevices, contentPages);
+            common.exportJavaScriptIdevicesFiles(
+                page.node.idevices, contentPages)
 
         if hasFlowplayer:
             videofile = (self.templatesDir / 'flowPlayer.swf')
@@ -716,29 +747,36 @@ class Epub3Export(object):
         if hasElpLink or package.get_exportElp():
             # Export the elp file
             currentPackagePath = Path(package.filename)
-            currentPackagePath.copyfile(contentPages/package.name+'.elp')
+            currentPackagePath.copyfile(contentPages / package.name + '.elp')
         if hasWikipedia:
             wikipediaCSS = (self.cssDir / 'exe_wikipedia.css')
             wikipediaCSS.copyfile(contentPages / 'exe_wikipedia.css')
         if hasInstructions:
-            common.copyFileIfNotInStyle('panel-amusements.png', self, contentPages)
+            common.copyFileIfNotInStyle(
+                'panel-amusements.png', self, contentPages)
             common.copyFileIfNotInStyle('stock-stop.png', self, contentPages)
         if hasTooltips:
             exe_tooltips = (self.scriptsDir / 'exe_tooltips')
             exe_tooltips.copyfiles(contentPages)
         if hasABCMusic:
-            pluginScripts = (self.scriptsDir/'tinymce_4'/'js'/'tinymce'/'plugins'/'abcmusic'/'export')
+            pluginScripts = (
+                self.scriptsDir /
+                'tinymce_4' /
+                'js' /
+                'tinymce' /
+                'plugins' /
+                'abcmusic' /
+                'export')
             pluginScripts.copyfiles(contentPages)
 
         my_style = G.application.config.styleStore.getStyle(package.style)
         if my_style.hasValidConfig():
-            if my_style.get_jquery() == True:
+            if my_style.get_jquery():
                 jsFile = (self.scriptsDir / 'exe_jquery.js')
                 jsFile.copyfile(contentPages / 'exe_jquery.js')
         else:
             jsFile = (self.scriptsDir / 'exe_jquery.js')
             jsFile.copyfile(contentPages / 'exe_jquery.js')
-
 
         # Copy and minify CSS files
         css_files = getFilesCSSToMinify('epub3', self.styleDir)
@@ -762,7 +800,8 @@ class Epub3Export(object):
         container.save()
 
         # Create the publication file
-        publication = PublicationEpub3(self.config, contentPages, package, self.pages, cover)
+        publication = PublicationEpub3(
+            self.config, contentPages, package, self.pages, cover)
         publication.save("package.opf")
 
         # Create the container file
@@ -770,7 +809,10 @@ class Epub3Export(object):
         container.save("container.xml")
 
         # Zip it up!
-        self.filename.safeSave(self.doZip, _('EXPORT FAILED!\nLast succesful export is %s.'), outputDir)
+        self.filename.safeSave(
+            self.doZip,
+            _('EXPORT FAILED!\nLast succesful export is %s.'),
+            outputDir)
         # Clean up the temporary dir
 
         outputDir.rmtree()
@@ -794,8 +836,8 @@ class Epub3Export(object):
                 parentdir = parentdir.splitpath()[0]
 
             zipped.write(epubFile,
-                             relativePath.encode('utf8'),
-                             compress_type=ZIP_DEFLATED)
+                         relativePath.encode('utf8'),
+                         compress_type=ZIP_DEFLATED)
         zipped.close()
 
     def generatePages(self, node, depth):

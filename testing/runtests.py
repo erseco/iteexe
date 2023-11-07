@@ -18,27 +18,27 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
+from testexport import TestWebsiteExport
+from testblockfactory import TestBlockFactory
+from testresources import TestResources
+from testidevice import TestIdevice
+from testpackage import TestPackage
+from testuniqueid import TestUniqueId
+from testnode import TestNode
+from testconfigparser import TestConfigParser, TestSections
+from testchecker import TestChecker
+from testconfig import TestConfig
+import unittest
 import sys
 sys.path.insert(0, '..')
-import unittest
-from testconfig        import TestConfig
-from testchecker import TestChecker
-from testconfigparser  import TestConfigParser, TestSections
-from testnode          import TestNode
-from testuniqueid      import TestUniqueId
-##from testxmlhttp       import TestOutline
-from testpackage       import TestPackage
-#from testblock         import TestBlock
-from testidevice       import TestIdevice
-#from testidevicestore  import TestIdeviceStore
-#from testpersist       import TestPersist
-from testexport        import TestWebsiteExport 
-##from testexport        import TestScormMetaExport
-##from testexport        import TestScormNoMetaExport
-#from testresource      import TestResource
-#from testforumscache   import TestForumsCache
-from testresources  import TestResources
-from testblockfactory import TestBlockFactory
+# from testxmlhttp       import TestOutline
+# from testblock         import TestBlock
+# from testidevicestore  import TestIdeviceStore
+# from testpersist       import TestPersist
+# from testexport        import TestScormMetaExport
+# from testexport        import TestScormNoMetaExport
+# from testresource      import TestResource
+# from testforumscache   import TestForumsCache
 
 # ===========================================================================
 
@@ -50,17 +50,17 @@ if __name__ == "__main__":
     suite.addTest(unittest.makeSuite(TestSections))
     suite.addTest(unittest.makeSuite(TestNode))
     suite.addTest(unittest.makeSuite(TestUniqueId))
-##    suite.addTest(unittest.makeSuite(TestOutline))
+# suite.addTest(unittest.makeSuite(TestOutline))
     suite.addTest(unittest.makeSuite(TestPackage))
 #    suite.addTest(unittest.makeSuite(TestBlock))
     suite.addTest(TestBlockFactory())
-    
+
     suite.addTest(unittest.makeSuite(TestIdevice))
 #    suite.addTest(unittest.makeSuite(TestIdeviceStore))
 #    suite.addTest(unittest.makeSuite(TestPersist))
     suite.addTest(unittest.makeSuite(TestWebsiteExport))
-##    suite.addTest(unittest.makeSuite(TestScormMetaExport))
-##    suite.addTest(unittest.makeSuite(TestScormNoMetaExport))
+# suite.addTest(unittest.makeSuite(TestScormMetaExport))
+# suite.addTest(unittest.makeSuite(TestScormNoMetaExport))
 #    suite.addTest(unittest.makeSuite(TestResource))
 #    #suite.addTest(unittest.makeSuite(TestForumsCache))
     suite.addTest(unittest.makeSuite(TestResources))
@@ -69,4 +69,3 @@ if __name__ == "__main__":
         sys.exit(0)
     else:
         sys.exit(1)
-

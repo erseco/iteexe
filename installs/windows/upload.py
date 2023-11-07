@@ -1,8 +1,9 @@
+from exe.engine.version import release
+from exe.engine.path import Path
 from getpass import getpass
 import sys
 sys.path.insert(0, '../..')
-from exe.engine.path import Path
-from exe.engine.version import release
+
 
 def upFile(sftp, filename):
     print('Uploading', filename)
@@ -12,6 +13,7 @@ def upFile(sftp, filename):
     sftp.put(filename, rFilename)
     sftp.chmod(rFilename, 0x774)
 
+
 def renameFile(oldName, newName):
     if oldName.exists():
         if newName.exists():
@@ -20,6 +22,7 @@ def renameFile(oldName, newName):
     elif not newName.exists():
         raise Exception('No install file found. You have to build it first!')
     return newName
+
 
 def main():
     try:
@@ -58,16 +61,14 @@ def main():
     sftp.chdir(basedir)
     upFile(sftp, install)
     upFile(sftp, ready2run)
+
 
 if len(sys.argv) != 2:
     print('Please call passing your eduforge username')
 else:
     main()
-from getpass import getpass
-import sys
 sys.path.insert(0, '../..')
-from exe.engine.path import Path
-from exe.engine.version import release
+
 
 def upFile(sftp, filename):
     print('Uploading', filename)
@@ -77,6 +78,7 @@ def upFile(sftp, filename):
     sftp.put(filename, rFilename)
     sftp.chmod(rFilename, 0x774)
 
+
 def renameFile(oldName, newName):
     if oldName.exists():
         if newName.exists():
@@ -85,6 +87,7 @@ def renameFile(oldName, newName):
     elif not newName.exists():
         raise Exception('No install file found. You have to build it first!')
     return newName
+
 
 def main():
     try:
@@ -123,6 +126,7 @@ def main():
     sftp.chdir(basedir)
     upFile(sftp, install)
     upFile(sftp, ready2run)
+
 
 if len(sys.argv) != 2:
     print('Please call passing your eduforge username')

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -18,15 +18,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 """
-QuestionElement is responsible for a block of option.  
+QuestionElement is responsible for a block of option.
 Used by CaseStudyBlock
 """
 
 import logging
-from exe.webui           import common
-from exe.webui.element   import ImageElement
-from exe.webui.element             import TextAreaElement
-from exe.webui.element             import Feedback2Element
+from exe.webui import common
+from exe.webui.element import ImageElement
+from exe.webui.element import TextAreaElement
+from exe.webui.element import Feedback2Element
 
 
 log = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ log = logging.getLogger(__name__)
 
 class QuestionElement(object):
     """
-    QuestionElement is responsible for a block of question. 
+    QuestionElement is responsible for a block of question.
     Used by MultichoiceBlock CasestudyBlock.
     """
 
@@ -46,38 +46,37 @@ class QuestionElement(object):
         'idevice' is a case study idevice
         'question' is a exe.engine.casestudyidevice.Question instance
         """
-        self.index        = index
-        self.id           = "q" + str(index) + "b" + idevice.id        
-        self.idevice      = idevice
+        self.index = index
+        self.id = "q" + str(index) + "b" + idevice.id
+        self.idevice = idevice
 
+        self.quesId = "quesQuestion" + str(index) + "b" + idevice.id
+        self.feedbackId = "quesFeedback" + str(index) + "b" + idevice.id
 
-        self.quesId       = "quesQuestion" + str(index) + "b" + idevice.id
-        self.feedbackId   = "quesFeedback" + str(index) + "b" + idevice.id
-
-        self.question     = question
+        self.question = question
         # also split out each part for a separate TextAreaElement:
 
-        # but first....  
-        # to compensate for the strange unpickling timing when objects are 
-        # loaded from an elp, ensure that proper idevices are set: 
-        if question.questionTextArea.idevice is None: 
-            question.questionTextArea.idevice = idevice 
-        if question.feedbackTextArea.idevice is None: 
+        # but first....
+        # to compensate for the strange unpickling timing when objects are
+        # loaded from an elp, ensure that proper idevices are set:
+        if question.questionTextArea.idevice is None:
+            question.questionTextArea.idevice = idevice
+        if question.feedbackTextArea.idevice is None:
             question.feedbackTextArea.idevice = idevice
-            
+
         dT = common.getExportDocType()
         sectionTag = "div"
         if dT == "HTML5":
-            sectionTag = "section" 
+            sectionTag = "section"
         question.questionTextArea.htmlTag = sectionTag
 
         self.question_question = TextAreaElement(question.questionTextArea)
-        self.question_question.id = self.quesId 
-        
+        self.question_question.id = self.quesId
+
         question.feedbackTextArea.htmlTag = "div"
-        
+
         self.question_feedback = Feedback2Element(question.feedbackTextArea)
-        self.question_feedback.id = self.feedbackId 
+        self.question_feedback.id = self.feedbackId
 
     def process(self, request):
         """
@@ -85,29 +84,28 @@ class QuestionElement(object):
         element.
         """
         log.debug("process " + repr(request.args))
-        
+
         if self.quesId in request.args:
             self.question_question.process(request)
-                        
+
         if self.feedbackId in request.args:
             self.question_feedback.process(request)
 
         if "action" in request.args and request.args["action"][0] == self.id:
             # before deleting the question object, remove any internal anchors:
             for q_field in self.question.getRichTextFields():
-                 q_field.ReplaceAllInternalAnchorsLinks()  
-                 q_field.RemoveAllInternalLinks()  
+                q_field.ReplaceAllInternalAnchorsLinks()
+                q_field.RemoveAllInternalLinks()
             self.idevice.questions.remove(self.question)
             # disable Undo once an activity has been deleted:
             self.idevice.undo = False
-
 
     def renderEdit(self):
         """
         Returns an XHTML string for editing this question element
         """
 
-        html  = "<tr><td><b>%s</b>\n" % _("Activity")
+        html = "<tr><td><b>%s</b>\n" % _("Activity")
         html += common.elementInstruc(self.idevice.questionInstruc)
         html += self.question_question.renderEdit()
 
@@ -116,7 +114,7 @@ class QuestionElement(object):
         html += self.question_feedback.renderEdit()
 
         html += "</td><td>\n"
-        html += common.submitImage(self.id, self.idevice.id, 
+        html += common.submitImage(self.id, self.idevice.id,
                                    "/images/stock-cancel.png",
                                    _("Delete question"))
         html += "</td></tr>\n"
@@ -127,34 +125,33 @@ class QuestionElement(object):
         Returns an XHTML string for viewing and previewing this question element
         depending on the value of 'preview'.
         """
-        if preview: 
-            html  = self.question_question.renderPreview()
+        if preview:
+            html = self.question_question.renderPreview()
         else:
-            html  = self.question_question.renderView()
+            html = self.question_question.renderView()
 
-        if  self.question_feedback.field.content.strip() != "" :
-            if preview: 
-                feedback = self.question_feedback.renderPreview() 
-            else: 
+        if self.question_feedback.field.content.strip() != "":
+            if preview:
+                feedback = self.question_feedback.renderPreview()
+            else:
                 feedback = self.question_feedback.renderView()
-            html +=feedback
-        
+            html += feedback
+
         return html
 
     def renderView(self):
         """
         Returns an XHTML string for viewing this question element
         """
-        #html = "<div class=\"question\">\n"
+        # html = "<div class=\"question\">\n"
         return self.doRender(preview=False)
-        #html += "</div>\n"
-    
+        # html += "</div>\n"
+
     def renderPreview(self):
         """
         Returns an XHTML string for previewing this question element
         """
         return self.doRender(preview=True)
-    
 
-    
+
 # ===========================================================================

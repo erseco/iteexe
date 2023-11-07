@@ -3,6 +3,7 @@
 # a thinly disguised shell script written in Python
 #
 
+from exe.engine import version
 import sys
 import os
 import getopt
@@ -12,7 +13,7 @@ import subprocess
 os.chdir('../..')
 WDIR = os.getcwd()
 TEMPLATE = os.path.join(WDIR, 'installs/osx', 'exe.dmg')
-#VOL = '/Volumes/exe'
+# VOL = '/Volumes/exe'
 VOL = '/tmp/exe'
 OUTPUT = os.path.join(WDIR, 'installs/osx')
 
@@ -41,17 +42,16 @@ if not do_make_image:
     sys.exit()
 
 sys.path.insert(0, WDIR)
-from exe.engine import version
 outpathn = os.path.join(OUTPUT, 'INTEF-exe-%s.dmg' % version.release)
 
 # attach the disk image template
-#subprocess.check_call('hdiutil attach %s' % TEMPLATE, shell=True)
+# subprocess.check_call('hdiutil attach %s' % TEMPLATE, shell=True)
 
 # copy the app to the template
 os.chdir(VOL)
 shutil.rmtree('eXeLearning.app', True)
 shutil.copytree(os.path.join(WDIR, 'dist', 'eXeLearning.app'),
-        os.path.join(VOL, 'eXeLearning.app'))
+                os.path.join(VOL, 'eXeLearning.app'))
 
 # copy the README and NEWS files into the template
 shutil.rmtree('README.txt', True)
@@ -61,22 +61,27 @@ shutil.copy(os.path.join(WDIR, 'NEWS'), 'NEWS.txt')
 shutil.copy(os.path.join(WDIR, 'COPYING'), 'COPYING')
 shutil.rmtree('Changelog.txt', True)
 shutil.copy(os.path.join(WDIR, 'debian/changelog'), 'Changelog.txt')
-os.chmod('eXeLearning.app/Contents/Resources/exe/templates/mimetex-darwin.cgi', 0o755)
-open('eXeLearning.app/Contents/Resources/exe/version', 'w').write(version.version)
+os.chmod(
+    'eXeLearning.app/Contents/Resources/exe/templates/mimetex-darwin.cgi',
+    0o755)
+open(
+    'eXeLearning.app/Contents/Resources/exe/version',
+    'w').write(
+        version.version)
 
 shutil.copy(os.path.join(WDIR, 'installs/osx', 'exedmg.json'), 'exedmg.json')
 shutil.copy(os.path.join(WDIR, 'installs/osx', 'exedmg.png'), 'exedmg.png')
 shutil.copy(os.path.join(WDIR, 'installs/osx', 'exe.icns'), 'exe.icns')
-#subprocess.check_call('ln -s /Applications Applications', shell=True)
+# subprocess.check_call('ln -s /Applications Applications', shell=True)
 
-#os.chdir(WDIR)
+# os.chdir(WDIR)
 
 # detatch the disk image template
-#subprocess.check_call('hdiutil detach %s' % VOL, shell=True)
+# subprocess.check_call('hdiutil detach %s' % VOL, shell=True)
 
 # build the final DMG image with appdmg
 subprocess.check_call("appdmg exedmg.json %s" % outpathn, shell=True)
 
-#subprocess.check_call('hdiutil convert -ov -format UDZO -o %s %s' %
+# subprocess.check_call('hdiutil convert -ov -format UDZO -o %s %s' %
 #        (outpathn, TEMPLATE),
 #        shell=True)

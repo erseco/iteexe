@@ -18,25 +18,23 @@
 # ===========================================================================
 
 import unittest
-from os.path                   import join
-from utils                     import SuperTestCase
-from exe.engine.package        import Package
-from exe.engine.config         import Config
-from exe.engine.packagestore   import PackageStore
-from exe.engine.node           import Node
+from os.path import join
+from utils import SuperTestCase
+from exe.engine.package import Package
+from exe.engine.config import Config
+from exe.engine.packagestore import PackageStore
+from exe.engine.node import Node
 from exe.engine.genericidevice import GenericIdevice
-from exe.engine.path           import Path
+from exe.engine.path import Path
 
 
 # ===========================================================================
 class TestPackage(SuperTestCase):
 
-
     def testCreatePackage(self):
-        package      = self.package
+        package = self.package
         self.assertTrue(package)
         self.assertTrue(package.name)
-        
 
     def testSaveAndLoad(self):
         packageStore = PackageStore()
@@ -46,10 +44,10 @@ class TestPackage(SuperTestCase):
         package.author = "UoA"
         package.description = "Nice test package"
         Config._getConfigPathOptions = lambda s: ['exe.conf']
-        config  = Config()
-        filePath = config.dataDir/'package1.elp'
+        config = Config()
+        filePath = config.dataDir / 'package1.elp'
         package.save(filePath)
-        
+
         package1 = Package.load(filePath)
         self.assertTrue(package1)
         self.assertEqual(package1.author, "UoA")
@@ -57,13 +55,11 @@ class TestPackage(SuperTestCase):
         # Package name should have been set when it was saved
         self.assertEqual(package.name, "package1")
         self.assertEqual(package1.name, "package1")
-        
 
     def testfindNode(self):
         package = self.package
         node1 = package.root.createChild()
         self.assertEqual(package.findNode(node1.id), node1)
-        
 
     def testLevelName(self):
         package = self.package
@@ -71,7 +67,6 @@ class TestPackage(SuperTestCase):
         self.assertEqual(package.levelName(0), "Month")
         self.assertEqual(package.levelName(1), "Week")
         self.assertEqual(package.levelName(2), "Day")
-
 
     def _testNodeIds(self):
         package = self.package
@@ -85,6 +80,7 @@ class TestPackage(SuperTestCase):
         package.save('testing.elp')
         # load the package
         package2 = package.load('testing.elp')
+
         def checkInst(inst1, inst2):
             d1 = inst1.__dict__
             d2 = inst2.__dict__
@@ -99,8 +95,8 @@ class TestPackage(SuperTestCase):
                     assert len(val) == len(val2)
                     for i, i2 in zip(val, val2):
                         if isinstance(i, str):
-                            assert (i == i2, 
-                                    '%s.%s: [%s/%s]' % 
+                            assert (i == i2,
+                                    '%s.%s: [%s/%s]' %
                                     (inst1.__class__.__name__, key, i2, i))
                         else:
                             checkInst(i, i2)
@@ -119,10 +115,11 @@ class TestPackage(SuperTestCase):
                 else:
                     # Everything else must match
                     self.assertEqual(val, val2)
-                    assert val == val2, '%s.%s: %s/%s' % (inst1.__class__.__name__, key, val2, val)
+                    assert val == val2, '%s.%s: %s/%s' % (
+                        inst1.__class__.__name__, key, val2, val)
         checkInst(package, package2)
 
-    def testExtract(self):    
+    def testExtract(self):
         """
         Extracts a node of a package
         """
@@ -141,23 +138,28 @@ class TestPackage(SuperTestCase):
             for res1, res2 in zip(reses1, reses2):
                 self.assertEqual(res1.storageName, res2.storageName)
                 assert res1.checksum == res2.checksum == checksum
-        # Walk the node tree's in both packages to compare them (and collect references to resources)
-        nodes1 = [package.currentNode] + list(package.currentNode.walkDescendants())
+        # Walk the node tree's in both packages to compare them (and collect
+        # references to resources)
+        nodes1 = [package.currentNode] + \
+            list(package.currentNode.walkDescendants())
         nodes2 = [newPackage.root] + list(newPackage.root.walkDescendants())
         allResources = []
         for node1, node2 in zip(nodes1, nodes2):
             for idevice1, idevice2 in zip(node1.idevices, node2.idevices):
                 if isinstance(idevice1, GenericIdevice):
-                    self.assertEqual(idevice1.nextFieldId, idevice2.nextFieldId)
+                    self.assertEqual(
+                        idevice1.nextFieldId, idevice2.nextFieldId)
                 allResources += idevice1.userResources
                 self.assertEqual(idevice1.title, idevice2.title)
-                self.assertEqual([res.checksum for res in idevice1.userResources], [res.checksum for res in idevice2.userResources])
-        # Copy's resources should be the same as all the resources we just collected
+                self.assertEqual([res.checksum for res in idevice1.userResources], [
+                                 res.checksum for res in idevice2.userResources])
+        # Copy's resources should be the same as all the resources we just
+        # collected
         newPackageResourceKeys = set(newPackage.resources.keys())
-        self.assertEqual(newPackageResourceKeys, set([res.checksum for res in allResources]))
+        self.assertEqual(newPackageResourceKeys,
+                         set([res.checksum for res in allResources]))
         self.assertTrue(newPackageResourceKeys < set(package.resources.keys()))
 
 
-        
 if __name__ == "__main__":
     unittest.main()

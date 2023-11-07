@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2006-2008 eXe Project, http://eXeLearning.org/
 #
@@ -23,32 +23,39 @@
 A Wikipedia Idevice is one built from a Wikipedia article.
 """
 
+import logging
 import re
 import mimetypes
-from bs4            import BeautifulSoup, Comment
-from exe.engine.idevice       import Idevice
-from exe.engine.field         import TextAreaField
-from exe.engine.translate     import lateTranslate
-from exe.engine.path          import Path, TempDirPath
-from exe.engine.resource      import Resource
+from bs4 import BeautifulSoup, Comment
+from exe.engine.idevice import Idevice
+from exe.engine.field import TextAreaField
+from exe.engine.translate import lateTranslate
+from exe.engine.path import Path, TempDirPath
+from exe.engine.resource import Resource
 
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import ssl
 import sys
-from sys                      import platform
+from sys import platform
 import certifi
+
 
 class UrlOpener(urllib.request.FancyURLopener):
     """
     Set a distinctive User-Agent, so Wikipedia.org knows we're not spammers
     """
     version = "eXe/exe@exelearning.org"
+
+
 urllib.request._urlopener = UrlOpener()
 
-import logging
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class WikipediaIdevice(Idevice):
     """
     A Wikipedia Idevice is one built from a Wikipedia article.
@@ -56,35 +63,35 @@ class WikipediaIdevice(Idevice):
     persistenceVersion = 9
 
     def __init__(self, defaultSite):
-        Idevice.__init__(self, x_("Wiki Article"), 
-                         x_("University of Auckland"), 
-                         x_("""<p>The Wikipedia iDevice allows you to locate 
-existing content from within Wikipedia and download this content into your eXe 
-resource. The Wikipedia Article iDevice takes a snapshot copy of the article 
-content. Changes in Wikipedia will not automatically update individual snapshot 
-copies in eXe, a fresh copy of the article will need to be taken. Likewise, 
-changes made in eXe will not be updated in Wikipedia. </p> <p>Wikipedia content 
+        Idevice.__init__(self, x_("Wiki Article"),
+                         x_("University of Auckland"),
+                         x_("""<p>The Wikipedia iDevice allows you to locate
+existing content from within Wikipedia and download this content into your eXe
+resource. The Wikipedia Article iDevice takes a snapshot copy of the article
+content. Changes in Wikipedia will not automatically update individual snapshot
+copies in eXe, a fresh copy of the article will need to be taken. Likewise,
+changes made in eXe will not be updated in Wikipedia. </p> <p>Wikipedia content
 is covered by the GNU Free Documentation 1.2 License, and since 2009 additionally
-by the Creative Commons Attribution-ShareAlike 3.0 Unported License.</p>"""), 
+by the Creative Commons Attribution-ShareAlike 3.0 Unported License.</p>"""),
                          "", "")
-        self.emphasis         = Idevice.NoEmphasis
-        self.articleName      = ""
-        self.article          = TextAreaField(x_("Article"))
-        self.article.idevice  = self
-        self.images           = {}
-        self.site             = defaultSite
-        self.icon             = "inter"
-        self._langInstruc      = x_("""Select the appropriate language version 
+        self.emphasis = Idevice.NoEmphasis
+        self.articleName = ""
+        self.article = TextAreaField(x_("Article"))
+        self.article.idevice = self
+        self.images = {}
+        self.site = defaultSite
+        self.icon = "inter"
+        self._langInstruc = x_("""Select the appropriate language version
 of Wikipedia to search and enter search term.""")
-        self._searchInstruc    = x_("""Enter a phrase or term you wish to search 
+        self._searchInstruc = x_("""Enter a phrase or term you wish to search
 within Wikipedia.""")
-        self.ownUrl               = ""
+        self.ownUrl = ""
         self.systemResources += ['exe_wikipedia.css']
-        
+
     # Properties
-    langInstruc      = lateTranslate('langInstruc')
-    searchInstruc    = lateTranslate('searchInstruc')
-   
+    langInstruc = lateTranslate('langInstruc')
+    searchInstruc = lateTranslate('searchInstruc')
+
     def loadArticle(self, name):
         """
         Load the article from Wikipedia
@@ -92,7 +99,7 @@ within Wikipedia.""")
         self.articleName = name
         url = ''
         name = urllib.parse.quote(name.replace(" ", "_").encode('utf-8'))
-        
+
         # Get the full URL of the site
         url = self.site or self.ownUrl
         if not url.endswith('/') and name != '':
@@ -100,21 +107,26 @@ within Wikipedia.""")
         if '://' not in url:
             url = 'http://' + url
         url += name
-        
+
         # Get the site content
         try:
             if (platform == 'darwin' and hasattr(sys, 'frozen')):
-                net = urllib.request.urlopen(url, context=ssl.create_default_context(cafile='cacert.pem'))
+                net = urllib.request.urlopen(
+                    url, context=ssl.create_default_context(
+                        cafile='cacert.pem'))
             if platform == 'darwin':
-                net = urllib.request.urlopen(url, context=ssl.create_default_context(cafile='cacert.pem'))
-                #net = urllib.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
+                net = urllib.request.urlopen(
+                    url, context=ssl.create_default_context(
+                        cafile='cacert.pem'))
+                # net = urllib.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
             else:
                 net = urllib.request.urlopen(url)
             page = net.read()
             net.close()
         except IOError as error:
             log.warning(str(error))
-            self.article.content = _("Unable to download from %s <br/>Please check the spelling and connection and try again.") % url
+            self.article.content = _(
+                "Unable to download from %s <br/>Please check the spelling and connection and try again.") % url
             self.article.content_w_resourcePaths = self.article.content
             self.article.content_wo_resourcePaths = self.article.content
             return
@@ -137,24 +149,30 @@ within Wikipedia.""")
         # remove the wiktionary, wikimedia commons, and categories boxes
         # and the protected icon and the needs citations box
         if content:
-            infoboxes = content.find_all('div', {'class' : 'infobox sisterproject'})
+            infoboxes = content.find_all(
+                'div', {'class': 'infobox sisterproject'})
             [infobox.extract() for infobox in infoboxes]
-            catboxes = content.find_all('div', {'id' : 'catlinks'})
+            catboxes = content.find_all('div', {'id': 'catlinks'})
             [catbox.extract() for catbox in catboxes]
-            amboxes = content.find_all('table', {'class' : re.compile(r'.*\bambox\b.*')})
+            amboxes = content.find_all('table',
+                                       {'class': re.compile(r'.*\bambox\b.*')})
             [ambox.extract() for ambox in amboxes]
-            protecteds = content.find_all('div', {'id' : 'protected-icon'})
+            protecteds = content.find_all('div', {'id': 'protected-icon'})
             [protected.extract() for protected in protecteds]
             # Extract HTML comments
-            comments = content.find_all(text=lambda text:isinstance(text, Comment))
+            comments = content.find_all(
+                text=lambda text: isinstance(
+                    text, Comment))
             [comment.extract() for comment in comments]
         else:
             content = soup.body
 
-        # If we still don't have content it means there is a problem with the article
+        # If we still don't have content it means there is a problem with the
+        # article
         if not content:
             log.error("No content on Wikipedia article: %s" % url)
-            self.article.content = _("Unable to download from %s <br/>Please check the spelling and connection and try again.") % url
+            self.article.content = _(
+                "Unable to download from %s <br/>Please check the spelling and connection and try again.") % url
             # Set the other elements as well
             self.article.content_w_resourcePaths = self.article.content
             self.article.content_wo_resourcePaths = self.article.content
@@ -170,11 +188,11 @@ within Wikipedia.""")
         netloc = '%s//%s' % (bits[0], bits[2])
         path = '/'.join(bits[3:-1])
         tmpDir = TempDirPath()
-        
+
         # Fetch all images from content
         for imageTag in content.find_all('img'):
             # Get src and image filename
-            imageSrc  = str(imageTag['src'])
+            imageSrc = str(imageTag['src'])
             imageName = imageSrc.split('/')[-1]
             imageName = imageName.replace('&gt;', '>')
             imageName = imageName.replace('&lt;', '<')
@@ -189,35 +207,39 @@ within Wikipedia.""")
             imageName = urllib.parse.unquote(imageName)
             # Search if we've already got this image
             if imageName not in self.images:
-                if not re.match("^http(s)?:\/\/", imageSrc):
+                if not re.match("^http(s)?:\\/\\/", imageSrc):
                     if imageSrc.startswith("/"):
                         imageSrc = bits[0] + imageSrc
                     else:
-                        imageSrc = '%s/%s/%s' % (netloc, path, imageSrc)               
+                        imageSrc = '%s/%s/%s' % (netloc, path, imageSrc)
                 try:
                     # download with its original name... in ASCII:
-                    ## er... just because some repositories do not undestand no ascii names of files:
+                    # er... just because some repositories do not undestand no
+                    # ascii names of files:
                     imageName = imageName.encode('ascii', 'ignore')
-                    
-                    # If the image file doesn't have an extension try to guess it
-                    if not re.match('^.*\.(.){1,}', imageName):
+
+                    # If the image file doesn't have an extension try to guess
+                    # it
+                    if not re.match('^.*\\.(.){1,}', imageName):
                         # Open a conecction with the image and get the headers
                         online_resource = urllib.request.urlopen(imageSrc)
                         image_info = online_resource.info()
                         online_resource.close()
-                        
+
                         # Try to guess extension from mimetype
-                        extension = mimetypes.guess_extension(image_info['content-type'])
+                        extension = mimetypes.guess_extension(
+                            image_info['content-type'])
                         # Wikimedia uses mainly SVG images so we can safely say that
-                        # this image is in svg (if it wasn't if wouldn't be shown anyway)
+                        # this image is in svg (if it wasn't if wouldn't be
+                        # shown anyway)
                         extension = extension or '.svg'
                         imageName = imageName + extension
-                    
+
                     # Download image
-                    urllib.request.urlretrieve(imageSrc, tmpDir/imageName)
+                    urllib.request.urlretrieve(imageSrc, tmpDir / imageName)
                     # Add the new resource
-                    new_resource = Resource(self, tmpDir/imageName)
-                except:
+                    new_resource = Resource(self, tmpDir / imageName)
+                except BaseException:
                     log.error('Unable to download file: %s' % imageSrc)
                     # If there is an exception try to get the next one
                     continue
@@ -231,49 +253,50 @@ within Wikipedia.""")
         # now that these are supporting images, any direct manipulation
         # of the content field must also store this updated information
         # into the other corresponding fields of TextAreaField:
-        # (perhaps eventually a property should be made for TextAreaField 
+        # (perhaps eventually a property should be made for TextAreaField
         #  such that these extra set's are not necessary, but for now, here:)
         self.article.content_w_resourcePaths = self.article.content
         self.article.content_wo_resourcePaths = self.article.content
-
 
     def reformatArticle(self, netloc, content):
         """
         Changes links, etc
         """
         content = re.sub(r'href="/', r'href="%s/' % netloc, content)
-        content = re.sub(r'<(span|div)\s+(id|class)="(editsection|jump-to-nav)".*?</\1>', '', content)
-        #TODO Find a way to remove scripts without removing newlines
+        content = re.sub(
+            r'<(span|div)\s+(id|class)="(editsection|jump-to-nav)".*?</\1>',
+            '',
+            content)
+        # TODO Find a way to remove scripts without removing newlines
         content = content.replace("\n", " ")
         content = re.sub(r'<script.*?</script>', '', content)
         return content
 
-
     def getResourcesField(self, this_resource):
         """
         implement the specific resource finding mechanism for this iDevice:
-        """ 
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'article') and hasattr(self.article, 'images'):
-            for this_image in self.article.images: 
+            for this_image in self.article.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.article
+                        and this_resource == this_image._imageResource:
+                    return self.article
 
-        # NOTE that WikipediaIdevices list their images 
-        # in the idevice's .userResources, not in its .article.images...  
-        # a slightly different (and earlier) approach to embedding images: 
-        for this_image in self.userResources: 
-            if this_resource == this_image: 
+        # NOTE that WikipediaIdevices list their images
+        # in the idevice's .userResources, not in its .article.images...
+        # a slightly different (and earlier) approach to embedding images:
+        for this_image in self.userResources:
+            if this_resource == this_image:
                 return self.article
-        
+
         return None
 
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'article'):
@@ -281,63 +304,60 @@ within Wikipedia.""")
 
         return fields_list
 
-
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
       # Wiki Article Idevice:
         # option title for Wikipedia, with mode emphasis:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
-        if title is not None: 
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
+        if title is not None:
             self.title = title.encode_contents().decode('utf-8')
-            self.emphasis=Idevice.SomeEmphasis
+            self.emphasis = Idevice.SomeEmphasis
 
-        wiki = i.find(name='div', attrs={'id' : re.compile('^ta') })
+        wiki = i.find(name='div', attrs={'id': re.compile('^ta')})
         self.article.content_wo_resourcePaths = \
-                wiki.encode_contents().decode('utf-8')
+            wiki.encode_contents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.article.content_w_resourcePaths = \
-                self.article.MassageResourceDirsIntoContent( \
-                    self.article.content_wo_resourcePaths)
+            self.article.MassageResourceDirsIntoContent(
+                self.article.content_wo_resourcePaths)
         self.article.content = self.article.content_w_resourcePaths
 
-        site = i.find(name='div', attrs={'class' : 'wiki_site' })
-        if site is not None: 
+        site = i.find(name='div', attrs={'class': 'wiki_site'})
+        if site is not None:
             self.site = site.attrMap['value'].decode('utf-8')
 
-        name = i.find(name='div', attrs={'class' : 'article_name' })
-        if name is not None: 
+        name = i.find(name='div', attrs={'class': 'article_name'})
+        if name is not None:
             # WARNING: the following crashes on accented characters, eg:
-            #  'ascii' codec can't encode character u'\xe8' in 
+            #  'ascii' codec can't encode character u'\xe8' in
             #  position 11: ordinal not in range(128)
             self.articleName = name.attrMap['value'].decode('utf-8')
 
-        own_url = i.find(name='div', attrs={'class' : 'own_url' })
-        if own_url is not None: 
+        own_url = i.find(name='div', attrs={'class': 'own_url'})
+        if own_url is not None:
             self.own_url = own_url.attrMap['value'].decode('utf-8')
 
-        
     def __getstate__(self):
         """
         Re-write the img URLs just in case the class name has changed
         """
         log.debug("in __getstate__ " + repr(self.parentNode))
 
-        # need to check parentNode because __getstate__ is also called by 
+        # need to check parentNode because __getstate__ is also called by
         # deepcopy as well as Jelly.
         if self.parentNode:
-            self.article.content = re.sub(r'/[^/]*?/', 
-                                          "/" + self.parentNode.package.name + 
-                                          "/", 
+            self.article.content = re.sub(r'/[^/]*?/',
+                                          "/" + self.parentNode.package.name +
+                                          "/",
                                           self.article.content)
-            #self.article.content = re.sub(r'/[^/]*?/resources/',     
-             #                              u"/" + self.parentNode.package.name +     
-             #                              u"/resources/",     
-             #                              self.article.content)
+            # self.article.content = re.sub(r'/[^/]*?/resources/',
+            #                              u"/" + self.parentNode.package.name +
+            #                              u"/resources/",
+            #                              self.article.content)
         return Idevice.__getstate__(self)
-
 
     def delete(self):
         """
@@ -346,20 +366,17 @@ within Wikipedia.""")
         self.images = {}
         Idevice.delete(self)
 
-        
     def upgradeToVersion1(self):
         """
         Called to upgrade from 0.6 release
         """
-        self.site        = _('http://en.wikipedia.org/')
-
+        self.site = _('http://en.wikipedia.org/')
 
     def upgradeToVersion2(self):
         """
         Upgrades v0.6 to v0.7.
         """
         self.lastIdevice = False
-        
 
     def upgradeToVersion3(self):
         """
@@ -368,20 +385,17 @@ within Wikipedia.""")
         self._upgradeIdeviceToVersion1()
         self._site = self.__dict__['site']
 
-
     def upgradeToVersion4(self):
         """
         Upgrades exe to v0.11... what was I thinking?
         """
         self.site = self.__dict__['_site']
 
-
     def upgradeToVersion5(self):
         """
         Upgrades exe to v0.11... forgot to change the icon
         """
         self.icon = "inter"
-
 
     def upgradeToVersion6(self):
         """
@@ -397,17 +411,17 @@ within Wikipedia.""")
         """
         Upgrades to v0.12
         """
-        self._langInstruc   = x_("""Select the appropriate language version 
+        self._langInstruc = x_("""Select the appropriate language version
 of Wikipedia to search and enter search term.""")
-        self._searchInstruc = x_("""Enter a phrase or term you wish to search 
+        self._searchInstruc = x_("""Enter a phrase or term you wish to search
 within Wikipedia.""")
-        
+
     def upgradeToVersion8(self):
         """
         Upgrades to v0.19
         """
         self.ownUrl = ""
-        
+
     def upgradeToVersion9(self):
         if 'fdl.html' in self.systemResources:
             self.systemResources.remove('fdl.html')

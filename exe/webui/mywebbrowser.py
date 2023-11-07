@@ -15,11 +15,14 @@ import builtins
 
 __all__ = ["Error", "open", "open_new", "open_new_tab", "get", "register"]
 
+
 class Error(Exception):
     pass
 
+
 _browsers = {}          # Dictionary of available browser controllers
 _tryorder = []          # Preference order of available browsers
+
 
 def register(name, klass, instance=None, update_tryorder=1):
     """Register a browser connector and, optionally, connection."""
@@ -28,6 +31,7 @@ def register(name, klass, instance=None, update_tryorder=1):
         _tryorder.append(name)
     elif update_tryorder < 0:
         _tryorder.insert(0, name)
+
 
 def get(using=None):
     """Return a browser launcher instance appropriate for the environment."""
@@ -59,6 +63,7 @@ def get(using=None):
 # It is recommended one does "import webbrowser" and uses webbrowser.open(url)
 # instead of "from webbrowser import *".
 
+
 def open(url, new=0, autoraise=True):
     for name in _tryorder:
         browser = get(name)
@@ -66,8 +71,10 @@ def open(url, new=0, autoraise=True):
             return True
     return False
 
+
 def open_new(url):
     return open(url, 1)
+
 
 def open_new_tab(url):
     return open(url, 2)
@@ -121,6 +128,7 @@ else:
             if mode & stat.S_IXUSR or mode & stat.S_IXGRP or mode & stat.S_IXOTH:
                 return True
         return False
+
 
 def _iscommand(cmd):
     """Return True if cmd is executable or can be found on the executable
@@ -199,7 +207,8 @@ class BackgroundBrowser(GenericBrowser):
                 setsid = getattr(os, 'setsid', None)
                 if not setsid:
                     setsid = getattr(os, 'setpgrp', None)
-                p = subprocess.Popen(cmdline, close_fds=True, preexec_fn=setsid)
+                p = subprocess.Popen(
+                    cmdline, close_fds=True, preexec_fn=setsid)
             return (p.poll() is None)
         except OSError:
             return False
@@ -222,7 +231,8 @@ class UnixBrowser(BaseBrowser):
             # use autoraise argument only for remote invocation
             autoraise = int(autoraise)
             opt = self.raise_opts[autoraise]
-            if opt: raise_opt = [opt]
+            if opt:
+                raise_opt = [opt]
 
         cmdline = [self.name] + raise_opt + args
 
@@ -295,6 +305,7 @@ class Mozilla(UnixBrowser):
     remote_action_newtab = "-new-tab"
     background = True
 
+
 Netscape = Mozilla
 
 
@@ -312,13 +323,14 @@ class Opera(UnixBrowser):
     "Launcher class for Opera browser."
 
     raise_opts = ["-noraise", ""]
-    #JR: Se corrige error cuando el opera no estaba abierto
-    #remote_args = ['-remote', 'openURL(%s%action)']
+    # JR: Se corrige error cuando el opera no estaba abierto
+    # remote_args = ['-remote', 'openURL(%s%action)']
     remote_args = ['%action', '%s']
     remote_action = ""
     remote_action_newwin = ",new-window"
     remote_action_newtab = ",new-page"
     background = True
+
 
 class Chrome(UnixBrowser):
     "Launcher class for Google Chrome browser."
@@ -329,7 +341,9 @@ class Chrome(UnixBrowser):
     remote_action_newtab = ""
     background = True
 
+
 Chromium = Chrome
+
 
 class Elinks(UnixBrowser):
     "Launcher class for Elinks browsers."
@@ -454,6 +468,7 @@ class Grail(BaseBrowser):
 # These are the right tests because all these Unix browsers require either
 # a console terminal or an X display to run.
 
+
 def register_X_browsers():
 
     # use xdg-open if around
@@ -509,11 +524,12 @@ def register_X_browsers():
     # Grail, the Python browser. Does anybody still use it?
     if _iscommand("grail"):
         register("grail", Grail, None)
-    
+
     # JR: Register Google Chrome/Chromium browsers
     for browser in ("google-chrome", "chrome", "chromium", "chromium-browser"):
         if _iscommand(browser):
             register(browser, None, Chrome(browser))
+
 
 # Prefer X browsers if present
 if os.environ.get("DISPLAY"):
@@ -523,7 +539,8 @@ if os.environ.get("DISPLAY"):
 if os.environ.get("TERM"):
     if _iscommand("www-browser"):
         register("www-browser", None, GenericBrowser("www-browser"))
-    # The Links/elinks browsers <http://artax.karlin.mff.cuni.cz/~mikulas/links/>
+    # The Links/elinks browsers
+    # <http://artax.karlin.mff.cuni.cz/~mikulas/links/>
     if _iscommand("links"):
         register("links", None, GenericBrowser("links"))
     if _iscommand("elinks"):
@@ -554,7 +571,6 @@ if sys.platform[:3] == "win":
     _tryorder = []
     _browsers = {}
 
-
     class MicrosoftEdge(BaseBrowser):
 
         def open(self, url, new=0, autoraise=True):
@@ -572,22 +588,24 @@ if sys.platform[:3] == "win":
     from winreg import OpenKey, QueryValue, QueryValueEx, EnumKey, HKEY_LOCAL_MACHINE
     key = None
     try:
-        
+
         winKey = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion"
         val = r"ProductName"
-        winKey = OpenKey( HKEY_LOCAL_MACHINE , winKey)
-        windows_version = QueryValueEx(winKey,val)[0]
-        #Solo funciona si es Windows 10
+        winKey = OpenKey(HKEY_LOCAL_MACHINE, winKey)
+        windows_version = QueryValueEx(winKey, val)[0]
+        # Solo funciona si es Windows 10
         if 'Windows 10' in windows_version:
             register('microsoft-edge', None, MicrosoftEdge())
         winKey.Close()
-        
-        key = OpenKey(HKEY_LOCAL_MACHINE, r'SOFTWARE\Clients\StartMenuInternet')
+
+        key = OpenKey(
+            HKEY_LOCAL_MACHINE,
+            r'SOFTWARE\Clients\StartMenuInternet')
         i = 0
         while True:
             try:
                 bkey_name = EnumKey(key, i)
-            except:
+            except BaseException:
                 break
             bkey = OpenKey(key, bkey_name)
             bpath = QueryValue(bkey, r'shell\open\command')
@@ -595,7 +613,7 @@ if sys.platform[:3] == "win":
             register(bname, None, BackgroundBrowser(bpath.strip('"')))
             bkey.Close()
             i = i + 1
-    except:
+    except BaseException:
         pass
     finally:
         if key:
@@ -616,11 +634,12 @@ if sys.platform == 'darwin':
         If no browser is specified, the default browser, as specified in the
         Internet System Preferences panel, will be used.
         """
+
         def open(self, url, new=0, autoraise=True):
             assert "'" not in url
             # hack for local urls
-            if not ':' in url:
-                url = 'file:'+url
+            if ':' not in url:
+                url = 'file:' + url
 
             # new must be 0 or 1
             new = int(bool(new))
@@ -670,14 +689,14 @@ if sys.platform == 'darwin':
                     open location "%s"
                 end try
                 ''' % (url.replace('"', '%22'), url.replace('"', '%22'))
-                
+
             else:
                 script = '''
                    tell application "%s"
                        activate
                        open location "%s"
                    end
-                   '''%(self.name, url.replace('"', '%22'))
+                   ''' % (self.name, url.replace('"', '%22'))
 
             osapipe = os.popen("osascript", "w")
             if osapipe is None:
@@ -704,14 +723,18 @@ if sys.platform == 'darwin':
         null_stream = builtins.open(os.devnull, 'w')
         # Execute the AppleScript
         # Any output produced by the script will be send to null_stream
-        is_installed = not subprocess.call("osascript -e '%s'" % script, shell=True,
-                                           stdout=null_stream, stderr=null_stream)
+        is_installed = not subprocess.call(
+            "osascript -e '%s'" %
+            script,
+            shell=True,
+            stdout=null_stream,
+            stderr=null_stream)
         return is_installed
 
     # Don't clear _tryorder or _browsers since OS X can use above Unix support
     # (but we prefer using the OS X specific stuff).
     # We need Application ID to check if the browser is installed and Application Name
-    # to be able to open it (And to show the correct name on the select).
+    #  to be able to open it (And to show the correct name on the select).
     for browser in [{'id': 'com.google.Chrome', 'name': 'Google Chrome'},
                     {'id': 'org.mozilla.firefox', 'name': 'Firefox'},
                     {'id': 'com.apple.Safari', 'name': 'Safari'},
@@ -746,7 +769,7 @@ if "BROWSER" in os.environ:
             cmd = _synthesize(cmdline, -1)
             if cmd[1] is None:
                 register(cmdline, None, GenericBrowser(cmdline), -1)
-    cmdline = None # to make del work if _userchoices was empty
+    cmdline = None  # to make del work if _userchoices was empty
     del cmdline
     del _userchoices
 
@@ -766,8 +789,10 @@ def main():
         sys.exit(1)
     new_win = 0
     for o, a in opts:
-        if o == '-n': new_win = 1
-        elif o == '-t': new_win = 2
+        if o == '-n':
+            new_win = 1
+        elif o == '-t':
+            new_win = 2
     if len(args) != 1:
         print(usage, file=sys.stderr)
         sys.exit(1)
@@ -776,6 +801,7 @@ def main():
     open(url, new_win)
 
     print("\a")
+
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,6 @@ try:
 except ImportError:
     Banana = banana.Banana
     log.info('Using pyBanana')
-    
 
 
 class Persistable(jelly.Jellyable, jelly.Unjellyable, Versioned):
@@ -70,7 +69,6 @@ class Persistable(jelly.Jellyable, jelly.Unjellyable, Versioned):
         """
 
 
-
 def encodeObject(toEncode):
     """
     Take an object and turn it into a string representation.
@@ -86,6 +84,7 @@ def encodeObject(toEncode):
 
     return str_buffer.getvalue()
 
+
 def decodeToList(toDecode):
     """
     Decodes an object to a list of jelly strings, but doesn't unjelly them.
@@ -99,6 +98,7 @@ def decodeToList(toDecode):
     decoder.dataReceived(toDecode)
     log.debug("decodeObjectRaw ending decodeToList")
     return jelly_data
+
 
 def fixDataForMovedObjects(jellyData):
     """
@@ -117,7 +117,8 @@ def fixDataForMovedObjects(jellyData):
                            'quiztestidevice.AnswerOption',
                            'appletidevice.AppletIdevice'):
                 mod, cls = element.split('.')
-                jellyData[i] = 'exe.engine.%s.%s' % (mod, cls) 
+                jellyData[i] = 'exe.engine.%s.%s' % (mod, cls)
+
 
 def decodeObjectRaw(toDecode):
     """
@@ -127,6 +128,7 @@ def decodeObjectRaw(toDecode):
     fixDataForMovedObjects(jellyData)
     decoded = jelly.unjelly(jellyData[0])
     return decoded
+
 
 def decodeObject(toDecode):
     """

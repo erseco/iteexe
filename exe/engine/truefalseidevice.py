@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,10 +22,10 @@ A true false idevice is one built up from question and options
 """
 
 import logging
-from exe.engine.persist   import Persistable
-from exe.engine.idevice   import Idevice
+from exe.engine.persist import Persistable
+from exe.engine.idevice import Idevice
 from exe.engine.translate import lateTranslate
-from exe.engine.field     import TextAreaField
+from exe.engine.field import TextAreaField
 import re
 log = logging.getLogger(__name__)
 
@@ -37,59 +37,64 @@ class TrueFalseQuestion(Persistable):
     be rendered as an XHTML element
     """
 
-    def __init__(self, idevice, question="", isCorrect=False, feedback="", hint=""):
+    def __init__(
+            self,
+            idevice,
+            question="",
+            isCorrect=False,
+            feedback="",
+            hint=""):
         """
-        Initialize 
+        Initialize
         """
 
         self.idevice = idevice
-        self.questionTextArea = TextAreaField(x_('Question:'), 
-                                    self.idevice.questionInstruc, question)
+        self.questionTextArea = TextAreaField(
+            x_('Question:'), self.idevice.questionInstruc, question)
         self.questionTextArea.idevice = idevice
         self.isCorrect = isCorrect
-        self.feedbackTextArea = TextAreaField(x_('Feedback'), 
-                                    self.idevice.feedbackInstruc, feedback)
+        self.feedbackTextArea = TextAreaField(
+            x_('Feedback'), self.idevice.feedbackInstruc, feedback)
         self.feedbackTextArea.idevice = idevice
-        self.hintTextArea = TextAreaField(x_('Hint'), 
-                                self.idevice.hintInstruc, hint)
+        self.hintTextArea = TextAreaField(x_('Hint'),
+                                          self.idevice.hintInstruc, hint)
         self.hintTextArea.idevice = idevice
-
 
     def getResourcesField(self, this_resource):
         """
         implement the specific resource finding mechanism for this iDevice:
-        """ 
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'questionTextArea')\
-        and hasattr(self.questionTextArea, 'images'):
-            for this_image in self.questionTextArea.images: 
+                and hasattr(self.questionTextArea, 'images'):
+            for this_image in self.questionTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.questionTextArea
+                        and this_resource == this_image._imageResource:
+                    return self.questionTextArea
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'feedbackTextArea')\
-        and hasattr(self.feedbackTextArea, 'images'):
-            for this_image in self.feedbackTextArea.images: 
+                and hasattr(self.feedbackTextArea, 'images'):
+            for this_image in self.feedbackTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.feedbackTextArea
+                        and this_resource == this_image._imageResource:
+                    return self.feedbackTextArea
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'hintTextArea')\
-        and hasattr(self.hintTextArea, 'images'):
-            for this_image in self.hintTextArea.images: 
+                and hasattr(self.hintTextArea, 'images'):
+            for this_image in self.hintTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.hintTextArea
+                        and this_resource == this_image._imageResource:
+                    return self.hintTextArea
 
         return None
 
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'questionTextArea'):
@@ -100,36 +105,37 @@ class TrueFalseQuestion(Persistable):
             fields_list.append(self.hintTextArea)
 
         return fields_list
-                   
 
     def upgrade_setIdevice(self, idevice):
         """
         While some of this might typically be done in an automatic upgrade
         method called from in increased persistence version, the problem
         with that approach is that the idevice was not previously stored,
-        and cannot easily be gotten at that stage of operation. 
+        and cannot easily be gotten at that stage of operation.
 
         Rather than making such an upgrade method more messy than necessary,
         this method allows the parent TrueFalseIdevice to merely set
         itself on each of its TrueFalseQuestions during its own upgrade.
 
         Helps upgrade to somewhere before version 0.25 (post-v0.24),
-        taking the old unicode string fields, 
+        taking the old unicode string fields,
         and converting them into a image-enabled TextAreaFields:
         """
 
         self.idevice = idevice
-        self.questionTextArea = TextAreaField(x_('Question:'), 
-                                    self.idevice.questionInstruc, self.question)
+        self.questionTextArea = TextAreaField(
+            x_('Question:'), self.idevice.questionInstruc, self.question)
         self.questionTextArea.idevice = self.idevice
-        self.feedbackTextArea = TextAreaField(x_('Feedback'), 
-                                    self.idevice.feedbackInstruc, self.feedback)
+        self.feedbackTextArea = TextAreaField(
+            x_('Feedback'), self.idevice.feedbackInstruc, self.feedback)
         self.feedbackTextArea.idevice = self.idevice
-        self.hintTextArea = TextAreaField(x_('Hint'), 
-                                self.idevice.hintInstruc, self.hint)
+        self.hintTextArea = TextAreaField(x_('Hint'),
+                                          self.idevice.hintInstruc, self.hint)
         self.hintTextArea.idevice = self.idevice
 
 # ===========================================================================
+
+
 class TrueFalseIdevice(Idevice):
     """
     A TrueFalse Idevice is one built up from question and options
@@ -138,62 +144,60 @@ class TrueFalseIdevice(Idevice):
 
     def __init__(self):
         """
-        Initialize 
+        Initialize
         """
         Idevice.__init__(self,
                          x_("True-False Question"),
                          x_("University of Auckland"),
-                         x_("""True/false questions present a statement where 
-the learner must decide if the statement is true. This type of question works 
-well for factual information and information that lends itself to either/or 
+                         x_("""True/false questions present a statement where
+the learner must decide if the statement is true. This type of question works
+well for factual information and information that lends itself to either/or
 responses."""), "", "question")
-        self.emphasis         = Idevice.SomeEmphasis
-        self._hintInstruc     = x_("""A hint may be provided to assist the 
+        self.emphasis = Idevice.SomeEmphasis
+        self._hintInstruc = x_("""A hint may be provided to assist the
 learner in answering the question.""")
-        self.questions        = []
-        self._questionInstruc = x_("""Type the question stem. The question 
-should be clear and unambiguous. Avoid negative premises as these can tend to 
+        self.questions = []
+        self._questionInstruc = x_("""Type the question stem. The question
+should be clear and unambiguous. Avoid negative premises as these can tend to
 be ambiguous.""")
-        self._keyInstruc      = ""
-        self._feedbackInstruc = x_("""Enter any feedback you wish to provide 
-to the learner. This field may be left blank. if this field is left blank 
+        self._keyInstruc = ""
+        self._feedbackInstruc = x_("""Enter any feedback you wish to provide
+to the learner. This field may be left blank. if this field is left blank
 default feedback will be provided.""")
         self.questions.append(TrueFalseQuestion(self))
-        self.systemResources += ["common.js", "panel-amusements.png", "stock-stop.png"]
+        self.systemResources += ["common.js",
+                                 "panel-amusements.png", "stock-stop.png"]
         self.instructionsForLearners = TextAreaField(
             x_('Instructions'),
-            x_("""Provide instruction on how the True/False Question should be 
+            x_("""Provide instruction on how the True/False Question should be
 completed."""),
             '')
-                
+
         self.instructionsForLearners.idevice = self
-        
 
     # Properties
-    hintInstruc     = lateTranslate('hintInstruc')
+    hintInstruc = lateTranslate('hintInstruc')
     questionInstruc = lateTranslate('questionInstruc')
-    keyInstruc      = lateTranslate('keyInstruc')
+    keyInstruc = lateTranslate('keyInstruc')
     feedbackInstruc = lateTranslate('feedbackInstruc')
-
 
     def addQuestion(self):
         """
-        Add a new question to this iDevice. 
+        Add a new question to this iDevice.
         """
         self.questions.append(TrueFalseQuestion(self))
-
 
     def getResourcesField(self, this_resource):
         """
         implement the specific resource finding mechanism for this iDevice:
-        """ 
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'instructionsForLearners')\
-        and hasattr(self.instructionsForLearners, 'images'):
-            for this_image in self.instructionsForLearners.images: 
+                and hasattr(self.instructionsForLearners, 'images'):
+            for this_image in self.instructionsForLearners.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.instructionsForLearners
+                        and this_resource == this_image._imageResource:
+                    return self.instructionsForLearners
 
         for this_question in self.questions:
             this_field = this_question.getResourcesField(this_resource)
@@ -204,9 +208,9 @@ completed."""),
 
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'instructionsForLearners'):
@@ -217,32 +221,31 @@ completed."""),
 
         return fields_list
 
-
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         # True-False Idevice:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        inner = i.find(name='div', attrs={'class' : 'iDevice_inner' })
+        inner = i.find(name='div', attrs={'class': 'iDevice_inner'})
 
-        instruct = inner.find(name='div', attrs={'class' : 'block' , 
-                'style' : 'display:block' })
+        instruct = inner.find(name='div', attrs={'class': 'block',
+                                                 'style': 'display:block'})
         self.instructionsForLearners.content_wo_resourcePaths = \
-                instruct.renderContents().decode('utf-8')
+            instruct.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.instructionsForLearners.content_w_resourcePaths = \
-                self.instructionsForLearners.MassageResourceDirsIntoContent( \
-                    self.instructionsForLearners.content_wo_resourcePaths)
+            self.instructionsForLearners.MassageResourceDirsIntoContent(
+                self.instructionsForLearners.content_wo_resourcePaths)
         self.instructionsForLearners.content = \
-                self.instructionsForLearners.content_w_resourcePaths
+            self.instructionsForLearners.content_w_resourcePaths
 
         # copied and modified from Multi-Select, and others :-) :
 
-        tf_questions = inner.findAll(name='div', attrs={'class' : 'question'})
+        tf_questions = inner.findAll(name='div', attrs={'class': 'question'})
         if len(tf_questions) < 1:
             # need to remove the default 1st question
             del self.questions[0]
@@ -254,30 +257,33 @@ completed."""),
 
             question = tf_questions[question_num]
 
-            questions = question.findAll(name='div', attrs={'class' : 'block', 
-                    'id' : re.compile('^taquestion') })
+            questions = question.findAll(
+                name='div',
+                attrs={
+                    'class': 'block',
+                    'id': re.compile('^taquestion')})
             if len(questions) == 1:
                 # ELSE: should warn of unexpected result!
                 inner_question = questions[0]
                 self.questions[question_num].questionTextArea.content_wo_resourcePaths \
-                        = inner_question.renderContents().decode('utf-8')
+                    = inner_question.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].questionTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].questionTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].questionTextArea.content_wo_resourcePaths)
                 self.questions[question_num].questionTextArea.content = \
-                        self.questions[question_num].questionTextArea.content_w_resourcePaths
+                    self.questions[question_num].questionTextArea.content_w_resourcePaths
 
-            answer_true = question.find(name='div', 
-                    attrs={'id' : re.compile('^s0b') })
-            answer_false = question.find(name='div', 
-                    attrs={'id' : re.compile('^s1b') })
+            answer_true = question.find(name='div',
+                                        attrs={'id': re.compile('^s0b')})
+            answer_false = question.find(name='div',
+                                         attrs={'id': re.compile('^s1b')})
             # true-false only has 1 feedback per question:
-            feedbacks = question.findAll(name='div', 
-                    attrs={'id' : re.compile('^sfb') })
+            feedbacks = question.findAll(name='div',
+                                         attrs={'id': re.compile('^sfb')})
             # true-false only has 1 hint per question:
-            hints = question.findAll(name='div', 
-                    attrs={'id' : re.compile('^tahint') })
+            hints = question.findAll(name='div',
+                                     attrs={'id': re.compile('^tahint')})
 
             # and finally, see if this is a correct answer:
             even_score = int(answer_true.attrMap['even_steven'])
@@ -288,40 +294,38 @@ completed."""),
             if len(hints) >= 1:
                 inner_hint = hints[0]
                 self.questions[question_num].hintTextArea.content_wo_resourcePaths \
-                        = inner_hint.renderContents().decode('utf-8')
+                    = inner_hint.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].hintTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].hintTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].hintTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].hintTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].hintTextArea.content_wo_resourcePaths)
                 self.questions[question_num].hintTextArea.content = \
-                        self.questions[question_num].hintTextArea.content_w_resourcePaths
+                    self.questions[question_num].hintTextArea.content_w_resourcePaths
             else:
                 # no user-defined feedback, just using the default:
                 self.questions[question_num].hintTextArea.content = ""
                 self.questions[question_num].hintTextArea.content_w_resourcePaths \
-                        = ""
+                    = ""
                 self.questions[question_num].hintTextArea.content_wo_resourcePaths \
-                        = ""
-
+                    = ""
 
             if len(feedbacks) >= 1:
                 inner_feedback = feedbacks[0]
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = inner_feedback.renderContents().decode('utf-8')
+                    = inner_feedback.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
                 self.questions[question_num].feedbackTextArea.content = \
-                        self.questions[question_num].feedbackTextArea.content_w_resourcePaths
+                    self.questions[question_num].feedbackTextArea.content_w_resourcePaths
             else:
                 # no user-defined feedback, just using the default:
                 self.questions[question_num].feedbackTextArea.content = ""
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = ""
+                    = ""
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = ""
-
+                    = ""
 
     def upgradeToVersion1(self):
         """
@@ -331,7 +335,6 @@ completed."""),
         log.debug("Upgrading iDevice")
         self.icon = "multichoice"
 
-
     def upgradeToVersion2(self):
         """
         Upgrades the node from 1 (v0.5) to 2 (v0.6).
@@ -339,7 +342,6 @@ completed."""),
         """
         log.debug("Upgrading iDevice")
         self.emphasis = Idevice.SomeEmphasis
-        
 
     def upgradeToVersion3(self):
         """
@@ -348,7 +350,6 @@ completed."""),
         """
         log.debug("Upgrading iDevice icon")
         self.icon = "question"
-
 
     def upgradeToVersion4(self):
         """
@@ -369,40 +370,39 @@ completed."""),
         """
         Upgrades exe to v0.11
         """
-        self._feedbackInstruc = x_("""Type in the feedback that you want the 
+        self._feedbackInstruc = x_("""Type in the feedback that you want the
 student to see when selecting the particular question. If you don't complete
-this box, eXe will automatically provide default feedback as follows: 
-"Correct answer" as indicated by the selection for the correct answer; or 
+this box, eXe will automatically provide default feedback as follows:
+"Correct answer" as indicated by the selection for the correct answer; or
 "Wrong answer" for the other alternatives.""")
 
     def upgradeToVersion7(self):
         """
         Upgrades to v0.12
         """
-        self._upgradeIdeviceToVersion2()        
+        self._upgradeIdeviceToVersion2()
         self.systemResources += ["common.js", "libot_drag.js",
                                  "panel-amusements.png", "stock-stop.png"]
-        
+
     def upgradeToVersion8(self):
         """
         Upgrades to v0.15
         """
         self.instructionsForLearners = TextAreaField(
             x_('Instructions'),
-            x_("""Provide instruction on how the True/False Question should be 
+            x_("""Provide instruction on how the True/False Question should be
 completed."""),
             x_('Read the paragraph below and '
                 'fill in the missing words.'))
         self.instructionsForLearners.idevice = self
-   
 
     def upgradeToVersion9(self):
-        """ 
-        Upgrades to somewhere before version 0.25 (post-v0.24) 
-        Taking the TrueFalseQuestions' old unicode string fields, 
+        """
+        Upgrades to somewhere before version 0.25 (post-v0.24)
+        Taking the TrueFalseQuestions' old unicode string fields,
         and converting them into a image-enabled TextAreaFields:
         """
-        for question in self.questions: 
+        for question in self.questions:
             question.upgrade_setIdevice(self)
 
     def upgradeToVersion10(self):

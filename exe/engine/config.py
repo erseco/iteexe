@@ -38,11 +38,12 @@ import tempfile
 import twisted
 import shutil
 from exe import globals as G
-from exe.engine.stylestore  import StyleStore
-from exe.engine.templatestore  import TemplateStore
+from exe.engine.stylestore import StyleStore
+from exe.engine.templatestore import TemplateStore
 from exe.webui import common
 
-x_ = lambda s: s
+
+def x_(s): return s
 
 
 class Config(object):
@@ -95,7 +96,8 @@ class Config(object):
     }
 
     idevicesCategories = {
-        # Use Experimental for complex non-tested iDevices and Hidden for those that should not be added any more
+        # Use Experimental for complex non-tested iDevices and Hidden for those
+        # that should not be added any more
         'activity': [x_('Text and Tasks')],
         'reading activity': [x_('Text and Tasks')],
         'dropdown activity': [x_('Interactive Activities')],
@@ -157,24 +159,24 @@ class Config(object):
         self.configParser = ConfigParser(self.onWrite)
         # Set default values
         # exePath is the whole path and filename of the exe executable
-        self.exePath     = Path(sys.argv[0]).abspath()
+        self.exePath = Path(sys.argv[0]).abspath()
         # webDir is the parent directory for styles,scripts and templates
-        self.webDir      = self.exePath.dirname()
-        self.jsDir       = self.exePath.dirname()
-        self.locales     = {}
+        self.webDir = self.exePath.dirname()
+        self.jsDir = self.exePath.dirname()
+        self.locales = {}
         # localeDir is the base directory where all the locales are stored
-        self.localeDir   = self.exePath.dirname()/"locale"
+        self.localeDir = self.exePath.dirname() / "locale"
         # port is the port the exe webserver will listen on
         # (previous default, which earlier users might still use, was 8081)
-        self.port        = 51235
+        self.port = 51235
         # dataDir is the default directory that is shown to the user
         # to save packages and exports in
-        self.dataDir     = Path(".")
+        self.dataDir = Path(".")
         # configDir is the dir for storing user profiles
         # and user made idevices and the config file
-        self.configDir   = Path(".")
+        self.configDir = Path(".")
         # FM: New Styles Directory path
-        self.stylesDir   = Path(self.configDir/'style').abspath()
+        self.stylesDir = Path(self.configDir / 'style').abspath()
         # FM: Default Style name
         self.defaultStyle = "INTEF"
         # Styles repository XML-RPC endpoint
@@ -215,7 +217,7 @@ class Config(object):
         self.audioMediaConverter_mp3 = ""
         self.audioMediaConverter_wav = ""
         self.ffmpegPath = ""
-        self.mediaProfilePath = self.exePath.dirname()/'mediaprofiles'
+        self.mediaProfilePath = self.exePath.dirname() / 'mediaprofiles'
 
         # likewise, a canonical (English) names of iDevices not to show in the
         # iDevice pane but, contrary to the hiddens, these are ones that the
@@ -225,32 +227,35 @@ class Config(object):
         # by default, only allow embedding of media types for which a
         # browser plugin is found:
 
-        self.defaultLicense='creative commons: attribution - share alike 4.0'
+        self.defaultLicense = 'creative commons: attribution - share alike 4.0'
 
         self.assumeMediaPlugins = False
-        
+
         # Force the editable export when loading an existing
         # package with it disabled (defaults to disabled)
         self.forceEditableExport = "0"
-        
+
         # Content templates directory
-        self.templatesDir = Path(self.configDir/'content_template').abspath()
+        self.templatesDir = Path(self.configDir / 'content_template').abspath()
         # Default template that will be used to all new content
         self.defaultContentTemplate = "Base"
-        
+
         # JS Idevices directory
-        self.jsIdevicesDir = Path(self.configDir/'scripts'/'idevices').abspath()
-        
+        self.jsIdevicesDir = Path(
+            self.configDir /
+            'scripts' /
+            'idevices').abspath()
+
         # Let our children override our defaults depending
         # on the OS that we're running on
         self._overrideDefaultVals()
         # locale is the language of the user. localeDir can be overridden
         # that's why we must set it _after_ the call to _overrideDefaultVals()
         self.locale = chooseDefaultLocale(self.localeDir)
-        
+
         # Format the files and images to standard ISO 9660
         self.cutFileName = "0"
-        
+
         self.autosaveTime = "10"
 
         self.metadataWarning = "1"
@@ -258,12 +263,12 @@ class Config(object):
         # Try to make the defaults a little intelligent
         # Under devel trees, webui is the default webdir
         self.webDir = Path(self.webDir)
-        if not (self.webDir/'scripts').isdir() \
-           and (self.webDir/'webui').isdir():
+        if not (self.webDir / 'scripts').isdir() \
+           and (self.webDir / 'webui').isdir():
             self.webDir /= 'webui'
         self.jsDir = Path(self.jsDir)
-        if not (self.jsDir/'scripts').isdir() \
-           and (self.jsDir/'jsui').isdir():
+        if not (self.jsDir / 'scripts').isdir() \
+           and (self.jsDir / 'jsui').isdir():
             self.jsDir /= 'jsui'
         # Find where the config file will be saved
         self.__setConfigPath()
@@ -302,7 +307,8 @@ class Config(object):
                     self.configParser.setdefault(sectionName,
                                                  optionName,
                                                  defaultVal)
-            # Logging can't really be changed from inside the program at the moment...
+            # Logging can't really be changed from inside the program at the
+            # moment...
             self.configParser.setdefault('logging', 'root', 'INFO')
 
     def __setConfigPath(self):
@@ -313,7 +319,7 @@ class Config(object):
         of directories where the configDir should be in order of preference.
         If no config files can be found in these dirs, it will
         force creation of the config file in the top dir
-        """ 
+        """
         # If there's an EXECONF environment variable, use it
         self.configPath = None
         configFileOptions = list(map(Path, self._getConfigPathOptions()))
@@ -349,14 +355,16 @@ class Config(object):
             if system.has_option('appDataDir'):
                 # Older config files had configDir stored as appDataDir
                 self.configDir = Path(system.appDataDir)
-                self.stylesDir = Path(self.configDir)/'style'
-                self.templatesDir = Path(self.configDir)/'content_template'
-                self.jsIdevicesDir = Path(self.configDir)/'scripts'/'idevices'
+                self.stylesDir = Path(self.configDir) / 'style'
+                self.templatesDir = Path(self.configDir) / 'content_template'
+                self.jsIdevicesDir = Path(
+                    self.configDir) / 'scripts' / 'idevices'
                 # We'll just upgrade their config file for them for now...
                 system.configDir = self.configDir
-                system.stylesDir = Path(self.configDir)/'style'
-                system.templatesDir = Path(self.configDir)/'content_template'
-                system.jsIdevicesDir = Path(self.configDir)/'scripts'/'idevices'
+                system.stylesDir = Path(self.configDir) / 'style'
+                system.templatesDir = Path(self.configDir) / 'content_template'
+                system.jsIdevicesDir = Path(
+                    self.configDir) / 'scripts' / 'idevices'
                 del system.appDataDir
 
                 self.audioMediaConverter_au = system.audioMediaConverter_au
@@ -396,22 +404,25 @@ class Config(object):
         if self.configParser.has_section('system'):
             system = self.configParser.system
 
-            self.port           = int(system.port)
-            self.browser        = None if system.browser == "None" else system.browser
+            self.port = int(system.port)
+            self.browser = None if system.browser == "None" else system.browser
             self.stylesRepository = system.stylesRepository
 
             if not G.application.portable:
-                self.dataDir        = Path(system.dataDir)
-                self.configDir      = Path(system.configDir)
-                self.webDir         = Path(system.webDir)
-                self.stylesDir      = Path(self.configDir)/'style'
-                self.templatesDir   = Path(self.configDir)/'content_template'
-                self.jsIdevicesDir  = Path(self.configDir)/'scripts'/'idevices'
-                self.jsDir          = Path(system.jsDir)
+                self.dataDir = Path(system.dataDir)
+                self.configDir = Path(system.configDir)
+                self.webDir = Path(system.webDir)
+                self.stylesDir = Path(self.configDir) / 'style'
+                self.templatesDir = Path(self.configDir) / 'content_template'
+                self.jsIdevicesDir = Path(
+                    self.configDir) / 'scripts' / 'idevices'
+                self.jsDir = Path(system.jsDir)
             else:
-                self.stylesDir      = Path(self.webDir/'style').abspath()
-                self.templatesDir   = Path(self.webDir/'content_template').abspath()
-                self.jsIdevicesDir  = Path(self.webDir/'scripts'/'idevices').abspath()
+                self.stylesDir = Path(self.webDir / 'style').abspath()
+                self.templatesDir = Path(
+                    self.webDir / 'content_template').abspath()
+                self.jsIdevicesDir = Path(
+                    self.webDir / 'scripts' / 'idevices').abspath()
 
             self.assumeMediaPlugins = False
             if self.configParser.has_option('system', 'assumeMediaPlugins'):
@@ -431,46 +442,65 @@ class Config(object):
 
         if not G.application.standalone:
             # FM: Copy styles
-            if not os.path.exists(self.stylesDir) or not os.listdir(self.stylesDir):
+            if not os.path.exists(
+                    self.stylesDir) or not os.listdir(
+                    self.stylesDir):
                 self.copyStyles()
             else:
                 self.updateStyles()
-                
+
             # Copy templates
-            if not os.path.exists(self.templatesDir) or not os.listdir(self.templatesDir):
+            if not os.path.exists(
+                    self.templatesDir) or not os.listdir(
+                    self.templatesDir):
                 self.copyTemplates()
             else:
                 self.updateTemplates()
 
             # Copy JavaScript Idevices
-            if not os.path.exists(self.jsIdevicesDir) or not os.listdir(self.jsIdevicesDir):
+            if not os.path.exists(
+                    self.jsIdevicesDir) or not os.listdir(
+                    self.jsIdevicesDir):
                 self.copy_js_idevices()
             else:
                 self.update_js_idevices()
         else:
             if G.application.portable:
                 if os.name == 'posix':
-                    self.stylesDir = Path(self.webDir/'..'/'..'/'..'/'style')
-                    self.templatesDir = Path(self.webDir/'..'/'..'/'..'/'content_template')
-                    self.jsIdevicesDir = Path(self.webDir/'..'/'..'/'..'/'scripts'/'idevices')
-                    
+                    self.stylesDir = Path(
+                        self.webDir / '..' / '..' / '..' / 'style')
+                    self.templatesDir = Path(
+                        self.webDir / '..' / '..' / '..' / 'content_template')
+                    self.jsIdevicesDir = Path(
+                        self.webDir / '..' / '..' / '..' / 'scripts' / 'idevices')
+
                 else:
-                    self.stylesDir = Path(self.webDir/'..'/'style')
-                    self.templatesDir = Path(self.webDir/'..'/'content_template')
-                    self.jsIdevicesDir = Path(self.webDir/'..'/'scripts'/'idevices')
-                
-                if not os.path.exists(self.stylesDir) or not os.listdir(self.stylesDir):
+                    self.stylesDir = Path(self.webDir / '..' / 'style')
+                    self.templatesDir = Path(
+                        self.webDir / '..' / 'content_template')
+                    self.jsIdevicesDir = Path(
+                        self.webDir / '..' / 'scripts' / 'idevices')
+
+                if not os.path.exists(
+                        self.stylesDir) or not os.listdir(
+                        self.stylesDir):
                     self.copyStyles()
-                    
-                if not os.path.exists(self.templatesDir) or not os.listdir(self.templatesDir):
+
+                if not os.path.exists(
+                        self.templatesDir) or not os.listdir(
+                        self.templatesDir):
                     self.copyTemplates()
 
-                if not os.path.exists(self.jsIdevicesDir) or not os.listdir(self.jsIdevicesDir):
+                if not os.path.exists(
+                        self.jsIdevicesDir) or not os.listdir(
+                        self.jsIdevicesDir):
                     self.copy_js_idevices()
             else:
-                self.stylesDir = Path(self.webDir/'style').abspath()
-                self.templatesDir = Path(self.webDir/'content_template').abspath()
-                self.jsIdevicesDir  = Path(self.webDir/'scripts'/'idevices').abspath()
+                self.stylesDir = Path(self.webDir / 'style').abspath()
+                self.templatesDir = Path(
+                    self.webDir / 'content_template').abspath()
+                self.jsIdevicesDir = Path(
+                    self.webDir / 'scripts' / 'idevices').abspath()
 
         # Get the list of recently opened projects
         self.recentProjects = []
@@ -479,8 +509,7 @@ class Config(object):
             # recentProjectsSection.items() is in the wrong order, keys are alright.
             # Sorting list by key before adding to self.recentProjects, to avoid wrong ordering
             # in Recent Projects menu list
-            recentProjectsItems = list(recentProjectsSection.items())
-            recentProjectsItems.sort()
+            recentProjectsItems = sorted(recentProjectsSection.items())
             for key, path in recentProjectsItems:
                 self.recentProjects.append(path)
 
@@ -526,7 +555,8 @@ class Config(object):
                 self.lastDir = self.configParser.user.lastDir
             if self.configParser.user.has_option('showPreferencesOnStart'):
                 self.showPreferencesOnStart = self.configParser.user.showPreferencesOnStart
-            if self.configParser.user.has_option('showNewVersionWarningOnStart'):
+            if self.configParser.user.has_option(
+                    'showNewVersionWarningOnStart'):
                 self.showNewVersionWarningOnStart = self.configParser.user.showNewVersionWarningOnStart
             if self.configParser.user.has_option('showIdevicesGrouped'):
                 self.showIdevicesGrouped = self.configParser.user.showIdevicesGrouped
@@ -560,27 +590,27 @@ class Config(object):
         setup logging file
         """
         try:
-            hdlr = RotatingFileHandler(self.configDir/'exe.log', 'a',
+            hdlr = RotatingFileHandler(self.configDir / 'exe.log', 'a',
                                        500000, 10)
             hdlr.doRollover()
         except OSError:
             # ignore the error we get if the log file is logged
-            hdlr = logging.FileHandler(self.configDir/'exe.log')
-
+            hdlr = logging.FileHandler(self.configDir / 'exe.log')
 
         format = "%(asctime)s %(name)s %(levelname)s %(message)s"
-        log    = logging.getLogger()
+        log = logging.getLogger()
         hdlr.setFormatter(logging.Formatter(format))
         log.addHandler(hdlr)
 
-        loggingLevels = {"DEBUG"    : logging.DEBUG,
-                         "INFO"     : logging.INFO,
-                         "WARNING"  : logging.WARNING,
-                         "ERROR"    : logging.ERROR,
-                         "CRITICAL" : logging.CRITICAL}
+        loggingLevels = {"DEBUG": logging.DEBUG,
+                         "INFO": logging.INFO,
+                         "WARNING": logging.WARNING,
+                         "ERROR": logging.ERROR,
+                         "CRITICAL": logging.CRITICAL}
 
         if self.configParser.has_section('logging'):
-            for logger, level in list(self.configParser._sections["logging"].items()):
+            for logger, level in list(
+                    self.configParser._sections["logging"].items()):
                 if logger == "root":
                     logging.getLogger().setLevel(loggingLevels[level])
                 else:
@@ -590,7 +620,8 @@ class Config(object):
             log.info("version     = %s" % version.version)
             log.info("configPath  = %s" % self.configPath)
             log.info("exePath     = %s" % self.exePath)
-            log.info("libPath     = %s" % Path(twisted.__path__[0]).splitpath()[0])
+            log.info("libPath     = %s" %
+                     Path(twisted.__path__[0]).splitpath()[0])
             log.info("browser     = %s" % self.browser)
             log.info("webDir      = %s" % self.webDir)
             log.info("jsDir       = %s" % self.jsDir)
@@ -611,7 +642,7 @@ class Config(object):
         for style in listStyles:
             self.styles.append(style)
             # print style
-            
+
     def loadTemplates(self):
         """
         Scans the eXe templates directory and builds a list of templates
@@ -620,7 +651,7 @@ class Config(object):
         self.templateStore.load()
 
     def copyStyles(self):
-        bkstyle = self.webDir/'style'
+        bkstyle = self.webDir / 'style'
         dststyle = self.stylesDir
         if os.path.exists(bkstyle):
             if os.path.exists(dststyle) and not os.listdir(self.stylesDir):
@@ -628,7 +659,7 @@ class Config(object):
             shutil.copytree(bkstyle, dststyle)
 
     def updateStyles(self):
-        bkstyle = self.webDir/'style'
+        bkstyle = self.webDir / 'style'
         dststyle = self.stylesDir
         if os.stat(bkstyle).st_mtime - os.stat(dststyle).st_mtime > 1:
             for name in os.listdir(bkstyle):
@@ -642,17 +673,19 @@ class Config(object):
                     shutil.copy(bksdirstyle, dstdirstyle)
 
     def copyTemplates(self):
-        template_backup = self.webDir/'content_template'
+        template_backup = self.webDir / 'content_template'
         dest_template = self.templatesDir
         if os.path.exists(template_backup):
-            if os.path.exists(dest_template) and not os.listdir(self.dest_template):
+            if os.path.exists(dest_template) and not os.listdir(
+                    self.dest_template):
                 shutil.rmtree(dest_template)
             shutil.copytree(template_backup, dest_template)
 
     def updateTemplates(self):
-        template_backup = self.webDir/'content_template'
+        template_backup = self.webDir / 'content_template'
         dest_template = self.templatesDir
-        if os.stat(template_backup).st_mtime - os.stat(dest_template).st_mtime > 1:
+        if os.stat(template_backup).st_mtime - \
+                os.stat(dest_template).st_mtime > 1:
             for name in os.listdir(template_backup):
                 current_template = os.path.join(template_backup, name)
                 current_dest_template = os.path.join(dest_template, name)
@@ -677,7 +710,9 @@ class Config(object):
         # Check if the path exists (if it doesn't there is nothing to be done)
         if os.path.exists(jsidevices_backup):
             # Remove the user's JsIdevices directory in case it exists
-            if os.path.exists(self.jsIdevicesDir) and not os.listdir(self.jsIdevicesDir):
+            if os.path.exists(
+                    self.jsIdevicesDir) and not os.listdir(
+                    self.jsIdevicesDir):
                 shutil.rmtree(self.jsIdevicesDir)
 
             # Copy the JsIdevices
@@ -695,8 +730,10 @@ class Config(object):
         # Get the path where the JsIdevices are
         jsidevices_backup = self.webDir / 'scripts' / 'idevices'
 
-        # Compare the directories' modification time to see if the update is necessary
-        if os.stat(jsidevices_backup).st_mtime - os.stat(self.jsIdevicesDir).st_mtime > 1:
+        # Compare the directories' modification time to see if the update is
+        # necessary
+        if os.stat(jsidevices_backup).st_mtime - \
+                os.stat(self.jsIdevicesDir).st_mtime > 1:
             # Go through all JsIdevices
             for name in os.listdir(jsidevices_backup):
                 # Copy the Idevice
@@ -720,7 +757,7 @@ class Config(object):
         log.debug("loadLocales")
         gettext.install('exe', self.localeDir, True)
         for subDir in self.localeDir.dirs():
-            if (subDir/'LC_MESSAGES'/'exe.mo').exists():
+            if (subDir / 'LC_MESSAGES' / 'exe.mo').exists():
                 self.locales[subDir.basename()] = \
                     gettext.translation('exe',
                                         self.localeDir,
@@ -729,6 +766,7 @@ class Config(object):
             self.locale = 'en'
         log.debug("loading locale %s" % self.locale)
         self.locales[self.locale].install(str=True)
-        __builtins__['c_'] = lambda s: self.locales[self.locale].ugettext(s) if s else s
+        __builtins__['c_'] = lambda s: self.locales[self.locale].ugettext(
+            s) if s else s
 
 # ===========================================================================

@@ -23,15 +23,15 @@ The EditorPage is responsible for managing user created iDevices
 """
 
 import logging
-from twisted.web.resource      import Resource
-from exe.webui                 import common
+from twisted.web.resource import Resource
+from exe.webui import common
 from exe.engine.genericidevice import GenericIdevice
-from exe.webui.editorpane      import EditorPane
-from exe.webui.renderable      import RenderableResource
-from exe.engine.package        import Package
-from exe.engine.path           import Path
-from exe.engine.field          import MultimediaField
-from html                       import escape
+from exe.webui.editorpane import EditorPane
+from exe.webui.renderable import RenderableResource
+from exe.engine.package import Package
+from exe.engine.path import Path
+from exe.engine.field import MultimediaField
+from html import escape
 
 log = logging.getLogger(__name__)
 
@@ -49,14 +49,15 @@ class EditorPage(RenderableResource):
         Initialize
         """
         RenderableResource.__init__(self, parent)
-        self.editorPane   = EditorPane(self.webServer, self)
-        self.url          = ""
-        self.elements     = []
+        self.editorPane = EditorPane(self.webServer, self)
+        self.url = ""
+        self.elements = []
         self.isNewIdevice = True
-        #JR: Anado esta variable para que los genericos no se puedan previsualizar
-        self.isGeneric    = False
-        self.message      = ""
-        
+        # JR: Anado esta variable para que los genericos no se puedan
+        # previsualizar
+        self.isGeneric = False
+        self.message = ""
+
     def getChild(self, name, request):
         """
         Try and find the child for the name given
@@ -66,14 +67,13 @@ class EditorPage(RenderableResource):
         else:
             return Resource.getChild(self, name, request)
 
-
     def process(self, request):
         """
-        Process current package 
+        Process current package
         """
         log.debug("process " + repr(request.args))
-        
-        self.editorPane.process(request,"old")
+
+        self.editorPane.process(request, "old")
 
         if "action" in request.args:
             if request.args["action"][0] == "changeIdevice":
@@ -85,7 +85,7 @@ class EditorPage(RenderableResource):
                             break
                     copyIdevice = self.editorPane.idevice.clone()
                     self.__saveChanges(idevice, copyIdevice)
-                
+
                 selected_idevice = request.args["object"][0].decode("utf-8")
 
                 self.isGeneric = False
@@ -94,19 +94,18 @@ class EditorPage(RenderableResource):
                         self.isGeneric = True
                         break
                 self.isNewIdevice = False
-                self.editorPane.setIdevice(idevice)               
+                self.editorPane.setIdevice(idevice)
                 self.editorPane.process(request, "new")
-                
-        
-        if (("action" in request.args and 
-             request.args["action"][0] == "newIdevice")
-            or "new" in request.args):
-            self.__createNewIdevice(request)
-            
 
-        if ("action" in request.args and request.args["action"][0] == "deleteIdevice"):
+        if (("action" in request.args and
+             request.args["action"][0] == "newIdevice")
+                or "new" in request.args):
+            self.__createNewIdevice(request)
+
+        if (
+                "action" in request.args and request.args["action"][0] == "deleteIdevice"):
             self.ideviceStore.delIdevice(self.editorPane.idevice)
-            #Lo borramos tambien de la lista factoryiDevices
+            # Lo borramos tambien de la lista factoryiDevices
             idevice = self.editorPane.idevice
             exist = False
             for i in self.ideviceStore.getFactoryIdevices():
@@ -118,24 +117,24 @@ class EditorPage(RenderableResource):
                 self.ideviceStore.factoryiDevices.remove(idevice)
             self.ideviceStore.save()
             self.message = _("Done")
-            self.__createNewIdevice(request) 
-            
-        if ("action" in request.args and 
-             request.args["action"][0] == "new"):
+            self.__createNewIdevice(request)
+
+        if ("action" in request.args and
+                request.args["action"][0] == "new"):
             if self.editorPane.idevice.title == "":
                 self.message = _("Please enter an idevice name.")
             else:
                 newIdevice = self.editorPane.idevice.clone()
-                #TODO could IdeviceStore set the id in addIdevice???
+                # TODO could IdeviceStore set the id in addIdevice???
                 newIdevice.id = self.ideviceStore.getNewIdeviceId()
                 self.ideviceStore.addIdevice(newIdevice)
                 self.editorPane.setIdevice(newIdevice)
                 self.ideviceStore.save()
                 self.message = _("Settings Saved")
                 self.isNewIdevice = False
-                
-        if ("action" in request.args and 
-             request.args["action"][0] == "save"): 
+
+        if ("action" in request.args and
+                request.args["action"][0] == "save"):
             genericIdevices = self.ideviceStore.generic
             for idevice in genericIdevices:
                 if idevice.title == self.editorPane.idevice.title:
@@ -144,18 +143,17 @@ class EditorPage(RenderableResource):
             self.__saveChanges(idevice, copyIdevice)
             self.ideviceStore.save()
             self.message = _("Settings Saved")
-            
-        if ("action" in request.args and 
-             request.args["action"][0] == "export"):          
+
+        if ("action" in request.args and
+                request.args["action"][0] == "export"):
             filename = request.args["pathpackage"][0]
             self.__exportIdevice(filename)
-            
-        if ("action" in request.args and 
-             request.args["action"][0] == "import"):
+
+        if ("action" in request.args and
+                request.args["action"][0] == "import"):
             filename = request.args["pathpackage"][0]
             self.__importIdevice(filename)
 
-            
     def __createNewIdevice(self, request):
         """
         Create a new idevice and add to idevicestore
@@ -164,44 +162,43 @@ class EditorPage(RenderableResource):
         idevice.icon = ""
         idevice.id = self.ideviceStore.getNewIdeviceId()
         self.editorPane.setIdevice(idevice)
-        self.editorPane.process(request, "new")      
+        self.editorPane.process(request, "new")
         self.isNewIdevice = True
-          
+
     def __saveChanges(self, idevice, copyIdevice):
         """
         Save changes to generic idevice list.
         """
-        idevice.title    = copyIdevice._title
-        idevice.author   = copyIdevice._author
-        idevice.purpose  = copyIdevice._purpose
-        idevice.tip      = copyIdevice._tip
-        idevice.fields   = copyIdevice.fields
+        idevice.title = copyIdevice._title
+        idevice.author = copyIdevice._author
+        idevice.purpose = copyIdevice._purpose
+        idevice.tip = copyIdevice._tip
+        idevice.fields = copyIdevice.fields
         idevice.emphasis = copyIdevice.emphasis
-        idevice.icon     = copyIdevice.icon
-        idevice.systemResources = copyIdevice.systemResources 
-        
+        idevice.icon = copyIdevice.icon
+        idevice.systemResources = copyIdevice.systemResources
+
     def __importIdevice(self, filename):
-        
         """
         import the idevices which are not existed in current package from another package
         """
-        try:       
+        try:
             newPackage = Package.load(filename)
-        except:
+        except BaseException:
             self.message = _("Sorry, wrong file format.")
             return
-        
-        if newPackage:   
+
+        if newPackage:
             newIdevice = newPackage.idevices[-1].clone()
             for currentIdevice in self.ideviceStore.generic:
                 if newIdevice.title == currentIdevice.title:
                     newIdevice.title += "1"
                     break
-            self.ideviceStore.addIdevice(newIdevice) 
+            self.ideviceStore.addIdevice(newIdevice)
             self.ideviceStore.save()
         else:
             self.message = _("Sorry, wrong file format.")
-        
+
     def __exportIdevice(self, filename):
         """
         export the current generic idevices.
@@ -212,17 +209,16 @@ class EditorPage(RenderableResource):
         package = Package(name)
         package.idevices.append(self.editorPane.idevice.clone())
         package.save(filename)
-        
-        
+
     def render_GET(self, request):
         """Called for all requests to this object"""
-        
-        # Processing 
+
+        # Processing
         log.debug("render_GET")
         self.process(request)
-        
+
         # Rendering
-        html  = common.docType()
+        html = common.docType()
         html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
         html += "<head>\n"
         html += "<style type=\"text/css\">\n"
@@ -235,42 +231,46 @@ class EditorPage(RenderableResource):
         html += '</script>\n'
         html += '<script type="text/javascript" src="/scripts/editor.js">'
         html += '</script>\n'
-        html += "<title>"+_("eXe : elearning XHTML editor")+"</title>\n"
+        html += "<title>" + _("eXe : elearning XHTML editor") + "</title>\n"
         html += "<meta http-equiv=\"content-type\" content=\"text/html; "
-        html += " charset=UTF-8\"></meta>\n";
+        html += " charset=UTF-8\"></meta>\n"
         html += "</head>\n"
         html += "<body>\n"
-        html += "<div id=\"main\"> \n"     
-        html += "<form method=\"post\" action=\""+self.url+"\" "
-        html += "id=\"contentForm\" >"  
+        html += "<div id=\"main\"> \n"
+        html += "<form method=\"post\" action=\"" + self.url + "\" "
+        html += "id=\"contentForm\" >"
         html += common.hiddenField("action")
         html += common.hiddenField("object")
-        html += common.hiddenField("isChanged", "1") 
+        html += common.hiddenField("isChanged", "1")
         if self.message != '':
-            html += "<script>Ext.Msg.alert('"+_('Info')+"', '"+self.message+"');</script>"
-        html += "<div id=\"editorButtons\"> \n"     
+            html += "<script>Ext.Msg.alert('" + _('Info') + \
+                "', '" + self.message + "');</script>"
+        html += "<div id=\"editorButtons\"> \n"
         html += self.renderList()
         html += self.editorPane.renderButtons(request)
         if self.isNewIdevice:
-            html += "<br/>" + common.submitButton("delete", _("Delete"), 
-                                                        False)
+            html += "<br/>" + common.submitButton("delete", _("Delete"),
+                                                  False)
         else:
-            html += '<br /><input type="button" class="button" onclick="deleteIdevice()" value="'+_("Delete")+'" />'
+            html += '<br /><input type="button" class="button" onclick="deleteIdevice()" value="' + \
+                _("Delete") + '" />'
         html += '<br/><input class="button" type="button" name="save" '
         title = "none"
-        if self.editorPane.idevice.edit == False:
+        if not self.editorPane.idevice.edit:
             title = self.editorPane.idevice.title
             title = title.replace(" ", "+")
-        html += 'onclick=saveIdevice("%s") value="%s"/>' % (escape(title), _("Save"))
-        html += '<br/><input class="button" type="button" name="import" ' 
-        html += ' onclick="importPackage(\'package\')" value="%s" />'  % _("Import iDevice")
+        html += 'onclick=saveIdevice("%s") value="%s"/>' % (
+            escape(title), _("Save"))
+        html += '<br/><input class="button" type="button" name="import" '
+        html += ' onclick="importPackage(\'package\')" value="%s" />' % _(
+            "Import iDevice")
         html += '<br/><input class="button" type="button" name="export" '
         html += 'onclick="exportPackage(\'package\',\'%d\')"' % self.isNewIdevice
-        html += ' value="%s" />'  % _("Export iDevice")
+        html += ' value="%s" />' % _("Export iDevice")
         html += '<br/><input class="button" type="button" name="quit" '
-        #html += u'onclick="parent.Ext.getCmp(\'ideviceeditorwin\').close()"'        
-        html += 'onclick="quitDialog()"'  
-        html += ' value="%s" />\n'  % _("Quit")
+        # html += u'onclick="parent.Ext.getCmp(\'ideviceeditorwin\').close()"'
+        html += 'onclick="quitDialog()"'
+        html += ' value="%s" />\n' % _("Quit")
         html += common.hiddenField("pathpackage")
         html += "</fieldset>"
         html += "</div>\n"
@@ -282,19 +282,18 @@ class EditorPage(RenderableResource):
         return html.encode('utf8')
     render_POST = render_GET
 
-
     def renderList(self):
         """
         Render the list of generic iDevice
         """
-        html  = "<fieldset><legend><b>" + _("Edit")+ "</b></legend>"
+        html = "<fieldset><legend><b>" + _("Edit") + "</b></legend>"
         html += '<select onchange="submitIdevice();" name="ideviceSelect" id="ideviceSelect">\n'
         html += "<option value = \"newIdevice\" "
         if self.isNewIdevice:
             html += "selected "
-        html += ">"+ _("New iDevice") + "</option>"
+        html += ">" + _("New iDevice") + "</option>"
         for prototype in self.ideviceStore.generic:
-            html += "<option value=\""+prototype.title+"\" "
+            html += "<option value=\"" + prototype.title + "\" "
             if self.editorPane.idevice.id == prototype.id:
                 html += "selected "
             title = prototype.title

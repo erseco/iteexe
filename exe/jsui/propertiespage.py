@@ -76,7 +76,7 @@ def _pass_field(fields, field, val):
     """
     ret = False
     if val.strip() == '':
-        #Entity Control
+        # Entity Control
         if re.findall("_entity[0-9]*_[name,organization,email]+$", field):
             field2 = field
             cnt = False
@@ -87,12 +87,21 @@ def _pass_field(fields, field, val):
             if not cnt:
                 ret = True
         else:
-            #Duration Control
-            if re.findall("_[duration,typicalLearningTime]+_[years,months,days,hours,minutes,seconds]+$", field):
+            # Duration Control
+            if re.findall(
+                "_[duration,typicalLearningTime]+_[years,months,days,hours,minutes,seconds]+$",
+                    field):
                 field2 = field
                 cnt = False
-                for r in ['years', 'months', 'days', 'hours', 'minutes', 'seconds']:
-                    a = re.sub('[years,months,days,hours,minutes,seconds]+$', r, field2)
+                for r in [
+                    'years',
+                    'months',
+                    'days',
+                    'hours',
+                    'minutes',
+                        'seconds']:
+                    a = re.sub(
+                        '[years,months,days,hours,minutes,seconds]+$', r, field2)
                     if a in list(fields.keys()) and fields[a][0].strip() != '':
                         cnt = True
                 if not cnt:
@@ -106,7 +115,7 @@ def _pass_field(fields, field, val):
 def processForm2Lom(fields, label, source):
     lomdict = {}
     for field in sorted(fields.keys()):
-        #print field
+        # print field
         val = fields[field]
         if not field.startswith('%s_' % label):
             continue
@@ -132,7 +141,7 @@ def processForm2Lom(fields, label, source):
                         index = 0
                     else:
                         index = get_nodeFromList(rootvalue[name], num)
-                        if  isinstance(index, bool):
+                        if isinstance(index, bool):
                             value = {'__numberid__': num}
                             index = len(rootvalue)
                 else:
@@ -148,7 +157,8 @@ def processForm2Lom(fields, label, source):
                             rootvalue[parentindex][node].append(value)
                         else:
                             if '__numberid__' in value:
-                                b = get_nodeFromList(rootvalue[parentindex][node], value['__numberid__'])
+                                b = get_nodeFromList(
+                                    rootvalue[parentindex][node], value['__numberid__'])
                                 if isinstance(b, bool):
                                     rootvalue[parentindex][node].append(value)
                     else:
@@ -162,7 +172,8 @@ def processForm2Lom(fields, label, source):
                             rootvalue[node].append(value)
                         else:
                             if '__numberid__' in value:
-                                b = get_nodeFromList(rootvalue[node], value['__numberid__'])
+                                b = get_nodeFromList(
+                                    rootvalue[node], value['__numberid__'])
                                 if isinstance(b, bool):
                                     rootvalue[node].append(value)
                     else:
@@ -179,7 +190,7 @@ def processForm2Lom(fields, label, source):
             for node in pnodes:
                 if node == 'source':
                     val = source
-                if  isinstance(rootvalue, list):
+                if isinstance(rootvalue, list):
                     if node.startswith('string'):
                         rootvalue = rootvalue[index]
                         rootvalue['valueOf_'] = val
@@ -201,10 +212,10 @@ def processForm2Lom(fields, label, source):
                         elif re.findall("_entity[0-9]*_[name,organization,email]+$", field):
                             rootparent[parentindex][node] = val
                             if 'name' in rootparent[parentindex] and 'organization' in rootparent[parentindex] and \
-                            'email' in rootparent[parentindex]:
+                                    'email' in rootparent[parentindex]:
                                 val2 = 'BEGIN:VCARD VERSION:3.0 FN:%s EMAIL;TYPE=INTERNET:%s ORG:%s END:VCARD' \
-                                % (rootparent[parentindex]['name'], rootparent[parentindex]['email'],
-                                   rootparent[parentindex]['organization'])
+                                    % (rootparent[parentindex]['name'], rootparent[parentindex]['email'],
+                                       rootparent[parentindex]['organization'])
                                 rootparent.pop(parentindex)
                                 rootparent.append(val2)
                         else:
@@ -216,18 +227,29 @@ def processForm2Lom(fields, label, source):
                             rootparent[node] = val
                             if 'name' in rootparent and 'organization' in rootparent and 'email' in rootparent:
                                 val2 = 'BEGIN:VCARD VERSION:3.0 FN:%s EMAIL;TYPE=INTERNET:%s ORG:%s END:VCARD' \
-                                % (rootparent['name'], rootparent['email'], rootparent['organization'])
+                                    % (rootparent['name'], rootparent['email'], rootparent['organization'])
                                 name, num = get_nameNum(nodes[len(nodes) - 3])
-                                parentindex = get_nodeFromList(rootparentparent, num)
+                                parentindex = get_nodeFromList(
+                                    rootparentparent, num)
                                 rootparentparent[parentindex]['entity'] = val2
                         elif re.findall("_[duration,typicalLearningTime]+_[years,months,days,hours,minutes,seconds]+$", field):
                             rootparent[node] = val
                             if 'years' in rootparent and 'months' in rootparent and 'days' in rootparent\
-                            and 'hours' in rootparent and 'minutes' in rootparent and 'seconds' in rootparent:
-                                val2 = 'P%sY%sM%sDT%sH%sM%sS' % (rootparent['years'] or '0', rootparent['months'] or '0', rootparent['days'] or '0',\
-                                                             rootparent['hours'] or '0', rootparent['minutes'] or '0', rootparent['seconds'] or '0')
+                                    and 'hours' in rootparent and 'minutes' in rootparent and 'seconds' in rootparent:
+                                val2 = 'P%sY%sM%sDT%sH%sM%sS' % (rootparent['years'] or '0',
+                                                                 rootparent['months'] or '0',
+                                                                 rootparent['days'] or '0',
+                                                                 rootparent['hours'] or '0',
+                                                                 rootparent['minutes'] or '0',
+                                                                 rootparent['seconds'] or '0')
                                 rootparent['duration'] = val2
-                                for key in ['years', 'months', 'days', 'hours', 'minutes', 'seconds']:
+                                for key in [
+                                    'years',
+                                    'months',
+                                    'days',
+                                    'hours',
+                                    'minutes',
+                                        'seconds']:
                                     del rootparent[key]
                         else:
                             rootparent[node] = val
@@ -249,8 +271,19 @@ class PropertiesPage(Renderable, Resource):
     """
     name = 'properties'
 
-    booleanFieldNames = ('pp_scolinks', 'pp_backgroundImgTile', 'pp_scowsinglepage', 'pp_scowwebsite', 'pp_exportSource',
-                         'pp_intendedEndUserRoleGroup', 'pp_intendedEndUserRoleTutor', 'pp_addPagination', 'pp_addSearchBox', 'pp_loadMathEngine', 'pp_addExeLink', 'pp_exportElp')
+    booleanFieldNames = (
+        'pp_scolinks',
+        'pp_backgroundImgTile',
+        'pp_scowsinglepage',
+        'pp_scowwebsite',
+        'pp_exportSource',
+        'pp_intendedEndUserRoleGroup',
+        'pp_intendedEndUserRoleTutor',
+        'pp_addPagination',
+        'pp_addSearchBox',
+        'pp_loadMathEngine',
+        'pp_addExeLink',
+        'pp_exportElp')
 
     imgFieldNames = ('pp_backgroundImg')
 
@@ -277,14 +310,22 @@ class PropertiesPage(Renderable, Resource):
                 obj = self.package.dublinCore
             if part == 'eo':
                 obj = self.package.exportOptions
-            if fieldId=='pp_scolinks':
+            if fieldId == 'pp_scolinks':
                 setattr(obj, name, False)
                 return obj, name
             if hasattr(obj, name):
                 return obj, name
             else:
                 # If attributes don't exist, initialize them with value 'False'
-                if fieldId in ['pp_scolinks','pp_scowsinglepage', 'pp_scowwebsite', 'pp_exportSource', 'pp_addSearchBox', 'pp_loadMathEngine', 'pp_addExeLink', 'pp_exportElp']:
+                if fieldId in [
+                    'pp_scolinks',
+                    'pp_scowsinglepage',
+                    'pp_scowwebsite',
+                    'pp_exportSource',
+                    'pp_addSearchBox',
+                    'pp_loadMathEngine',
+                    'pp_addExeLink',
+                        'pp_exportElp']:
                     setattr(obj, name, False)
                     return obj, name
 
@@ -321,22 +362,22 @@ class PropertiesPage(Renderable, Resource):
                             if getattr(obj, name):
                                 data[key] = getattr(obj, name).basename()
                         else:
-                            if name=='docType':
-                                data[key]=self.package.getExportDocType()
+                            if name == 'docType':
+                                data[key] = self.package.getExportDocType()
                             else:
-                                if name=='newlicense':
-                                    _a=getattr(obj, name)
-                                    if getattr(obj, name)=='':
-                                        data[key]=_(self.package.license)
+                                if name == 'newlicense':
+                                    _a = getattr(obj, name)
+                                    if getattr(obj, name) == '':
+                                        data[key] = _(self.package.license)
                                     else:
-                                        data[key]=getattr(obj, name)
+                                        data[key] = getattr(obj, name)
                                 else:
                                     data[key] = getattr(obj, name)
 
-
         except Exception as e:
             log.exception(e)
-            return json.dumps({'success': False, 'errorMessage': _("Failed to get properties")})
+            return json.dumps({'success': False,
+                               'errorMessage': _("Failed to get properties")})
         return json.dumps({'success': True, 'data': data})
 
     def render_POST(self, request=None):
@@ -385,13 +426,14 @@ class PropertiesPage(Renderable, Resource):
                                     if getattr(obj, name).basename() != path:
                                         setattr(obj, name, None)
                         else:
-                            #if name=='docType': common.setExportDocType(toUnicode(value[0]))
+                            # if name=='docType': common.setExportDocType(toUnicode(value[0]))
 
                             setattr(obj, name, toUnicode(value[0]))
 
         except Exception as e:
             log.exception(e)
-            return json.dumps({'success': False, 'errorMessage': _("Failed to save properties")})
+            return json.dumps({'success': False,
+                               'errorMessage': _("Failed to save properties")})
 
         if not self.package.isTemplate or not lang_only:
             self.package.isChanged = True

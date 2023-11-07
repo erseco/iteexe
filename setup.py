@@ -29,6 +29,7 @@ g_files = {
     '/usr/share/pixmaps': ["exe.xpm"]
 }
 
+
 def dataFiles(dirs, excludes=[]):
     """
     Recursively get all the files in these 'dirs' directories
@@ -40,7 +41,8 @@ def dataFiles(dirs, excludes=[]):
     # Go throught all files
     for file in dirs:
         # This will prevent it from copying hidden or excluded files
-        if not os.path.basename(file[0]).startswith(".") and file not in excludes:
+        if not os.path.basename(file[0]).startswith(
+                ".") and file not in excludes:
             #  If it is a file
             if os.path.isfile(file):
                 # If there is source dir
@@ -67,6 +69,7 @@ def dataFiles(dirs, excludes=[]):
             elif os.path.isdir(file):
                 # Call this function with the subdirectory
                 dataFiles(glob.glob(file + "/*"), excludes)
+
 
 # Source dir
 g_oldBase = "exe/webui"

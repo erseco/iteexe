@@ -27,37 +27,37 @@ WebServer module
 """
 
 # Redirect std err for importing twisted and nevow
+import logging
+from exe.webui.templatemanagerpage import TemplateManagerPage
+from exe import globals as G
+from exe.webui.oauthpage import OauthPage
+from exe.webui.session import eXeSite
+from exe.webui.dirtree import DirTreePage
+from exe.webui.xliffimportpreferencespage import XliffImportPreferencesPage
+from exe.webui.renderable import File
+from exe.webui.iecmwarning import IECMWarningPage
+from exe.webui.quitpage import QuitPage
+from exe.webui.legalpage import LegalPage
+from exe.webui.styledesigner import StyleDesigner
+from exe.webui.releasenotespage import ReleaseNotesPage
+from exe.webui.aboutpage import AboutPage
+from exe.webui.preferencespage import PreferencesPage
+from exe.webui.stylemanagerpage import StyleManagerPage
+from exe.webui.editorpage import EditorPage
 import sys
 from io import StringIO
 sys.stderr, oldStdErr = StringIO(), sys.stderr
 sys.stdout, oldStdOut = StringIO(), sys.stdout
 try:
-    from twisted.internet              import reactor
-    from twisted.internet.error        import CannotListenError
+    from twisted.internet import reactor
+    from twisted.internet.error import CannotListenError
     from exe.webui.packageredirectpage import PackageRedirectPage
 finally:
     sys.stderr = oldStdErr
     sys.stdout = oldStdOut
-from exe.webui.editorpage          import EditorPage
-from exe.webui.stylemanagerpage    import StyleManagerPage
-from exe.webui.preferencespage     import PreferencesPage
-from exe.webui.aboutpage           import AboutPage
-from exe.webui.releasenotespage    import ReleaseNotesPage
-from exe.webui.styledesigner import StyleDesigner
 # jrf - legal notes
-from exe.webui.legalpage import LegalPage
-from exe.webui.quitpage            import QuitPage
-from exe.webui.iecmwarning         import IECMWarningPage
-from exe.webui.renderable          import File
-from exe.webui.xliffimportpreferencespage import XliffImportPreferencesPage
-from exe.webui.dirtree import DirTreePage
-from exe.webui.session import eXeSite
-from exe.webui.oauthpage import OauthPage
-from exe import globals as G
 
-from exe.webui.templatemanagerpage import TemplateManagerPage
 
-import logging
 log = logging.getLogger(__name__)
 
 
@@ -66,6 +66,7 @@ class WebServer:
     Encapsulates some twisted components to serve
     all webpages, scripts and nevow functionality
     """
+
     def __init__(self, application, packagePath=None):
         """
         Initialize
@@ -89,7 +90,7 @@ class WebServer:
         self.oauth = OauthPage(self.root)
         self.monitoring = False
         self.invalidPackageName = []
-        self.templatemanager = TemplateManagerPage(self.root)               
+        self.templatemanager = TemplateManagerPage(self.root)
 
     def find_port(self):
         """
@@ -117,17 +118,17 @@ class WebServer:
             test_port_num = self.config.port + test_port_count
             try:
                 log.debug("find_port(): trying to listenTCP on port# %d",
-                        test_port_num)
-                reactor.listenTCP(test_port_num, 
+                          test_port_num)
+                reactor.listenTCP(test_port_num,
                                   eXeSite(self.root),
                                   interface="127.0.0.1")
-                log.debug("find_port(): still here without exception " \
-                           "after listenTCP on port# %d", test_port_num)
+                log.debug("find_port(): still here without exception "
+                          "after listenTCP on port# %d", test_port_num)
                 found_port = 1
                 port_test_done = 1
             except CannotListenError as exc:
-                log.debug("find_port(): caught exception after listenTCP " \
-                         + "on port# %d, exception = %s", test_port_num, exc)
+                log.debug("find_port(): caught exception after listenTCP "
+                          + "on port# %d, exception = %s", test_port_num, exc)
                 last_exception = exc
                 test_port_count += 1
                 if test_port_count >= max_port_tests:
@@ -135,19 +136,19 @@ class WebServer:
 
         if found_port:
             self.config.port = test_port_num
-            log.info("find_port(): found available eXe port# %d", 
-                      self.config.port)
+            log.info("find_port(): found available eXe port# %d",
+                     self.config.port)
         else:
             self.config.port = -1
             if found_other_eXe:
-                log.error("find_port(): found another eXe server running " \
-                            + "on port# %d; only one eXe server allowed " \
+                log.error("find_port(): found another eXe server running "
+                          + "on port# %d; only one eXe server allowed "
                             + "to run at a time", test_port_num)
             else:
-                log.error("find_port(): Can't listen on interface 127.0.0.1"\
-                        + ", ports %s-%s, last exception: %s" % \
-                         (self.config.port, test_port_num,  \
-                          str(last_exception)))
+                log.error("find_port(): Can't listen on interface 127.0.0.1"
+                          + ", ports %s-%s, last exception: %s" %
+                          (self.config.port, test_port_num,
+                           str(last_exception)))
 
     def run(self):
         """
@@ -168,10 +169,10 @@ class WebServer:
         self.root.putChild("docs", File(webDir + "/docs"))
         self.invalidPackageName.append("docs")
         self.root.putChild("temp_print_dirs",
-                              File(self.tempWebDir + "/temp_print_dirs"))
+                           File(self.tempWebDir + "/temp_print_dirs"))
         self.invalidPackageName.append("temp_print_dirs")
         self.root.putChild("previews",
-                              File(self.tempWebDir + "/previews"))
+                           File(self.tempWebDir + "/previews"))
         self.invalidPackageName.append("previews")
         self.root.putChild("templates", File(webDir + "/templates"))
         self.invalidPackageName.append("templates")
@@ -189,8 +190,8 @@ class WebServer:
             log.info("run() using eXe port# %d", self.config.port)
             reactor.run()
         else:
-            log.error("ERROR: webserver's run() called, but a valid port " \
-                    + "was not available.")
+            log.error("ERROR: webserver's run() called, but a valid port "
+                      + "was not available.")
 
     def monitor(self):
         if self.monitoring:
@@ -199,5 +200,6 @@ class WebServer:
                     if mainpage.clientHandleFactory.clientHandles:
                         reactor.callLater(10, self.monitor)
                         return
-            G.application.config.configParser.set('user', 'lastDir', G.application.config.lastDir)
+            G.application.config.configParser.set(
+                'user', 'lastDir', G.application.config.lastDir)
             reactor.stop()

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org
 #
@@ -21,11 +21,13 @@
 RssBlock can render and process RssIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.rssidevice import RssIdevice
 import re
 import logging
-from exe.webui.block    import Block
-from exe.webui          import common
-from exe.webui.element  import TextAreaElement
+from exe.webui.block import Block
+from exe.webui import common
+from exe.webui.element import TextAreaElement
 from exe.engine.idevice import Idevice
 
 log = logging.getLogger(__name__)
@@ -36,23 +38,23 @@ class RssBlock(Block):
     """
     RssBlock can render and process RssIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize
         """
         Block.__init__(self, parent, idevice)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.rss.idevice is None: 
+        if idevice.rss.idevice is None:
             idevice.rss.idevice = idevice
 
         self.rssElement = TextAreaElement(idevice.rss)
         self.rssElement.height = 300
 
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -62,38 +64,38 @@ class RssBlock(Block):
         log.debug("process " + repr(request.args))
 
         is_cancel = common.requestHasCancel(request)
-        
-        if 'emphasis'+self.id in request.args \
-        and not is_cancel:
-            self.idevice.emphasis = int(request.args['emphasis'+self.id][0])
-            
-        if 'site'+self.id in request.args \
-        and not is_cancel:
-            self.idevice.site = request.args['site'+self.id][0]
 
-        if 'title'+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args['title'+self.id][0]
-            
+        if 'emphasis' + self.id in request.args \
+                and not is_cancel:
+            self.idevice.emphasis = int(request.args['emphasis' + self.id][0])
+
+        if 'site' + self.id in request.args \
+                and not is_cancel:
+            self.idevice.site = request.args['site' + self.id][0]
+
+        if 'title' + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args['title' + self.id][0]
+
         if "url" + self.id in request.args \
-        and not is_cancel:
-            self.idevice.url = request.args['url'+ self.id][0]
+                and not is_cancel:
+            self.idevice.url = request.args['url' + self.id][0]
 
-        if 'loadRss'+self.id in request.args \
-        and not is_cancel:
+        if 'loadRss' + self.id in request.args \
+                and not is_cancel:
             # disable Undo once a question has been added:
             self.idevice.undo = False
-            self.idevice.loadRss(request.args['url'+ self.id][0])
+            self.idevice.loadRss(request.args['url' + self.id][0])
         else:
             Block.process(self, request)
             if ("action" not in request.args or
-                request.args["action"][0] != "delete"):
+                    request.args["action"][0] != "delete"):
                 # If the text has been changed
                 self.rssElement.process(request)
             if "action" in request.args \
-            and request.args["action"][0] == "done":
+                    and request.args["action"][0] == "done":
                 # remove the undo flag in order to reenable it next time:
-                if hasattr(self.idevice,'undo'): 
+                if hasattr(self.idevice, 'undo'):
                     del self.idevice.undo
 
     def renderEdit(self, style):
@@ -102,31 +104,30 @@ class RssBlock(Block):
         """
         log.debug("renderEdit")
 
-        html  = "<div class=\"iDevice\"><br/>\n"
+        html = "<div class=\"iDevice\"><br/>\n"
         html += common.textInput("title" + self.id, self.idevice.title)
 
         html += '<br/><br/>RSS URL ' + common.textInput("url" + self.id,
                                                         self.idevice.url)
-        html += common.submitButton("loadRss"+self.id, _("Load"))
+        html += common.submitButton("loadRss" + self.id, _("Load"))
         html += common.elementInstruc(self.idevice.urlInstruc)
         html += "<br/>\n"
         html += self.rssElement.renderEdit()
-        emphasisValues = [(_("No emphasis"),     Idevice.NoEmphasis),
-                          (_("Some emphasis"),   Idevice.SomeEmphasis)]
-        
+        emphasisValues = [(_("No emphasis"), Idevice.NoEmphasis),
+                          (_("Some emphasis"), Idevice.SomeEmphasis)]
+
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
             this_package = self.idevice.parentNode.package
         html += common.formField('select', this_package, _('Emphasis'),
-                                 'emphasis', self.id, 
-                                 '', # TODO: Instructions
+                                 'emphasis', self.id,
+                                 '',  # TODO: Instructions
                                  emphasisValues,
                                  self.idevice.emphasis)
 
         html += self.renderEditButtons(undo=self.idevice.undo)
         html += "</div>\n"
         return html
-
 
     def renderPreview(self, style):
         """
@@ -137,12 +138,11 @@ class RssBlock(Block):
         html += self.rssElement.renderPreview()
         html += common.ideviceFooter(self, style, "preview")
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """        
+        """
         log.debug("renderView")
         content = self.rssElement.renderView()
         content = re.sub(r'src="/.*?/resources/', 'src="', content)
@@ -150,10 +150,8 @@ class RssBlock(Block):
         html += content
         html += common.ideviceFooter(self, style, "view")
         return html
-    
 
-from exe.engine.rssidevice  import RssIdevice
-from exe.webui.blockfactory import g_blockFactory
-g_blockFactory.registerBlockType(RssBlock, RssIdevice)    
+
+g_blockFactory.registerBlockType(RssBlock, RssIdevice)
 
 # ===========================================================================

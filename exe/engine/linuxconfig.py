@@ -43,8 +43,8 @@ class LinuxConfig(Config):
         """
         # Override the default settings
         if Path("/usr/share/exe").isdir():
-            self.webDir      = Path("/usr/share/exe")
-            self.jsDir       = Path("/usr/share/exe")
+            self.webDir = Path("/usr/share/exe")
+            self.jsDir = Path("/usr/share/exe")
 
             # 'usr/share/exe/locale/' breaks the FHS - jrf
             # jrf - experimental
@@ -54,15 +54,15 @@ class LinuxConfig(Config):
             self.mediaProfilePath = Path("/usr/share/exe/mediaprofiles")
         # In you don't have the application installed
         elif Path("exe").isdir():
-            self.webDir     = Path("exe")
+            self.webDir = Path("exe")
         elif Path("../exe").isdir():
-            self.webDir     = Path("../exe")
+            self.webDir = Path("../exe")
 
-        self.dataDir      = Path(os.environ['HOME'])
-        self.configDir    = Path(self.dataDir)/'.exe'
-        self.stylesDir    = Path(self.configDir)/'style'
-        self.templatesDir = Path(self.configDir)/'content_template'
-        self.lastDir      = Path(os.environ['HOME'])
+        self.dataDir = Path(os.environ['HOME'])
+        self.configDir = Path(self.dataDir) / '.exe'
+        self.stylesDir = Path(self.configDir) / 'style'
+        self.templatesDir = Path(self.configDir) / 'content_template'
+        self.lastDir = Path(os.environ['HOME'])
 
         # Media converters - defaults for now
         self.videoMediaConverter_ogv = ""
@@ -78,9 +78,9 @@ class LinuxConfig(Config):
         """
         Returns the best places for a linux config file
         """
-        return [Path(os.environ["HOME"])/'.exe/exe.conf',
+        return [Path(os.environ["HOME"]) / '.exe/exe.conf',
                 Path('/etc/exe/exe.conf'),
-                self.webDir/'exe.conf']
+                self.webDir / 'exe.conf']
 
 
 # ===========================================================================

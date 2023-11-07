@@ -31,9 +31,15 @@ import logging
 
 log = logging.getLogger(__name__)
 
-x_ = lambda s: s
-fakeTranslate = [x_('INTEF with horizontal menu')]  # Unused var to add translatable style menu strings to pybabel
+
+def x_(s): return s
+
+
+# Unused var to add translatable style menu strings to pybabel
+fakeTranslate = [x_('INTEF with horizontal menu')]
 # ===========================================================================
+
+
 class TemplateMenu(Renderable, Resource):
     """
     TemplateMenu provides a list of Styles used in eXe and handle related client events
@@ -58,7 +64,8 @@ class TemplateMenu(Renderable, Resource):
         log.debug("render")
 
         l = []
-        printableTemplates = [(x.name, x.path) for x in self.config.templateStore.getTemplates()]
+        printableTemplates = [(x.name, x.path)
+                              for x in self.config.templateStore.getTemplates()]
 
         def sortfunc(s1, s2):
             return locale.strcoll(s1[0], s2[0])
@@ -66,19 +73,23 @@ class TemplateMenu(Renderable, Resource):
         printableTemplates.sort(sortfunc)
         for printableTemplate, template in printableTemplates:
             if printableTemplate != self.config.defaultContentTemplate:
-                l.append({ "label": printableTemplate, "template": template})
+                l.append({"label": printableTemplate, "template": template})
         return json.dumps(l).encode('utf-8')
 
     def addTemplate(self, template):
         """
         Adds an Template to the list
         """
-        self.client.sendScript('eXe.app.getController("Toolbar").templatesRender()', filter_func=allSessionClients)
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").templatesRender()',
+            filter_func=allSessionClients)
 
     def delTemplate(self, template):
         """
         Delete an Template to the list
         """
-        self.client.sendScript('eXe.app.getController("Toolbar").templatesRender()', filter_func=allSessionClients)
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").templatesRender()',
+            filter_func=allSessionClients)
 
 # ===========================================================================

@@ -8,6 +8,7 @@ from nevow import inevow
 from nevow import compy
 from nevow.context import WovenContext
 
+
 class Configurable(object):
     __implements__ = IConfigurable,
 
@@ -18,7 +19,7 @@ class Configurable(object):
         self.boundTo = self
 
     def getBindingNames(self, context):
-        ## Todo: remove this getattr
+        # Todo: remove this getattr
         ifs = compy.getInterfaces(getattr(self, 'boundTo', self))
         ifs = [
             x for x in ifs if x is not IConfigurable and x is not TypedInterface
@@ -26,8 +27,8 @@ class Configurable(object):
         bindingNames = []
         self.bindingDict = bindingDict = {}
         for interface in ifs:
-            ## TypedInterfaces have a __spec__ attribute which is a list of all Typed properties and
-            ## autocallable methods
+            # TypedInterfaces have a __spec__ attribute which is a list of all Typed properties and
+            # autocallable methods
             for binding in getattr(interface, '__spec__', []):
                 bindingDict[binding.name] = binding
                 if binding.name not in bindingNames:
@@ -41,15 +42,16 @@ class Configurable(object):
         return bindingNames
 
     def getDefault(self, forBinding):
-        ## TODO: Clean this up, it's a mess
+        # TODO: Clean this up, it's a mess
         if not isinstance(forBinding, Argument):
             name = forBinding.name
             if hasattr(self, name):
                 return getattr(self, name)
-            ## Todo: Only do this in ConfigurableAdapter instead of Configurable
+            # Todo: Only do this in ConfigurableAdapter instead of Configurable
             if hasattr(self.boundTo, name):
                 return getattr(self.boundTo, name)
-            if self.original is not self.boundTo and hasattr(self.original, name):
+            if self.original is not self.boundTo and hasattr(
+                    self.original, name):
                 return getattr(self.original, name)
         return forBinding.default
 
@@ -58,14 +60,24 @@ class Configurable(object):
             self.getBindingNames(context)
         if self.bindingDict is None:
             self.bindingDict = {}
-        binding = getattr(self, 'bind_%s' % name, getattr(self.boundTo, 'bind_%s' % name, None))
+        binding = getattr(
+            self,
+            'bind_%s' %
+            name,
+            getattr(
+                self.boundTo,
+                'bind_%s' %
+                name,
+                None))
         if binding is not None:
             binding = binding(context)
         else:
             try:
                 binding = self.bindingDict[name]
             except KeyError:
-                raise RuntimeError("%s is not an exposed binding on object %s." % (name, self.boundTo))
+                raise RuntimeError(
+                    "%s is not an exposed binding on object %s." %
+                    (name, self.boundTo))
         binding.boundTo = self.boundTo
         return binding
 
@@ -82,14 +94,14 @@ class Configurable(object):
         configurable = self
 
         cf = ctx.locate(iformless.IConfigurableFactory)
-        ## Get the first binding
+        # Get the first binding
         firstSeg = pathSegs.pop(0)
         binding = configurable.getBinding(ctx, firstSeg)
         ctx.remember(binding, IBinding)
         ctx.remember(configurable, IConfigurable)
-        ## I don't think this works right now, it needs to be fixed.
-        ## Most cases it won't be triggered, because we're just traversing a
-        ## single binding name
+        # I don't think this works right now, it needs to be fixed.
+        # Most cases it won't be triggered, because we're just traversing a
+        # single binding name
         for seg in pathSegs:
             assert 1 == 0, "Sorry, this doesn't work right now"
             binding = configurable.getBinding(ctx, seg)
@@ -100,11 +112,13 @@ class Configurable(object):
                     child = getattr(configurable.boundTo, binding.name)
                 else:
                     child = accessor.child(ctx, binding.name)
-            ## If it's a groupbinding, we don't do anything at all for this path segment
-            
-            ## This won't work right now. We need to push the previous configurable
-            ## as the configurableFactory somehow and ask that for hte next binding
-            ## we also need to support deferreds coming back from locateConfigurable
+            # If it's a groupbinding, we don't do anything at all for this path
+            # segment
+
+            # This won't work right now. We need to push the previous configurable
+            # as the configurableFactory somehow and ask that for hte next binding
+            # we also need to support deferreds coming back from
+            # locateConfigurable
             assert 'black' is 'white', "Deferred support is pending"
             configurable = cf.locateConfigurable(ctx, child)
             ctx = WovenContext(ctx, invisible(key=seg))
@@ -169,5 +183,3 @@ class GroupConfigurable(TypedInterfaceConfigurable):
                 for action in acts:
                     bindingDict[action.name] = action
         return bindingNames
-
-

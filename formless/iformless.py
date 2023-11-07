@@ -3,25 +3,29 @@
 
 from zope.interface import Interface, Attribute
 
+
 class ITyped(Interface):
     """
     Typeds correspond roughly to <input> tags in HTML, or with a complex type,
     more than one <input> tag whose input is processed and coerced as a unit.
     """
-    
+
     label = Attribute("""The short label which will describe this
                          parameter/properties purpose to the user.""")
 
-    description = Attribute("""A long description which further describes the sort
+    description = Attribute(
+        """A long description which further describes the sort
                                of input the user is expected to provide.""")
 
-    default = Attribute("""A default value that may be used as an initial value in
+    default = Attribute(
+        """A default value that may be used as an initial value in
                            the form.""")
 
-    complexType = Attribute("""Whether or not this Typed is a "simple" type and the 
-                               infrastructure should render label, description, and 
-                               error UI automatically, or this type is "complex" in 
-                               which case it will be required to render all UI 
+    complexType = Attribute(
+        """Whether or not this Typed is a "simple" type and the
+                               infrastructure should render label, description, and
+                               error UI automatically, or this type is "complex" in
+                               which case it will be required to render all UI
                                including UI which is normally common to all Typed UI.
                                This MAY BE DEPRECATED if a better implementation is
                                devised.""")
@@ -29,9 +33,9 @@ class ITyped(Interface):
     def coerce(self, val, configurable):
         """
         Coerce the input 'val' from a string into a value suitable for the type
-        described by the implementor. If coercion fails, coerce should raise 
-        InputError with a suitable error message to be shown to the user. 
-        'configurable' is the configurable object in whose context the coercion 
+        described by the implementor. If coercion fails, coerce should raise
+        InputError with a suitable error message to be shown to the user.
+        'configurable' is the configurable object in whose context the coercion
         is taking place. May return a Deferred.
         """
 
@@ -42,42 +46,42 @@ class IBinding(Interface):
     instance. At the most basic level, Binding instances represent named
     python properties and methods.
     """
-    
+
     default = Attribute("""The default value for this binding.""")
-    
+
     def getArgs(self):
         """Return a copy of this bindings Typed instances; if this binding is a
         Property binding, it will be a list of one Typed instance; if this binding is a
         MethodBinding, it will be a list of all the Typed instances describing
         the method's arguments.
-        
-        These copies are used during the duration of a form post (initial 
-        rendering, form posting, error handling and error correction) to 
+
+        These copies are used during the duration of a form post (initial
+        rendering, form posting, error handling and error correction) to
         store the user-entered values temporarily in the case of an error
         in one or more input values.
         """
-    
+
     def getViewName(self):
         """Todo: remove?
         """
-    
+
     def configure(self, boundTo, results):
         """Configure the object "boundTo" in the manner appropriate
         to this Binding; if this binding represents a property, set the
         property; if this binding represents a method, call the method.
         """
-    
+
     def coerce(self, val, configurable):
         """TODO This is dumb. remove it and leave it on ITyped
-        
+
         Make the code that calls coerce call it on the typed directly
         """
-
 
 
 class IInputProcessor(Interface):
     """handle a post for a given binding
     """
+
     def process(self, context, boundTo, data):
         """do something to boundTo in response to some data
 
@@ -85,7 +89,7 @@ class IInputProcessor(Interface):
         """
 
 
-## Freeform interfaces
+# Freeform interfaces
 
 class IConfigurableFactory(Interface):
     """A configurable factory is used to find and/or create configurables.
@@ -95,6 +99,7 @@ class IConfigurableFactory(Interface):
        about the types of objects needed to allow the user to change
        the object as long as the input is validated
     """
+
     def locateConfigurable(self, context, name):
         """Return the configurable that responds to the name.
         """
@@ -108,6 +113,7 @@ class IConfigurableKey(Interface):
 class IFormDefaults(Interface):
     """Default values for the current form
     """
+
     def setDefault(self, key, value, context=None):
         """Sets the 'key' parameter to the default 'value'
         """
@@ -118,7 +124,7 @@ class IFormDefaults(Interface):
 
     def getAllDefaults(self, key):
         """Gets the defaults dict for the 'key' autocallable
-        
+
         >>> class IMyForm(annotate.TypedInterface):
         ...     def doSomething(self, name=annotate.String()):
         ...         pass
@@ -126,7 +132,7 @@ class IFormDefaults(Interface):
         >>> class Page(rend.Page):
         ...     __implements__ = rend.Page.__implements__, IMyForm
         ...     docFactory = loaders.stan(t.html[t.head[t.title['foo']],t.body[render_forms]])
-        ...     
+        ...
         ...     def render_forms(self, ctx, data):
         ...         defaults_dict = iformless.IFormDefaults(ctx).getAllDefaults('doSomething')
         ...         defaults_dict['name'] = 'fooo'
@@ -134,8 +140,9 @@ class IFormDefaults(Interface):
         """
 
     def clearAll(self):
-        """Clears all the default values 
+        """Clears all the default values
         """
+
 
 class IFormErrors(Interface):
     """An object which keeps track of which forms have which errors
@@ -186,7 +193,7 @@ class IRedirectAfterPost(Interface):
     """
 
 
-## Configurable interfaces
+# Configurable interfaces
 
 class IAutomaticConfigurable(Interface):
     """An object is said to implement IAutomaticConfigurable if
@@ -202,12 +209,13 @@ class IConfigurable(Interface):
     of the type for which it is registered, provides properties
     which will get and set properties of the adaptee, and methods
     which will perform operations on the adaptee when called.
-    
+
     Web Specific Note: When you implement this interface, you should
     subclass freeform.Configurable instead of implementing directly,
     since it contains convenience functionality which eases implementing
     IConfigurable.
     """
+
     def getBindingNames(self, context):
         """Return a list of binding names which are the names of all
         the forms which will be rendered for this object when this
@@ -225,8 +233,8 @@ class IConfigurable(Interface):
         object.
         """
 
-    postLocation = Attribute("""The location of this object in the URL. Forms described by bindings returned from getBindingNames will be posted to postLocation + '/freeform_post!' + bindingName""")
-
+    postLocation = Attribute(
+        """The location of this object in the URL. Forms described by bindings returned from getBindingNames will be posted to postLocation + '/freeform_post!' + bindingName""")
 
     def __adapt__(other, default=None):
         from formless.annotate import TypedInterface
@@ -238,15 +246,14 @@ class IConfigurable(Interface):
         return default
 
 
-
-
-## Under consideration for deprecation
+# Under consideration for deprecation
 
 
 class IActionableType(Interface):
     """A type which can have action methods associated with it.
     Currently only List. Probably can be extended to more things.
     """
+
     def attachActionBindings(self, possibleActions):
         """Attach some MethodBinding instances if they are actions
         for this ActionableType.
@@ -256,4 +263,3 @@ class IActionableType(Interface):
         """Return a list of the MethodBinding instances which represent
         actions which may be taken on this ActionableType.
         """
-

@@ -19,16 +19,21 @@ from nevow.compy import registerAdapter
 from formless import iformless
 
 # Updated count class with Python 3 syntax for iterators
+
+
 class count:
     def __init__(self):
         self.id = 0
+
     def __next__(self):
         self.id += 1
         return self.id
 
-    # Adding the next function to make the class compatible with Python 2's next() function
+    # Adding the next function to make the class compatible with Python 2's
+    # next() function
     def next(self):
         return self.__next__()
+
 
 # Instantiating count and getting the nextId function
 counter = count()
@@ -39,9 +44,10 @@ class InputError(Exception):
     """A Typed instance was unable to coerce from a string to the
     appropriate type.
     """
+
     def __init__(self, reason):
         self.reason = reason
-    
+
     def __str__(self):
         return self.reason
 
@@ -52,7 +58,7 @@ class ValidateError(Exception):
 
     One use of this is to raise from an autocallable if an input is invalid.
     For example, a password is incorrect.
-    
+
     errors must be a dictionary mapping argument names to error messages
     to display next to the arguments on the form.
 
@@ -62,6 +68,7 @@ class ValidateError(Exception):
     partialForm is a dict mapping argument name to argument value, allowing
     you to have the form save values that were already entered in the form.
     """
+
     def __init__(self, errors, formErrorMessage=None, partialForm=None):
         self.errors = errors
         self.formErrorMessage = formErrorMessage
@@ -74,18 +81,17 @@ class ValidateError(Exception):
         return self.formErrorMessage
 
 
-
 class Typed(object):
     """A typed value. Subclasses of Typed are constructed inside of
     TypedInterface class definitions to describe the types of properties,
     the parameter types to method calls, and method return types.
-    
+
     @ivar label: The short label which will describe this
         parameter/proerties purpose to the user.
-    
+
     @ivar description: A long description which further describes the
         sort of input the user is expected to provide.
-    
+
     @ivar default: A default value that may be used as an initial
         value in the form.
 
@@ -111,15 +117,15 @@ class Typed(object):
     str = False
 
     def __init__(
-        self,
-        label=None,
-        description=None,
-        default=None,
-        required=None,
-        requiredFailMessage=None,
-        null=None,
-        str=None,
-        **attributes):
+            self,
+            label=None,
+            description=None,
+            default=None,
+            required=None,
+            requiredFailMessage=None,
+            null=None,
+            str=None,
+            **attributes):
 
         self.id = nextId()
         if label is not None:
@@ -142,12 +148,14 @@ class Typed(object):
         return self.attributes.get(name, default)
 
     def coerce(self, val, configurable):
-        raise NotImplementedError("Implement in %s" % util.qual(self.__class__))
-
+        raise NotImplementedError(
+            "Implement in %s" %
+            util.qual(
+                self.__class__))
 
 
 #######################################
-## External API; your code will create instances of these objects
+# External API; your code will create instances of these objects
 #######################################
 
 class String(Typed):
@@ -240,8 +248,8 @@ class Boolean(Typed):
 
 
 class FixedDigitInteger(Integer):
-    
-    def __init__(self, digits = 1, *args, **kw):
+
+    def __init__(self, digits=1, *args, **kw):
         Integer.__init__(self, *args, **kw)
         self.digits = digits
         self.requiredFailMessage = \
@@ -255,7 +263,7 @@ class FixedDigitInteger(Integer):
 
 
 class Directory(Typed):
-    
+
     requiredFailMessage = 'Please enter a directory name.'
 
     def coerce(self, val, configurable):
@@ -274,9 +282,16 @@ class Choice(Typed):
     passed to stringify, which is by default "str".
     """
 
-    def __init__(self, choices=None, choicesAttribute=None, stringify=str,
-                 valueToKey=str, keyToValue=None, keyAndConfigurableToValue=None,
-                 *args, **kw):
+    def __init__(
+            self,
+            choices=None,
+            choicesAttribute=None,
+            stringify=str,
+            valueToKey=str,
+            keyToValue=None,
+            keyAndConfigurableToValue=None,
+            *args,
+            **kw):
         """
         Create a Choice.
 
@@ -307,21 +322,23 @@ class Choice(Typed):
                 "Choice.choicesAttribute is deprecated. Please pass a function to choices instead.",
                 DeprecationWarning,
                 stacklevel=2)
+
             def findTheChoices(ctx, data):
-                return getattr(iformless.IConfigurable(ctx).original, self.choicesAttribute)
+                return getattr(
+                    iformless.IConfigurable(ctx).original,
+                    self.choicesAttribute)
             self.choices = findTheChoices
 
         self.stringify = stringify
-        self.valueToKey=valueToKey
+        self.valueToKey = valueToKey
 
         if keyAndConfigurableToValue is not None:
             assert keyToValue is None, 'This should be *obvious*'
             self.keyAndConfigurableToValue = keyAndConfigurableToValue
         elif keyToValue is not None:
-            self.keyAndConfigurableToValue = lambda x,y: keyToValue(x)
+            self.keyAndConfigurableToValue = lambda x, y: keyToValue(x)
         else:
-            self.keyAndConfigurableToValue = lambda x,y: str(x)
-
+            self.keyAndConfigurableToValue = lambda x, y: str(x)
 
     def coerce(self, val, configurable):
         """Coerce a value with the help of an object, which is the object
@@ -344,6 +361,7 @@ class Any(object):
 
 class Object(Typed):
     complexType = True
+
     def __init__(self, interface=Any, *args, **kw):
         Typed.__init__(self, *args, **kw)
         self.interface = interface
@@ -354,12 +372,19 @@ class Object(Typed):
         return "Object(interface=%s)" % util.qual(self.interface)
 
 
-
 class List(Object):
     __implements__ = iformless.IActionableType, Object.__implements__
 
     complexType = True
-    def __init__(self, actions=None, header='', footer='', separator='', *args, **kw):
+
+    def __init__(
+            self,
+            actions=None,
+            header='',
+            footer='',
+            separator='',
+            *args,
+            **kw):
         """Actions is a list of action methods which may be invoked on one
         or more of the elements of this list. Action methods are defined
         on a TypedInterface and declare that they take one parameter
@@ -385,9 +410,9 @@ class List(Object):
         return "List()"
 
     def attachActionBindings(self, possibleActions):
-        ## Go through and replace self.actions, which is a list of method
-        ## references, with the MethodBinding instance which holds 
-        ## metadata about this function.
+        # Go through and replace self.actions, which is a list of method
+        # references, with the MethodBinding instance which holds
+        # metadata about this function.
         act = self.actions
         for method, binding in possibleActions:
             if method in act:
@@ -403,6 +428,7 @@ class Dictionary(List):
 
 class Table(Object):
     complexType = True
+
     def __repr__(self):
         if self.interface is not None:
             return "Table(interface=%s)" % util.qual(self.interface)
@@ -418,7 +444,7 @@ class Request(Typed):
     ...     pass
     >>> doSomething = formless.autocallable(doSomething)
     """
-    complexType = True ## Don't use the regular form
+    complexType = True  # Don't use the regular form
 
 
 class Context(Typed):
@@ -430,7 +456,7 @@ class Context(Typed):
     ...     pass
     >>> doSomething = formless.autocallable(doSomething)
     """
-    complexType = True ## Don't use the regular form
+    complexType = True  # Don't use the regular form
 
 
 class Button(Typed):
@@ -440,6 +466,7 @@ class Button(Typed):
 
 class Compound(Typed):
     complexType = True
+
     def __init__(self, elements=None, *args, **kw):
         assert elements, "What is the sound of a Compound type with no elements?"
         self.elements = elements
@@ -467,13 +494,13 @@ def autocallable(method, action=None, visible=False, **kw):
     """Describe a method in a TypedInterface as being callable through the
     UI. The "action" paramter will be used to label the action button, or the
     user interface element which performs the method call.
-    
+
     Use this like a method adapter around a method in a TypedInterface:
-    
+
     >>> class IFoo(TypedInterface):
     ...     def doSomething(self):
     ...         '''Do Something
-    ...         
+    ...
     ...         Do some action bla bla'''
     ...         return None
     ...     doSomething = autocallable(doSomething, action="Do it!!")
@@ -486,25 +513,25 @@ def autocallable(method, action=None, visible=False, **kw):
 
 
 #######################################
-## Internal API; formless uses these objects to keep track of
-## what names are bound to what types
+# Internal API; formless uses these objects to keep track of
+# what names are bound to what types
 #######################################
 
 
 class Binding(object):
     """Bindings bind a Typed instance to a name. When TypedInterface is subclassed,
     the metaclass looks through the dict looking for all properties and methods.
-    
+
     If a properties is a Typed instance, a Property Binding is constructed, passing
     the name of the binding and the Typed instance.
-    
+
     If a method has been wrapped with the "autocallable" function adapter,
     a Method Binding is constructed, passing the name of the binding and the
     Typed instance. Then, getargspec is called. For each keyword argument
     in the method definition, an Argument is constructed, passing the name
     of the keyword argument as the binding name, and the value of the
     keyword argument, a Typed instance, as the binding typeValue.
-    
+
     One more thing. When an autocallable method is found, it is called with
     None as the self argument. The return value is passed the the Method
     Binding when it is constructed to keep track of what the method is
@@ -531,18 +558,22 @@ class Binding(object):
         self.complexType = typedValue.complexType
 
     def __repr__(self):
-        return "<%s %s=%s at 0x%x>" % (self.__class__.__name__, self.name, self.typedValue.__class__.__name__, id(self))
+        return "<%s %s=%s at 0x%x>" % (
+            self.__class__.__name__, self.name, self.typedValue.__class__.__name__, id(self))
 
     def getArgs(self):
         """Return a *copy* of this Binding.
         """
-        Return (Binding(self.name, self.original, self.id), )
+        Return(Binding(self.name, self.original, self.id), )
 
     def getViewName(self):
         return self.original.__class__.__name__.lower()
 
     def configure(self, boundTo, results):
-        raise NotImplementedError("Implement in %s" % util.qual(self.__class__))
+        raise NotImplementedError(
+            "Implement in %s" %
+            util.qual(
+                self.__class__))
 
     def coerce(self, val, configurable):
         if hasattr(self.original, 'coerce'):
@@ -556,16 +587,18 @@ class Argument(Binding):
 
 class Property(Binding):
     action = 'Change'
+
     def configure(self, boundTo, results):
-        ## set the property!
+        # set the property!
         setattr(boundTo, self.name, results[self.name])
         return "Property %r set successfully." % nameToLabel(self.name)
 
 
 class MethodBinding(Binding):
     typedValue = None
-    def __init__(self, name, typeValue, id=0, action="Call", attributes = {}):
-        Binding.__init__(self, name, typeValue,  id)
+
+    def __init__(self, name, typeValue, id=0, action="Call", attributes={}):
+        Binding.__init__(self, name, typeValue, id)
         self.action = action
         self.arguments = typeValue.arguments
         self.returnValue = typeValue.returnValue
@@ -605,6 +638,7 @@ class GroupBinding(Binding):
     will be rendered such that all fields must/may be filled out, and all
     fields will be changed at once upon form submission.
     """
+
     def __init__(self, name, typedValue, id=0):
         """Hack to prevent adaption to ITyped while the adapters are still
         being registered, because we know that the typedValue should be
@@ -656,7 +690,8 @@ def nameToLabel(mname):
                     word += letter
                 else:
                     # acronym
-                    # we're processing the lowercase letter after the acronym-then-capital
+                    # we're processing the lowercase letter after the
+                    # acronym-then-capital
                     lastWord = word[:-1]
                     firstLetter = word[-1]
                     labelList.append(lastWord)
@@ -689,7 +724,7 @@ class MetaTypedInterface(type(Interface)):
     this metaclass' __new__ method is invoked. The Typed Binding introspection
     described in the Binding docstring occurs, and when it is all done, there will
     be three attributes on the TypedInterface class:
-    
+
      - __methods__: An ordered list of all the MethodBinding instances
        produced by introspecting all autocallable methods on this
        TypedInterface
@@ -699,33 +734,34 @@ class MetaTypedInterface(type(Interface)):
        Typed values on this TypedInterface
 
      - __spec__: An ordered list of all methods and properties
-    
+
     These lists are sorted in the order that the methods and properties appear
     in the TypedInterface definition.
-    
+
     For example:
-    
+
     >>> class Foo(TypedInterface):
     ...     bar = String()
     ...     baz = Integer()
-    ...     
+    ...
     ...     def frotz(self): pass
     ...     frotz = autocallable(frotz)
-    ...     
+    ...
     ...     xyzzy = Float()
-    ...     
+    ...
     ...     def blam(self): pass
     ...     blam = autocallable(blam)
 
     Once the metaclass __new__ is done, the Foo class instance will have three
     properties, __methods__, __properties__, and __spec__,
     """
-    ## Todo try to remove these
+    # Todo try to remove these
     label = "LABEL"
     name = "NAME"
     description = "DESCRIPTION"
     default = "DEFAULT"
     complexType = True
+
     def __new__(cls, name, bases, dct):
         dct['__id__'] = nextId()
         dct['__methods__'] = methods = []
@@ -733,29 +769,31 @@ class MetaTypedInterface(type(Interface)):
         possibleActions = []
         actionAttachers = []
         for key, value in list(dct.items()):
-            if key[0] == '_': continue
+            if key[0] == '_':
+                continue
 
             if isinstance(value, MetaTypedInterface):
-                ## A Nested TypedInterface indicates a GroupBinding
+                # A Nested TypedInterface indicates a GroupBinding
                 properties.append(GroupBinding(key, value, value.__id__))
             elif callable(value):
                 try:
                     result = value(_Marker)
-                except:
-                    ## Allow non-autocallable methods in the interface; ignore them
+                except BaseException:
+                    # Allow non-autocallable methods in the interface; ignore
+                    # them
                     continue
                 names, _, _, typeList = inspect.getargspec(value)
 
                 if typeList is None:
                     argumentTypes = []
                 else:
-                    argumentTypes = [
-                        Argument(n, argtype, argtype.id) for n, argtype in zip(names[1:], typeList)
-                    ]
+                    argumentTypes = [Argument(n, argtype, argtype.id)
+                                     for n, argtype in zip(names[1:], typeList)]
                 label = None
                 description = None
                 if getattr(value, 'autocallable', None):
-                    # autocallables have attributes that can set label and description
+                    # autocallables have attributes that can set label and
+                    # description
                     label = value.attributes.get('label', None)
                     description = value.attributes.get('description', None)
 
@@ -769,33 +807,43 @@ class MetaTypedInterface(type(Interface)):
                 if description is None:
                     description = adapted.description
 
-                defaultLabel, defaultDescription = labelAndDescriptionFromDocstring(value.__doc__)
+                defaultLabel, defaultDescription = labelAndDescriptionFromDocstring(
+                    value.__doc__)
                 if defaultLabel is None:
-                    # docstring had no label, try the action if it is an autocallable
+                    # docstring had no label, try the action if it is an
+                    # autocallable
                     if getattr(value, 'autocallable', None):
                         if label is None and value.action is not None:
-                            # no explicit label, but autocallable has action we can use
+                            # no explicit label, but autocallable has action we
+                            # can use
                             defaultLabel = value.action
 
                 if defaultLabel is None:
                     # final fallback: use the function name as label
                     defaultLabel = nameToLabel(key)
-                    
+
                 if label is None:
                     label = defaultLabel
                 if description is None:
                     description = defaultDescription
 
                 theMethod = Method(
-                    adapted, argumentTypes, label=label, description=description
-                )
+                    adapted,
+                    argumentTypes,
+                    label=label,
+                    description=description)
 
                 if getattr(value, 'autocallable', None):
                     methods.append(
                         MethodBinding(
-                            key, theMethod, value.id, value.action, value.attributes))
+                            key,
+                            theMethod,
+                            value.id,
+                            value.action,
+                            value.attributes))
                 else:
-                    possibleActions.append((value, MethodBinding(key, theMethod)))
+                    possibleActions.append(
+                        (value, MethodBinding(key, theMethod)))
             else:
                 if not value.label:
                     value.label = nameToLabel(key)
@@ -805,6 +853,7 @@ class MetaTypedInterface(type(Interface)):
                     Property(key, value, value.id)
                 )
         # Define a key function for sorting, assuming you're sorting by 'id'
+
         def get_sort_key(item):
             return item.id
 
@@ -822,7 +871,8 @@ class MetaTypedInterface(type(Interface)):
         # check for ones with an underscore prefix.
         dct['label'] = dct.get('_label', None)
         dct['description'] = dct.get('_description', None)
-        defaultLabel, defaultDescription = labelAndDescriptionFromDocstring(dct.get('__doc__'))
+        defaultLabel, defaultDescription = labelAndDescriptionFromDocstring(
+            dct.get('__doc__'))
         if defaultLabel is None:
             defaultLabel = nameToLabel(name)
         if dct['label'] is None:
@@ -836,13 +886,14 @@ class MetaTypedInterface(type(Interface)):
         try:
             return type(Interface).__new__(cls, name, bases, dct)
         except TypeError as e:
-            if len(e.args) == 1 and e.args[0] == '_interface_coptimizations.SpecificationBase.__new__(MetaTypedInterface) is not safe, use object.__new__()':
+            if len(
+                    e.args) == 1 and e.args[0] == '_interface_coptimizations.SpecificationBase.__new__(MetaTypedInterface) is not safe, use object.__new__()':
                 return type.__new__(cls, name, bases, dct)
             raise
 
 
 #######################################
-## External API; subclass this to create a TypedInterface
+# External API; subclass this to create a TypedInterface
 #######################################
 
 
@@ -853,4 +904,5 @@ class TypedInterface(Interface):
     methods return. See documentation for MetaTypedInterface for examples of
     what is valid, and what is produced.
     """
-    __id__ = Attribute("An abstract identifier for instances of this interface.")
+    __id__ = Attribute(
+        "An abstract identifier for instances of this interface.")

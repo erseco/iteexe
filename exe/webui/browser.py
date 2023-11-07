@@ -29,7 +29,7 @@ import logging
 from urllib.parse import quote
 from . import mywebbrowser
 from exe.engine.path import Path
-from exe             import globals as G
+from exe import globals as G
 
 log = logging.getLogger(__name__)
 
@@ -40,33 +40,34 @@ def launchBrowser(config, packageName):
     """
     url = '%s/%s' % (G.application.exeAppUri, quote(packageName))
     log.info("url " + url)
-    dfbrw=mywebbrowser.get()
-    withdefaultbrowser=True
-    if config.browser!=None:
+    dfbrw = mywebbrowser.get()
+    withdefaultbrowser = True
+    if config.browser is not None:
         try:
             config.browser = mywebbrowser.get(config.browser)
             if not config.browser.open(url):
-                log.error("Unable to open defined browser: " + config.browser.name)
+                log.error(
+                    "Unable to open defined browser: " +
+                    config.browser.name)
                 withdefaultbrowser = True
             else:
                 withdefaultbrowser = False
-        except:
+        except BaseException:
             browser_path = Path(config.browser)
             if browser_path.exists():
                 log.info("path browser " + browser_path.abspath())
-                mywebbrowser.register("custom-browser" , None, mywebbrowser.BackgroundBrowser(browser_path.abspath()), -1)
+                mywebbrowser.register(
+                    "custom-browser", None, mywebbrowser.BackgroundBrowser(browser_path.abspath()), -1)
                 config.browser = mywebbrowser.get("custom-browser")
                 if not config.browser.open(url):
-                    log.error("Unable to open custom defined browser: " + browser_path.abspath())
-                    withdefaultbrowser=True
+                    log.error(
+                        "Unable to open custom defined browser: " +
+                        browser_path.abspath())
+                    withdefaultbrowser = True
                 else:
-                    withdefaultbrowser=False   
+                    withdefaultbrowser = False
     if withdefaultbrowser:
         config.browser = dfbrw
         config.browser.open(url, new=0, autoraise=True)
     if hasattr(config.browser, "name"):
         log.info("Defined Browser: " + config.browser.name)
-    
-
-
-

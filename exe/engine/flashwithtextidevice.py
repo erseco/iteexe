@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2006-2007 eXe Project, New Zealand Tertiary Education Commission
 #
@@ -23,13 +23,15 @@ A FlashWithText Idevice is one built up from a flash file and free text.
 """
 
 import logging
-from exe.engine.idevice   import Idevice
-from exe.engine.field     import TextAreaField, FlashField
+from exe.engine.idevice import Idevice
+from exe.engine.field import TextAreaField, FlashField
 from exe.engine.translate import lateTranslate
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class FlashWithTextIdevice(Idevice):
     """
     A FlashWithText Idevice is one built up from a flash file and free text.
@@ -37,34 +39,32 @@ class FlashWithTextIdevice(Idevice):
 
     persistenceVersion = 4
 
-
-
     def __init__(self):
-        Idevice.__init__(self, x_("Flash with Text"), 
-                         x_("University of Auckland"), 
-                         x_("""The flash with text idevice allows you to 
-associate additional textual information to a flash file. This may be useful 
-where you wish to provide educational instruction regarding the flash file 
+        Idevice.__init__(self, x_("Flash with Text"),
+                         x_("University of Auckland"),
+                         x_("""The flash with text idevice allows you to
+associate additional textual information to a flash file. This may be useful
+where you wish to provide educational instruction regarding the flash file
 the learners will view."""), "", "")
-        self.emphasis          = Idevice.NoEmphasis
-        self.flash             = FlashField(x_("Flash with Text"), "")
-        self.flash.idevice     = self
-        self.text              = TextAreaField(x_("Description"),
-                                 x_("""Enter the text you wish to 
+        self.emphasis = Idevice.NoEmphasis
+        self.flash = FlashField(x_("Flash with Text"), "")
+        self.flash.idevice = self
+        self.text = TextAreaField(x_("Description"),
+                                  x_("""Enter the text you wish to
                                  associate with the image."""))
-        self.text.idevice      = self
-        self.float             = "left"
-        self.caption           = ""
-        self._captionInstruc   = x_("""Provide a caption for the flash you 
+        self.text.idevice = self
+        self.float = "left"
+        self.caption = ""
+        self._captionInstruc = x_("""Provide a caption for the flash you
                                   have just inserted.""")
-        self._dimensionInstruc = x_("""Enter the flash display 
-dimensions (in pixels) and determine the alignment of the image on screen. 
+        self._dimensionInstruc = x_("""Enter the flash display
+dimensions (in pixels) and determine the alignment of the image on screen.
 The width and height dimensions will alter proportionally.""")
 
     # Properties
-    captionInstruc   = lateTranslate('captionInstruc')
+    captionInstruc = lateTranslate('captionInstruc')
     dimensionInstruc = lateTranslate('dimensionInstruc')
-   
+
     def getResourcesField(self, this_resource):
         """
         implement the specific resource finding mechanism for this iDevice:
@@ -78,32 +78,29 @@ The width and height dimensions will alter proportionally.""")
         if hasattr(self, 'text') and hasattr(self.text, 'images'):
             for this_image in self.text.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.text
 
         return None
-       
-      
+
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'text'):
             fields_list.append(self.text)
 
         return fields_list
-        
 
     def upgradeToVersion1(self):
         """
         Upgrades exe to v0.10
         """
         self._upgradeIdeviceToVersion1()
-    
-    
+
     def upgradeToVersion2(self):
         """
         Upgrades to v0.12
@@ -115,13 +112,13 @@ The width and height dimensions will alter proportionally.""")
         """
         Upgrades to v0.13
         """
-        self._captionInstruc   = x_("""Provide a caption for the flash you 
+        self._captionInstruc = x_("""Provide a caption for the flash you
                                   have just inserted.""")
-        self._dimensionInstruc = x_("""Enter the flash display 
-dimensions (in pixels) and determine the alignment of the image on screen. 
+        self._dimensionInstruc = x_("""Enter the flash display
+dimensions (in pixels) and determine the alignment of the image on screen.
 The width and height dimensions will alter proportionally.""")
         self.flash._upgradeFieldToVersion3()
-   
+
     def NoLonger_upgradeToVersion4(self):
         """
         NOTE: upgradeToVersion4 (from r3051) no longer enabled, because:
@@ -133,7 +130,7 @@ The width and height dimensions will alter proportionally.""")
         decided, though, that the behaviour was just different enough that
         FlashWithTextIdevice should still be available, if needed.
         Leaving the persistence version to 4, for those few intermediate elps.
-        """         
+        """
         G.application.afterUpgradeHandlers.append(self.convertToFreeText)
 
 # ===========================================================================

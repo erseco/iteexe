@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,52 +22,58 @@ Renders a paragraph where the content creator can choose which words the student
 must fill in.
 """
 
+from exe.engine.clozeidevice import ClozeIdevice
+from exe.webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block   import Block
-from exe.webui         import common
+from exe.webui.block import Block
+from exe.webui import common
 from exe.webui.element import ClozeElement, TextAreaElement
 
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class ClozeBlock(Block):
     """
     Renders a paragraph where the content creator can choose which words the
     student must fill in.
     """
+
     def __init__(self, parent, idevice):
         """
         Pre-create our field ids
         """
         Block.__init__(self, parent, idevice)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.instructionsForLearners.idevice is None: 
+        if idevice.instructionsForLearners.idevice is None:
             idevice.instructionsForLearners.idevice = idevice
-        if idevice.content.idevice is None: 
+        if idevice.content.idevice is None:
             idevice.content.idevice = idevice
-        if idevice.feedback.idevice is None: 
+        if idevice.feedback.idevice is None:
             idevice.feedback.idevice = idevice
 
         dT = common.getExportDocType()
         sectionTag = "div"
         if dT == "HTML5":
-            sectionTag = "section"        
-        
+            sectionTag = "section"
+
         idevice.instructionsForLearners.htmlTag = sectionTag
         idevice.instructionsForLearners.class_ = "block instructions"
         idevice.feedback.htmlTag = sectionTag
-        
+
         self.instructionElement = \
             TextAreaElement(idevice.instructionsForLearners)
-        self.instructionElement.field.content_w_resourcePaths = c_(self.instructionElement.field.content_w_resourcePaths)
+        self.instructionElement.field.content_w_resourcePaths = c_(
+            self.instructionElement.field.content_w_resourcePaths)
         self.clozeElement = ClozeElement(idevice.content)
         self.feedbackElement = \
             TextAreaElement(idevice.feedback)
-        self.previewing        = False # In view or preview render
-        if not hasattr(self.idevice,'undo'): 
+        self.previewing = False  # In view or preview render
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
 
     def process(self, request):
@@ -76,9 +82,9 @@ class ClozeBlock(Block):
         """
         is_cancel = common.requestHasCancel(request)
 
-        if "title"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args["title"+self.id][0]
+        if "title" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args["title" + self.id][0]
         object = request.args.get('object', [''])[0]
         action = request.args.get('action', [''])[0]
         self.instructionElement.process(request)
@@ -94,16 +100,16 @@ class ClozeBlock(Block):
         html = [
             '<div class="iDevice">',
             '<div class="block">',
-            common.textInput("title"+self.id, self.idevice.title),
+            common.textInput("title" + self.id, self.idevice.title),
             '</div>',
             self.instructionElement.renderEdit(),
             self.clozeElement.renderEdit(),
             self.feedbackElement.renderEdit(),
             self.renderEditButtons(),
             '</div>'
-            ]
+        ]
         return '\n'.join(html)
-    
+
     def renderXML(self, style):
         """
         Makes an XML representation of this object
@@ -112,25 +118,25 @@ class ClozeBlock(Block):
         xml += "<scoretext>Your score is:</scoretext>"
         xml += "<instructions><![CDATA[ %s ]]></instructions>" \
             % self.instructionElement.renderView()
-        
+
         xml += self.clozeElement.renderXML()
         xml += "</idevice>"
         return xml
 
     def renderPreview(self, style):
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = True 
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = True
         return Block.renderPreview(self, style)
 
     def renderView(self, style):
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = False 
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = False
         return Block.renderView(self, style)
 
     def renderViewContent(self):
@@ -141,59 +147,58 @@ class ClozeBlock(Block):
         if self.feedbackElement.field.content.strip():
             # Cloze Idevice needs id of div for feedback content
             feedbackID = self.feedbackElement.id
-            if self.previewing: 
+            if self.previewing:
                 clozeContent = self.clozeElement.renderPreview(feedbackID)
-            else: 
+            else:
                 clozeContent = self.clozeElement.renderView(feedbackID)
         else:
-            if self.previewing: 
+            if self.previewing:
                 clozeContent = self.clozeElement.renderPreview()
             else:
                 clozeContent = self.clozeElement.renderView()
         instruction_html = ""
-        if self.previewing: 
+        if self.previewing:
             instruction_html = self.instructionElement.renderPreview()
         else:
             instruction_html = self.instructionElement.renderView()
         html = [
             instruction_html,
             clozeContent]
-        if self.feedbackElement.field.content: 
-            if self.previewing: 
-                html.append(self.feedbackElement.renderPreview(False, 
-                                                     class_="feedback"))
+        if self.feedbackElement.field.content:
+            if self.previewing:
+                html.append(
+                    self.feedbackElement.renderPreview(
+                        False, class_="feedback"))
             else:
-                html.append(self.feedbackElement.renderView(False, 
-                                                     class_="feedback"))
+                html.append(self.feedbackElement.renderView(False,
+                                                            class_="feedback"))
         return '\n    '.join(html)
 
-    def renderText(self): 
-        
+    def renderText(self):
         """
         Returns an XHTML string for text file export.
         """
-        
-        if self.previewing: 
-            html = '<p>' +  self.instructionElement.renderPreview() +'</p>'
+
+        if self.previewing:
+            html = '<p>' + self.instructionElement.renderPreview() + '</p>'
         else:
-            html = '<p>' +  self.instructionElement.renderView() +'</p>'
+            html = '<p>' + self.instructionElement.renderView() + '</p>'
         html += '<p>' + self.clozeElement.renderText() + '</p>'
         if self.feedbackElement.field.content:
-            html += '<p>%s:</P>' % c_("Feedback") 
-            if self.previewing: 
-                html += '<p>' +self.feedbackElement.renderPreview(False, 
-                                                        class_="feedback") 
+            html += '<p>%s:</P>' % c_("Feedback")
+            if self.previewing:
+                html += '<p>' + \
+                    self.feedbackElement.renderPreview(False, class_="feedback")
                 html += '</p>'
             else:
-                html += '<p>' +self.feedbackElement.renderView(False, 
-                                                        class_="feedback") 
+                html += '<p>' + \
+                    self.feedbackElement.renderView(False, class_="feedback")
                 html += '</p>'
         html += self.clozeElement.renderAnswers()
         return html
-    
-from exe.engine.clozeidevice import ClozeIdevice
-from exe.webui.blockfactory  import g_blockFactory
-g_blockFactory.registerBlockType(ClozeBlock, ClozeIdevice)    
+
+
+g_blockFactory.registerBlockType(ClozeBlock, ClozeIdevice)
 
 
 # ===========================================================================

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -28,27 +28,30 @@ import re
 
 from PIL import Image
 
-from exe.engine.field   import ClozelangField, TextAreaField
+from exe.engine.field import ClozelangField, TextAreaField
 from exe.engine.idevice import Idevice
-from exe.engine.path    import Path
+from exe.engine.path import Path
 from exe.engine.persist import Persistable
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class ClozelangfpdIdevice(Idevice):
     """
     Holds a paragraph with words missing that the student must fill in
     """
-    
+
     persistenceVersion = 7
 
     def __init__(self, parentNode=None):
         """
         Sets up the idevice title and instructions etc
         """
-        Idevice.__init__(self, x_("FPD - Cloze Activity (Modified)"),
-                         x_("University of Auckland"), 
+        Idevice.__init__(self,
+                         x_("FPD - Cloze Activity (Modified)"),
+                         x_("University of Auckland"),
                          x_("<p>Cloze exercises are texts or "
                              "sentences where students must fill in "
                              "missing words. They are often used for the "
@@ -114,70 +117,69 @@ class ClozelangfpdIdevice(Idevice):
                              "  </p>"
                              "  </dd>"
                              "</dl>"),
-                            "autoevaluacionfpd",
-                             parentNode)
+                         "autoevaluacionfpd",
+                         parentNode)
         self.instructionsForLearners = TextAreaField(
             x_('Instructions'),
-            x_("""Provide instruction on how the cloze activity should be 
+            x_("""Provide instruction on how the cloze activity should be
 completed. Default text will be entered if there are no changes to this field.
 """), "")
 #            x_(u'Read the paragraph below and fill in the missing words.'))
         self.instructionsForLearners.idevice = self
-        self._content = ClozelangField(x_('Clozelang'), 
-            x_("""<p>Enter the text for the cloze activity in to the cloze field 
-by either pasting text from another source or by typing text directly into the 
-field.</p><p> To select words to hide, double click on the word to select it and 
+        self._content = ClozelangField(x_('Clozelang'), x_(
+            """<p>Enter the text for the cloze activity in to the cloze field
+by either pasting text from another source or by typing text directly into the
+field.</p><p> To select words to hide, double click on the word to select it and
 click on the Hide/Show Word button below.</p><p>More than one possible answer can be defined enclosing them with pipes (|). I.e.: |dog|cat|bird|</p>"""))
         self._content.idevice = self
-        self.feedback = TextAreaField(x_('Feedback'),
-            x_('Enter any feedback you wish to provide the learner '
+        self.feedback = TextAreaField(
+            x_('Feedback'), x_(
+                'Enter any feedback you wish to provide the learner '
                 'with-in the feedback field. This field can be left blank.'))
         self.feedback.idevice = self
 #        self.emphasis   = Idevice.SomeEmphasis
-        self.emphasis   = "_autoevaluacionfpd"
+        self.emphasis = "_autoevaluacionfpd"
         self.systemResources += ["common.js"]
         self.isCloze = True
 
-
     # Properties
-    content = property(lambda self: self._content, 
+    content = property(lambda self: self._content,
                        doc="Read only, use 'self.content.encodedContent = x' "
                            "instead")
 
-    def getResourcesField(self, this_resource): 
-        """ 
-        implement the specific resource finding mechanism for this iDevice: 
-        """ 
+    def getResourcesField(self, this_resource):
+        """
+        implement the specific resource finding mechanism for this iDevice:
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, '_content') and hasattr(self._content, 'images'):
-            for this_image in self._content.images: 
+            for this_image in self._content.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self._content
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'instructionsForLearners')\
-        and hasattr(self.instructionsForLearners, 'images'):
-            for this_image in self.instructionsForLearners.images: 
+                and hasattr(self.instructionsForLearners, 'images'):
+            for this_image in self.instructionsForLearners.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self.instructionsForLearners
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'feedback') and hasattr(self.feedback, 'images'):
-            for this_image in self.feedback.images: 
+            for this_image in self.feedback.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self.feedback
-        
+
         return None
 
-      
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, '_content'):
@@ -187,30 +189,35 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
         if hasattr(self, 'feedback'):
             fields_list.append(self.feedback)
         return fields_list
-        
+
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         # Cloze Idevice:
-        title = i.find(name='span', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='span', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        inner = i.find(name='div', attrs={'class' : 'iDevice_inner' })
+        inner = i.find(name='div', attrs={'class': 'iDevice_inner'})
 
-        instruct = inner.find(name='div', 
-                attrs={'class' : 'block' , 'style' : 'display:block' })
+        instruct = inner.find(
+            name='div',
+            attrs={
+                'class': 'block',
+                'style': 'display:block'})
         self.instructionsForLearners.content_wo_resourcePaths = \
-                instruct.renderContents().decode('utf-8')
+            instruct.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.instructionsForLearners.content_w_resourcePaths = \
-                self.instructionsForLearners.MassageResourceDirsIntoContent( \
-                    self.instructionsForLearners.content_wo_resourcePaths)
+            self.instructionsForLearners.MassageResourceDirsIntoContent(
+                self.instructionsForLearners.content_wo_resourcePaths)
         self.instructionsForLearners.content = \
-                self.instructionsForLearners.content_w_resourcePaths
+            self.instructionsForLearners.content_w_resourcePaths
 
-        content = inner.find(name='div', attrs={'id' : re.compile('^clozelang') })
+        content = inner.find(
+            name='div', attrs={
+                'id': re.compile('^clozelang')})
         rebuilt_contents = ""
         for this_content in content.contents:
             if not this_content.__str__().startswith('<input'):
@@ -228,9 +235,10 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
                     while char_pos < len(code):
                         # first 2 chars = %u, replace with 0x to get int
                         # next 4 = the encoded unichr
-                        this_code_char = "0x" + code[char_pos+2 : char_pos+6]
+                        this_code_char = "0x" + \
+                            code[char_pos + 2: char_pos + 6]
                         this_code_ord = int(this_code_char, 16)
-                        letter = chr(ord(code_key)^this_code_ord)
+                        letter = chr(ord(code_key) ^ this_code_ord)
                         answer += letter
                         # key SHOULD be ^'d by letter, but seems to be:
                         code_key = letter
@@ -238,39 +246,43 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
                     rebuilt_contents += "<U>" + answer + "</U>"
                 elif not this_content.__str__().startswith('<div'):
                     # this should be the un-clozed text:
-                    rebuilt_contents +=  this_content.__str__()
+                    rebuilt_contents += this_content.__str__()
         self._content.content_wo_resourcePaths = rebuilt_contents
         # and add the LOCAL resource paths back in:
         self._content.content_w_resourcePaths = \
-                self._content.MassageResourceDirsIntoContent( \
-                    self._content.content_wo_resourcePaths)
+            self._content.MassageResourceDirsIntoContent(
+                self._content.content_wo_resourcePaths)
         self._content.content = self._content.content_w_resourcePaths
 
-        feedback = inner.find(name='div', attrs={'class' : 'feedback' })
+        feedback = inner.find(name='div', attrs={'class': 'feedback'})
         self.feedback.content_wo_resourcePaths = \
-                feedback.renderContents().decode('utf-8')
+            feedback.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.feedback.content_w_resourcePaths = \
-                self.feedback.MassageResourceDirsIntoContent( \
-                    self.feedback.content_wo_resourcePaths)
+            self.feedback.MassageResourceDirsIntoContent(
+                self.feedback.content_wo_resourcePaths)
         self.feedback.content = self.feedback.content_w_resourcePaths
 
         # and each cloze flag field (strict, case, instant):
-        flag_strict = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozelangFlag.*strictMarking$') })
-        if flag_strict.attrMap['value']=="true":
+        flag_strict = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozelangFlag.*strictMarking$')})
+        if flag_strict.attrMap['value'] == "true":
             self._content.strictMarking = True
-        flag_caps = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozelangFlag.*checkCaps$') })
-        if flag_caps.attrMap['value']=="true":
+        flag_caps = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozelangFlag.*checkCaps$')})
+        if flag_caps.attrMap['value'] == "true":
             self._content.checkCaps = True
-        flag_instant = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozelangFlag.*instantMarking$') })
-        if flag_instant.attrMap['value']=="true":
+        flag_instant = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozelangFlag.*instantMarking$')})
+        if flag_instant.attrMap['value'] == "true":
             self._content.instantMarking = True
-	flag_score = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozelangFlag.*showScore$') })
-        if flag_score.attrMap['value']=="true":
+        flag_score = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozelangFlag.*showScore$')})
+        if flag_score.attrMap['value'] == "true":
             self._content.showScore = True
 
     def upgradeToVersion1(self):
@@ -287,14 +299,13 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
         self.feedback = TextAreaField(x_('Feedback'))
         self.feedback.idevice = self
 
-
     def upgradeToVersion2(self):
         """
         Upgrades exe to v0.11
         """
         self.content.autoCompletion = True
-        self.content.autoCompletionInstruc =  _("Allow auto completion when "
-                                                "user filling the gaps.")
+        self.content.autoCompletionInstruc = _("Allow auto completion when "
+                                               "user filling the gaps.")
 
     def upgradeToVersion3(self):
         """
@@ -302,7 +313,7 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
         """
         self._upgradeIdeviceToVersion2()
         self.systemResources += ["common.js"]
-        
+
     def upgradeToVersion4(self):
         """
         Upgrades to v0.20.3
@@ -310,9 +321,10 @@ click on the Hide/Show Word button below.</p><p>More than one possible answer ca
         self.isCloze = True
 
     def upgradeToVersion5(self):
-        self._content._instruc = x_("""<p>Enter the text for the cloze activity in to the cloze field 
-by either pasting text from another source or by typing text directly into the 
-field.</p><p> To select words to hide, double click on the word to select it and 
+        self._content._instruc = x_(
+            """<p>Enter the text for the cloze activity in to the cloze field
+by either pasting text from another source or by typing text directly into the
+field.</p><p> To select words to hide, double click on the word to select it and
 click on the Hide/Show Word button below.</p><p>More than one possible answer can be defined enclosing them with pipes (|). I.e.: |dog|cat|bird|</p>""")
 
     def upgradeToVersion6(self):

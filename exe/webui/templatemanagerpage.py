@@ -26,15 +26,15 @@ The TemplateManagerPage is responsible for managing templates
 import json
 import logging
 import os
-from zipfile                   import ZipFile
+from zipfile import ZipFile
 
 from exe.engine.path import Path
-from exe.engine.template      import Template
-from exe.webui.livepage        import allSessionClients
-from exe.webui.renderable      import RenderableResource
-from exe                         import globals as G
+from exe.engine.template import Template
+from exe.webui.livepage import allSessionClients
+from exe.webui.renderable import RenderableResource
+from exe import globals as G
 from exe.engine.package import Package
-from exe.export.pages            import forbiddenPageNames
+from exe.export.pages import forbiddenPageNames
 
 
 log = logging.getLogger(__name__)
@@ -86,21 +86,21 @@ class TemplateManagerPage(RenderableResource):
 
         if self.action == 'Properties':
             response = json.dumps({
-                                   'success': True,
-                                   'properties': self.properties,
-                                   'template': self.template,
-                                   'action': 'Properties'})
+                'success': True,
+                'properties': self.properties,
+                'template': self.template,
+                'action': 'Properties'})
         elif self.action == 'PreExport':
             response = json.dumps({
-                                   'success': True,
-                                   'properties': self.properties,
-                                   'template': self.template,
-                                   'action': 'PreExport'})
+                'success': True,
+                'properties': self.properties,
+                'template': self.template,
+                'action': 'PreExport'})
         else:
             response = json.dumps({
-                                   'success': True,
-                                   'templates': self.renderListTemplates(),
-                                   'action': 'List'})
+                'success': True,
+                'templates': self.renderListTemplates(),
+                'action': 'List'})
 
         self.action = 'List'
         return response
@@ -116,19 +116,19 @@ class TemplateManagerPage(RenderableResource):
 
         if request.args['action'][0] == 'doExport':
             self.doExportTemplate(request.args['template'][0],
-                               request.args['filename'][0])
+                                  request.args['filename'][0])
         elif request.args['action'][0] == 'doDelete':
             self.doDeleteTemplate(request.args['template'][0])
         elif request.args['action'][0] == 'doImport':
             try:
                 self.doImportTemplate(request.args['filename'][0])
                 self.alert(
-                           _('Success'),
-                           _('Successfully imported template'))
+                    _('Success'),
+                    _('Successfully imported template'))
             except Exception as e:
                 self.alert(
-                           _('Error'),
-                           _('Error while installing template: %s') % str(e))
+                    _('Error'),
+                    _('Error while installing template: %s') % str(e))
         elif request.args['action'][0] == 'doProperties':
             self.doPropertiesTemplate(request.args['template'][0])
         elif request.args['action'][0] == 'doPreExport':
@@ -142,8 +142,9 @@ class TemplateManagerPage(RenderableResource):
 
     def reloadPanel(self, action):
 
-        self.client.sendScript('Ext.getCmp("templatemanagerwin").down("form").reload("%s")' % (action),
-                               filter_func=allSessionClients)
+        self.client.sendScript(
+            'Ext.getCmp("templatemanagerwin").down("form").reload("%s")' %
+            (action), filter_func=allSessionClients)
 
     def alert(self, title, mesg):
 
@@ -159,19 +160,19 @@ class TemplateManagerPage(RenderableResource):
         templateStores = self.config.templateStore.getTemplates()
 
         for template in templateStores:
-                export = True
-                delete = False
-                properties = True
-                edit = template.isEditable()
-                if template.name != 'Base' and template.name != self.config.defaultContentTemplate and edit:
-                    delete = True
-                if template.name != self.config.defaultContentTemplate:
-                    templates.append({'template': template.file,
-                               'name': template.name,
-                               'exportButton': export,
-                               'deleteButton': delete,
-                               'propertiesButton': properties,
-                               'editButton': edit})
+            export = True
+            delete = False
+            properties = True
+            edit = template.isEditable()
+            if template.name != 'Base' and template.name != self.config.defaultContentTemplate and edit:
+                delete = True
+            if template.name != self.config.defaultContentTemplate:
+                templates.append({'template': template.file,
+                                  'name': template.name,
+                                  'exportButton': export,
+                                  'deleteButton': delete,
+                                  'propertiesButton': properties,
+                                  'editButton': edit})
         return templates
 
     def doImportTemplate(self, filename):
@@ -194,7 +195,8 @@ class TemplateManagerPage(RenderableResource):
         if os.path.exists(absoluteTargetDir):
 
             template = Template(absoluteTargetDir)
-            raise ImportTemplateExistsError(template, absoluteTargetDir, 'Template already exists')
+            raise ImportTemplateExistsError(
+                template, absoluteTargetDir, 'Template already exists')
         else:
 
             filename.copyfile(absoluteTargetDir)
@@ -202,14 +204,16 @@ class TemplateManagerPage(RenderableResource):
 
             if template.isValid():
 
-                    if not self.config.templateStore.addTemplate(template):
+                if not self.config.templateStore.addTemplate(template):
 
-                        absoluteTargetDir.remove()
-                        raise ImportTemplateExistsError(template, absoluteTargetDir, 'The template name already exists')
+                    absoluteTargetDir.remove()
+                    raise ImportTemplateExistsError(
+                        template, absoluteTargetDir, 'The template name already exists')
             else:
 
                 absoluteTargetDir.remove()
-                raise ImportTemplateExistsError(template, absoluteTargetDir, 'Incorrect template format')
+                raise ImportTemplateExistsError(
+                    template, absoluteTargetDir, 'Incorrect template format')
 
         self.action = ""
 
@@ -226,8 +230,10 @@ class TemplateManagerPage(RenderableResource):
 
         name = str(Path(filename).basename().splitext()[0])
         if name.upper() in forbiddenPageNames:
-            self.alert(_('Error'),
-                       _("SAVE FAILED! '%s' is not a valid name for a template") % str(name))
+            self.alert(
+                _('Error'),
+                _("SAVE FAILED! '%s' is not a valid name for a template") %
+                str(name))
             return
 
         sfile = os.path.basename(filename)
@@ -238,8 +244,10 @@ class TemplateManagerPage(RenderableResource):
             self.alert(_('Correct'),
                        _('Template exported correctly: %s') % sfile)
         except IOError:
-            self.alert(_('Error'),
-                       _('Could not export template : %s') % filename.basename())
+            self.alert(
+                _('Error'),
+                _('Could not export template : %s') %
+                filename.basename())
         self.action = ""
 
     def doDeleteTemplate(self, template):
@@ -252,14 +260,17 @@ class TemplateManagerPage(RenderableResource):
                     authoringPage = mainpage.authoringPages[self.client.handleId]
 
         try:
-            if authoringPage.package.filename == (self.config.templatesDir / template):
-                self.alert(_('Error'), _('It is not possible to delete an opened template.'))
+            if authoringPage.package.filename == (
+                    self.config.templatesDir / template):
+                self.alert(
+                    _('Error'),
+                    _('It is not possible to delete an opened template.'))
                 return
             templateDelete = Template(self.config.templatesDir / template)
             self.__deleteTemplate(templateDelete)
             self.alert(_('Correct'), _('Template deleted correctly'))
             self.reloadPanel('doList')
-        except:
+        except BaseException:
             self.alert(_('Error'), _('An unexpected error has occurred'))
         self.action = ""
 
@@ -289,10 +300,14 @@ class TemplateManagerPage(RenderableResource):
 
     def doEditTemplate(self, template):
         try:
-            templateEdit = Package.load(Template(self.config.templatesDir / template).path, isTemplate=True)
-            self.webServer.root.bindNewPackage(templateEdit, self.client.session)
-            self.client.sendScript(('eXe.app.gotoUrl("/%s")' % \
-                          templateEdit.name).encode('utf8'))
-        except:
+            templateEdit = Package.load(
+                Template(
+                    self.config.templatesDir /
+                    template).path,
+                isTemplate=True)
+            self.webServer.root.bindNewPackage(
+                templateEdit, self.client.session)
+            self.client.sendScript(('eXe.app.gotoUrl("/%s")' %
+                                    templateEdit.name).encode('utf8'))
+        except BaseException:
             self.alert(_('Error'), _('An unexpected error has occurred'))
-

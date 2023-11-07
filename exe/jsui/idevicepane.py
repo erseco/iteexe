@@ -27,12 +27,14 @@ import json
 from exe.webui.renderable import Renderable
 from twisted.web.resource import Resource
 from exe.webui.livepage import allSessionClients
-from exe.engine.jsidevice import JsIdevice;
+from exe.engine.jsidevice import JsIdevice
 from html import escape
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class IdevicePane(Renderable, Resource):
     """
     IdevicePane is responsible for creating the XHTML for iDevice links
@@ -68,10 +70,11 @@ class IdevicePane(Renderable, Resource):
                 modified = True
                 lower_title = idevice._title.lower()
                 try:
-                    visibility_config=self.config.configParser.get('idevices',lower_title)
-                except:
-                    visibility_config=None
-                tohide=False if visibility_config == '1' else True
+                    visibility_config = self.config.configParser.get(
+                        'idevices', lower_title)
+                except BaseException:
+                    visibility_config = None
+                tohide = False if visibility_config == '1' else True
                 if tohide:
                     if lower_title not in self.config.hiddeniDevices:
                         self.config.hiddeniDevices.append(lower_title)
@@ -88,12 +91,13 @@ class IdevicePane(Renderable, Resource):
         """
         prototypes = list(self.prototypes.values())
         for prototype in prototypes:
-            lower_title =  prototype._title.lower()
+            lower_title = prototype._title.lower()
             if (hasattr(prototype, 'ideviceCategory')
-            and prototype.ideviceCategory == 'Experimental'
-            and lower_title not in self.config.hiddeniDevices):
+                and prototype.ideviceCategory == 'Experimental'
+                    and lower_title not in self.config.hiddeniDevices):
                 idevices_conf = list(self.config.configParser.idevices.items())
-                idevice_conf = [idv[1] for idv in idevices_conf if idv[0] == lower_title]
+                idevice_conf = [idv[1]
+                                for idv in idevices_conf if idv[0] == lower_title]
                 if not idevice_conf:
                     self.config.hiddeniDevices.append(lower_title)
                     self.config.configParser.set('idevices', lower_title, '0')
@@ -105,7 +109,7 @@ class IdevicePane(Renderable, Resource):
         """
         log.debug("Process" + repr(request.args))
         if ("action" in request.args and
-            request.args["action"][0] == "AddIdevice"):
+                request.args["action"][0] == "AddIdevice"):
 
             self.package.isChanged = True
             prototype = self.prototypes.get(request.args["object"][0])
@@ -113,25 +117,27 @@ class IdevicePane(Renderable, Resource):
                 node = self.package.findNode(request.args["currentNode"][0])
                 node.addIdevice(prototype.clone())
 
-
     def addIdevice(self, idevice):
         """
         Adds an iDevice to the pane
         """
-        log.debug("addIdevice id="+idevice.id+", title="+idevice.title)
+        log.debug("addIdevice id=" + idevice.id + ", title=" + idevice.title)
         if idevice.id in self.prototypes:
-                raise Exception("duplicated device id %s" % idevice.id)
+            raise Exception("duplicated device id %s" % idevice.id)
         self.prototypes[idevice.id] = idevice
-        self.client.sendScript('eXe.app.getController("Idevice").reload()', filter_func=allSessionClients)
-
+        self.client.sendScript(
+            'eXe.app.getController("Idevice").reload()',
+            filter_func=allSessionClients)
 
     def delIdevice(self, idevice):
         """
         Delete an iDevice from the pane
         """
-        log.debug("delIdevice id="+idevice.id+", title="+idevice.title)
+        log.debug("delIdevice id=" + idevice.id + ", title=" + idevice.title)
         self.prototypes.pop(idevice.id)
-        self.client.sendScript('eXe.app.getController("Idevice").reload()', filter_func=allSessionClients)
+        self.client.sendScript(
+            'eXe.app.getController("Idevice").reload()',
+            filter_func=allSessionClients)
 
     def render_GET(self, request=None):
         """
@@ -156,17 +162,21 @@ class IdevicePane(Renderable, Resource):
                 if lower_title not in self.config.deprecatediDevices:
                     if lower_title in self.config.idevicesCategories:
                         for category in self.config.idevicesCategories[lower_title]:
-                            prototypesToRender.append((prototype, category, visible))
+                            prototypesToRender.append(
+                                (prototype, category, visible))
                     else:
-                        prototypesToRender.append((prototype, _('My iDevices'), visible))
+                        prototypesToRender.append(
+                            (prototype, _('My iDevices'), visible))
             else:
                 lower_title = prototype._title.lower()
                 visible = lower_title not in self.config.hiddeniDevices
 
                 if hasattr(prototype, 'ideviceCategory'):
-                    prototypesToRender.append((prototype, prototype.ideviceCategory, visible))
+                    prototypesToRender.append(
+                        (prototype, prototype.ideviceCategory, visible))
                 else:
-                    prototypesToRender.append((prototype, _('JS iDevices'), visible))
+                    prototypesToRender.append(
+                        (prototype, _('JS iDevices'), visible))
 
         def sortfunc(t1, t2):
             return locale.strcoll(t1[0].rawTitle, t2[0].rawTitle)
@@ -185,24 +195,26 @@ class IdevicePane(Renderable, Resource):
             self.config.configParser.set('user', 'showIdevicesGrouped', '0')
         # Text should be in the first place
         for prototype, category, visible in prototypesToRender:
-            if (category=='Text and Tasks'):
-                if (prototype._title=='Text'):
+            if (category == 'Text and Tasks'):
+                if (prototype._title == 'Text'):
                     xml += self.__renderPrototype(prototype, category, visible)
         # After Text, the other iDevices in the category
         for prototype, category, visible in prototypesToRender:
-            if (category=='Text and Tasks'):
-                if (prototype._title!='Text'):
+            if (category == 'Text and Tasks'):
+                if (prototype._title != 'Text'):
                     xml += self.__renderPrototype(prototype, category, visible)
         # Interactive Activities should be in the second place
         for prototype, category, visible in prototypesToRender:
-            if (category=='Interactive Activities'):
+            if (category == 'Interactive Activities'):
                 xml += self.__renderPrototype(prototype, category, visible)
         # Other categories
-        # Keep these category names here so the tranlations are not lost even when there are no iDevices in those categories
+        # Keep these category names here so the tranlations are not lost even
+        # when there are no iDevices in those categories
         experimentalCategoryName = _('Experimental')
         gamificationCategoryName = _('Gamification')
         for prototype, category, visible in prototypesToRender:
-            if (category!='Text and Tasks' and category!='Hidden' and category!='Interactive Activities'):
+            if (category != 'Text and Tasks' and category !=
+                    'Hidden' and category != 'Interactive Activities'):
                 xml += self.__renderPrototype(prototype, category, visible)
         xml += "</idevices>\n"
         xml += "<!-- IDevice Pane End -->\n"
@@ -227,7 +239,7 @@ class IdevicePane(Renderable, Resource):
                     self.config.configParser.set('idevices', lower_title, '1')
                 if category == 'FPD':
                     self.config.configParser.set('idevices', lower_title, '1')
-            except:
+            except BaseException:
                 pass
             if not visible:
                 self.config.hiddeniDevices.append(lower_title)
@@ -238,11 +250,11 @@ class IdevicePane(Renderable, Resource):
         """
         Add the list item for an iDevice prototype in the iDevice pane
         """
-        log.debug("Render "+prototype.title)
-        log.debug("_title "+prototype._title)
-        log.debug("of type "+repr(type(prototype.title)))
+        log.debug("Render " + prototype.title)
+        log.debug("_title " + prototype._title)
+        log.debug("of type " + repr(type(prototype.title)))
         log.debug(prototype._title.lower())
-        xml  = "  <idevice>\n"
+        xml = "  <idevice>\n"
         xml += "   <label>" + escape(prototype.rawTitle) + "</label>\n"
         xml += "   <id>" + prototype.id + "</id>\n"
         xml += "   <category>" + escape(_(category)) + "</category>\n"

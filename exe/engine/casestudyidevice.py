@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,13 +22,13 @@ A multichoice Idevice is one built up from question and options
 """
 
 import logging
-from exe.engine.persist   import Persistable
-from exe.engine.idevice   import Idevice
-from exe.engine.field     import ImageField
+from exe.engine.persist import Persistable
+from exe.engine.idevice import Idevice
+from exe.engine.field import ImageField
 from exe.engine.translate import lateTranslate
-from exe.engine.path      import toUnicode
-from exe                  import globals as G
-from exe.engine.field     import TextAreaField, Feedback2Field
+from exe.engine.path import toUnicode
+from exe import globals as G
+from exe.engine.field import TextAreaField, Feedback2Field
 import os
 import re
 
@@ -38,35 +38,38 @@ log = logging.getLogger(__name__)
 DEFAULT_IMAGE = 'empty.gif'
 
 # ===========================================================================
+
+
 class Question(Persistable):
     """
-    A Case iDevice is built up of question and options.  Each option can 
+    A Case iDevice is built up of question and options.  Each option can
     be rendered as an XHTML element
     """
     persistenceVersion = 2
-    
+
     def __init__(self, idevice):
         """
-        Initialize 
+        Initialize
         """
         self.questionTextArea = TextAreaField('', '', '')
-        self.questionTextArea.idevice = idevice 
+        self.questionTextArea.idevice = idevice
 
         self.feedbackTextArea = Feedback2Field('', '', '')
         self.feedbackTextArea.idevice = idevice
 
     def setupImage(self, idevice):
         """
-        Creates our image field: no longer needed for new content since 
+        Creates our image field: no longer needed for new content since
         images are now embedded straight into the feedbackTextArea,
         but this routine is kept around for upgrade paths from old elps.
         """
-        self.image = ImageField(x_("Image"),
-                                x_("Choose an optional image to be shown to the student "
-                                    "on completion of this question")) 
+        self.image = ImageField(
+            x_("Image"), x_(
+                "Choose an optional image to be shown to the student "
+                "on completion of this question"))
         self.image.idevice = idevice
         self.image.defaultImage = idevice.defaultImage
-        self.image.isFeedback   = True
+        self.image.isFeedback = True
 
     def getResourcesField(self, this_resource):
         """
@@ -75,28 +78,27 @@ class Question(Persistable):
         """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'questionTextArea')\
-        and hasattr(self.questionTextArea, 'images'):
+                and hasattr(self.questionTextArea, 'images'):
             for this_image in self.questionTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.questionTextArea
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'feedbackTextArea')\
-        and hasattr(self.feedbackTextArea, 'images'):
+                and hasattr(self.feedbackTextArea, 'images'):
             for this_image in self.feedbackTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.feedbackTextArea
 
         return None
 
-      
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'questionTextArea'):
@@ -104,17 +106,16 @@ class Question(Persistable):
         if hasattr(self, 'feedbackTextArea'):
             fields_list.append(self.feedbackTextArea)
         return fields_list
-        
-        
+
     def upgradeToVersion1(self):
         """
         Upgrades to version 0.24
         """
         log.debug("Upgrading iDevice")
-        self.image.isFeedback   = True
+        self.image.isFeedback = True
+
     def upgradeToVersion2(self):
         pass
-    
 
     def embedImageInFeedback(self):
         """
@@ -132,7 +133,7 @@ class Question(Persistable):
 
         # likewise, only proceed if the image resource file is found:
         if not os.path.exists(self.image.imageResource.path) \
-        or not os.path.isfile(self.image.imageResource.path):
+                or not os.path.isfile(self.image.imageResource.path):
             return
 
         # and if it's just the default blank image, then nothing to do either:
@@ -141,14 +142,14 @@ class Question(Persistable):
 
         # get the current image resource info:
         new_content += "<img src=\"resources/" \
-                + self.image.imageResource.storageName + "\" "
-        if self.image.height: 
+            + self.image.imageResource.storageName + "\" "
+        if self.image.height:
             new_content += "height=\"" + self.image.height + "\" "
-        if self.image.width: 
+        if self.image.width:
             new_content += "width=\"" + self.image.width + "\" "
         new_content += "/> \n"
 
-        # prepend the new image content to any already existing feedback, 
+        # prepend the new image content to any already existing feedback,
         # using its content WITH the resources path:
         new_content += "<BR>\n"
         new_content += self.feedbackTextArea.content_w_resourcePaths
@@ -156,36 +157,38 @@ class Question(Persistable):
 
         # set that to its default content:
         self.feedbackTextArea.content = \
-                self.feedbackTextArea.content_w_resourcePaths
+            self.feedbackTextArea.content_w_resourcePaths
 
         # and massage its content for exporting without resource paths:
         self.feedbackTextArea.content_wo_resourcePaths = \
-                self.feedbackTextArea.MassageContentForRenderView( \
-                   self.feedbackTextArea.content_w_resourcePaths)
+            self.feedbackTextArea.MassageContentForRenderView(
+                self.feedbackTextArea.content_w_resourcePaths)
 
         # in passing GalleryImage into feedbackTextArea, a FieldWithResources,
-        # the field needs to be sure to have an updated parentNode, 
-        # courtesy of its idevice: 
+        # the field needs to be sure to have an updated parentNode,
+        # courtesy of its idevice:
         self.feedbackTextArea.setParentNode()
         # (note: FieldWithResources *usually* take care of this automatically
         # within ProcessPreviewedImages(), but here in this upgrade
         # path, we are bypassing the general purpose ProcessPreviewed().)
 
-        # Not sure why this can't be imported up top, but it gives 
-        # ImportError: cannot import name GalleryImages, 
-        # so here it be: 
-        from exe.engine.galleryidevice  import GalleryImage
+        # Not sure why this can't be imported up top, but it gives
+        # ImportError: cannot import name GalleryImages,
+        # so here it be:
+        from exe.engine.galleryidevice import GalleryImage
 
         full_image_path = self.image.imageResource.path
         # note: unapplicable caption set to '' in the 2nd parameter:
-        new_GalleryImage = GalleryImage(self.feedbackTextArea, \
-                '',  full_image_path, mkThumbnail=False)
+        new_GalleryImage = GalleryImage(self.feedbackTextArea,
+                                        '', full_image_path, mkThumbnail=False)
 
         # finally, go ahead and clear out the current image object,
         # which is best (and most safely) done by setting it back to default:
         self.image.setDefaultImage()
-        
+
 # ===========================================================================
+
+
 class CasestudyIdevice(Idevice):
     """
     A multichoice Idevice is one built up from question and options
@@ -194,59 +197,59 @@ class CasestudyIdevice(Idevice):
 
     def __init__(self, story="", defaultImage=None):
         """
-        Initialize 
+        Initialize
         """
         Idevice.__init__(self,
                          x_("Case Study"),
-                         x_("University of Auckland"), 
-                         x_("""A case study is a device that provides learners 
-with a simulation that has an educational basis. It takes a situation, generally 
-based in reality, and asks learners to demonstrate or describe what action they 
-would take to complete a task or resolve a situation. The case study allows 
-learners apply their own knowledge and experience to completing the tasks 
-assigned. when designing a case study consider the following:<ul> 
+                         x_("University of Auckland"),
+                         x_("""A case study is a device that provides learners
+with a simulation that has an educational basis. It takes a situation, generally
+based in reality, and asks learners to demonstrate or describe what action they
+would take to complete a task or resolve a situation. The case study allows
+learners apply their own knowledge and experience to completing the tasks
+assigned. when designing a case study consider the following:<ul>
 <li>    What educational points are conveyed in the story</li>
-<li>    What preparation will the learners need to do prior to working on the 
+<li>    What preparation will the learners need to do prior to working on the
 case study</li>
 <li>    Where the case study fits into the rest of the course</li>
 <li>    How the learners will interact with the materials and each other e.g.
 if run in a classroom situation can teams be setup to work on different aspects
-of the case and if so how are ideas feed back to the class</li></ul>"""), 
+of the case and if so how are ideas feed back to the class</li></ul>"""),
                          "",
                          "casestudy")
-        self.emphasis     = Idevice.SomeEmphasis
-        
-        self._storyInstruc = x_("""Create the case story. A good case is one 
-that describes a controversy or sets the scene by describing the characters 
-involved and the situation. It should also allow for some action to be taken 
+        self.emphasis = Idevice.SomeEmphasis
+
+        self._storyInstruc = x_("""Create the case story. A good case is one
+that describes a controversy or sets the scene by describing the characters
+involved and the situation. It should also allow for some action to be taken
 in order to gain resolution of the situation.""")
-        self.storyTextArea = TextAreaField(x_('Story:'), self._storyInstruc, story)
+        self.storyTextArea = TextAreaField(
+            x_('Story:'), self._storyInstruc, story)
         self.storyTextArea.idevice = self
 
-
-        self.questions    = []
-        self._questionInstruc = x_("""Describe the activity tasks relevant 
-to the case story provided. These could be in the form of questions or 
-instructions for activity which may lead the learner to resolving a dilemma 
+        self.questions = []
+        self._questionInstruc = x_("""Describe the activity tasks relevant
+to the case story provided. These could be in the form of questions or
+instructions for activity which may lead the learner to resolving a dilemma
 presented. """)
-        self._feedbackInstruc = x_("""Provide relevant feedback on the 
+        self._feedbackInstruc = x_("""Provide relevant feedback on the
 situation.""")
         if defaultImage is None:
-            defaultImage = G.application.config.webDir/'images'/DEFAULT_IMAGE
+            defaultImage = G.application.config.webDir / 'images' / DEFAULT_IMAGE
         self.defaultImage = toUnicode(defaultImage)
         self.addQuestion()
 
     # Properties
-    storyInstruc    = lateTranslate('storyInstruc')
+    storyInstruc = lateTranslate('storyInstruc')
     questionInstruc = lateTranslate('questionInstruc')
     feedbackInstruc = lateTranslate('feedbackInstruc')
-    storyInstruc    = lateTranslate('storyInstruc')
+    storyInstruc = lateTranslate('storyInstruc')
     questionInstruc = lateTranslate('questionInstruc')
     feedbackInstruc = lateTranslate('feedbackInstruc')
- 
+
     def addQuestion(self):
         """
-        Add a new question to this iDevice. 
+        Add a new question to this iDevice.
         """
         self.questions.append(Question(self))
 
@@ -256,10 +259,10 @@ situation.""")
         """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'storyTextArea')\
-        and hasattr(self.storyTextArea, 'images'):
+                and hasattr(self.storyTextArea, 'images'):
             for this_image in self.storyTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.storyTextArea
 
         for this_question in self.questions:
@@ -269,12 +272,11 @@ situation.""")
 
         return None
 
-      
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'storyTextArea'):
@@ -284,29 +286,29 @@ situation.""")
             fields_list.extend(this_question.getRichTextFields())
 
         return fields_list
-        
+
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         # CaseStudy Idevice:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        inner = i.find(name='div', attrs={'class' : 'iDevice_inner' })
+        inner = i.find(name='div', attrs={'class': 'iDevice_inner'})
 
-        story = inner.find(name='div', 
-                attrs={'class' : 'block' , 'id' : re.compile('^ta') })
+        story = inner.find(name='div',
+                           attrs={'class': 'block', 'id': re.compile('^ta')})
         self.storyTextArea.content_wo_resourcePaths = \
-                story.renderContents().decode('utf-8')
+            story.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.storyTextArea.content_w_resourcePaths = \
-                self.storyTextArea.MassageResourceDirsIntoContent( \
-                    self.storyTextArea.content_wo_resourcePaths)
+            self.storyTextArea.MassageResourceDirsIntoContent(
+                self.storyTextArea.content_wo_resourcePaths)
         self.storyTextArea.content = self.storyTextArea.content_w_resourcePaths
 
-        case_questions = inner.findAll(name='div', attrs={'class' : 'question'})
+        case_questions = inner.findAll(name='div', attrs={'class': 'question'})
         for question_num in range(len(case_questions)):
             if question_num > 0:
                 # only created with the first question, add others:
@@ -314,47 +316,53 @@ situation.""")
 
             question = case_questions[question_num]
 
-            case_stories = question.findAll(name='div', 
-                    attrs={'class' : 'block' , 
-                        'id' : re.compile('^taquesQuestion') })
+            case_stories = question.findAll(
+                name='div',
+                attrs={
+                    'class': 'block',
+                    'id': re.compile('^taquesQuestion')})
             if len(case_stories) == 1:
                 # ELSE: should warn of unexpected result!
                 inner_question = case_stories[0]
                 self.questions[question_num].questionTextArea.content = \
-                        inner_question.renderContents().decode('utf-8')
+                    inner_question.renderContents().decode('utf-8')
                 self.questions[question_num].questionTextArea.content_w_resourcePaths \
-                        = inner_question.renderContents().decode('utf-8')
+                    = inner_question.renderContents().decode('utf-8')
                 self.questions[question_num].questionTextArea.content_wo_resourcePaths \
-                        = inner_question.renderContents().decode('utf-8')
+                    = inner_question.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].questionTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].questionTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].questionTextArea.content_wo_resourcePaths)
                 self.questions[question_num].questionTextArea.content = \
-                        self.questions[question_num].questionTextArea.content_w_resourcePaths
+                    self.questions[question_num].questionTextArea.content_w_resourcePaths
 
-            case_feedbacks = question.findAll(name='div', 
-                    attrs={'class' : 'feedback' , 'id' : re.compile('^sq') })
+            case_feedbacks = question.findAll(
+                name='div', attrs={
+                    'class': 'feedback', 'id': re.compile('^sq')})
             if len(case_feedbacks) == 1:
                 # no warning otherwise, since feedback is optional
                 inner_feedback = case_feedbacks[0]
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = inner_feedback.renderContents().decode('utf-8')
+                    = inner_feedback.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
                 self.questions[question_num].feedbackTextArea.content = \
-                        self.questions[question_num].feedbackTextArea.content_w_resourcePaths
-                _btfeedBack= inner.find(name='input', attrs={'name' : re.compile('^toggle-feedback-') })
+                    self.questions[question_num].feedbackTextArea.content_w_resourcePaths
+                _btfeedBack = inner.find(
+                    name='input', attrs={
+                        'name': re.compile('^toggle-feedback-')})
             else:
                 self.questions[question_num].feedbackTextArea.content = ""
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = ""
+                    = ""
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = ""
-                _btfeedBack= inner.find(name='input', attrs={'name' : re.compile('^toggle-feedback-') })
-
+                    = ""
+                _btfeedBack = inner.find(
+                    name='input', attrs={
+                        'name': re.compile('^toggle-feedback-')})
 
     def upgradeToVersion1(self):
         """
@@ -363,7 +371,6 @@ situation.""")
         """
         log.debug("Upgrading iDevice")
         self.icon = "casestudy"
-   
 
     def upgradeToVersion2(self):
         """
@@ -372,19 +379,19 @@ situation.""")
         """
         log.debug("Upgrading iDevice")
         self.emphasis = Idevice.SomeEmphasis
-        
+
     def upgradeToVersion3(self):
         """
         Upgrades v0.6 to v0.7.
         """
         self.lastIdevice = False
-    
+
     def upgradeToVersion4(self):
         """
         Upgrades to exe v0.10
         """
         self._upgradeIdeviceToVersion1()
-        self._storyInstruc    = self.__dict__['storyInstruc']
+        self._storyInstruc = self.__dict__['storyInstruc']
         self._questionInstruc = self.__dict__['questionInstruc']
         self._feedbackInstruc = self.__dict__['feedbackInstruc']
 
@@ -393,30 +400,31 @@ situation.""")
         Upgrades to v0.12
         """
         self._upgradeIdeviceToVersion2()
-        
+
     def upgradeToVersion6(self):
         """
         Upgrades for v0.18
         """
-        self.defaultImage = toUnicode(G.application.config.webDir/'images'/DEFAULT_IMAGE)
+        self.defaultImage = toUnicode(
+            G.application.config.webDir / 'images' / DEFAULT_IMAGE)
         for question in self.questions:
             question.setupImage(self)
 
     def upgradeToVersion7(self):
         """
         Upgrades to somewhere before version 0.25 (post-v0.24)
-        Taking the old unicode string fields, 
+        Taking the old unicode string fields,
         and converting them into a image-enabled TextAreaFields:
         """
-        self.storyTextArea = TextAreaField(x_('Story:'), 
-                                 self._storyInstruc, self.story)
+        self.storyTextArea = TextAreaField(x_('Story:'),
+                                           self._storyInstruc, self.story)
         self.storyTextArea.idevice = self
         for question in self.questions:
-            question.questionTextArea = TextAreaField('', 
-                                            '', question.question)
+            question.questionTextArea = TextAreaField('',
+                                                      '', question.question)
             question.questionTextArea.idevice = self
-            question.feedbackTextArea = TextAreaField('', 
-                                            '', question.feedback)
+            question.feedbackTextArea = TextAreaField('',
+                                                      '', question.feedback)
             question.feedbackTextArea.idevice = self
 
     def upgradeToVersion8(self):
@@ -428,7 +436,7 @@ situation.""")
         since the resources aren't necessarily properly loaded and upgraded,
         NOR is the package necessarily, as it might not even have a list of
         resources yet, all of this conversion code must be done in an
-        afterUpgradeHandler  
+        afterUpgradeHandler
         (as perhaps should have been done for the previous upgradeToVersion7)
         """
         G.application.afterUpgradeHandlers.append(self.embedImagesInFeedback)

@@ -24,6 +24,7 @@ Auto chooses locale
 import os
 import locale
 
+
 def chooseDefaultLocale(localeDir):
     """
     Given a directory with a bunch of sub dirs (en, es, en.US, etc.)
@@ -40,7 +41,7 @@ def chooseDefaultLocale(localeDir):
     possibleDirs = []
     if localeDir.isdir():
         for sub in localeDir.dirs():
-            if (sub/'LC_MESSAGES'/'exe.mo').exists():
+            if (sub / 'LC_MESSAGES' / 'exe.mo').exists():
                 lang, country, encoding = splitLocaleName(sub.basename())
                 points = 0
                 if lang == myLang:
@@ -55,6 +56,7 @@ def chooseDefaultLocale(localeDir):
         if possibleDirs:
             return str(possibleDirs[-1][-1])
     return 'en'
+
 
 def splitLocaleName(localeName):
     """

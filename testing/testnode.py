@@ -20,7 +20,7 @@
 import unittest
 from exe.engine.node import Node
 from exe.engine.packagestore import PackageStore
-from exe                import globals as G
+from exe import globals as G
 from exe.application import Application
 from exe.engine.path import Path
 import sys
@@ -29,25 +29,27 @@ from exe.engine.configparser import ConfigParser
 from utils import SuperTestCase
 
 # ===========================================================================
+
+
 class TestNode(unittest.TestCase):
     def setUp(self):
-        
+
         SuperTestCase.check_application_for_test()
-        
+
         packageStore = PackageStore()
-        package      = packageStore.createPackage()
+        package = packageStore.createPackage()
         n0 = package.root       # 00
-        n1 = n0.createChild()   #  |_01                               
-        n2 = n1.createChild()   #  |  |_02                            
-        n3 = n2.createChild()   #  |  |  |_03                         
-        n4 = n3.createChild()   #  |  |  |  |_04                      
-        n5 = n2.createChild()   #  |  |  |_05                         
-        n6 = n2.createChild()   #  |  |  |_06
-        n7 = n1.createChild()   #  |  |_07                            
-        n8 = n1.createChild()   #  |  |_08                            
-        n9 = n0.createChild()   #  |_09
-        n10 = n0.createChild()  #  |_10
-        globals().update(locals()) # Make all local vars global for easy access
+        n1 = n0.createChild()  # |_01
+        n2 = n1.createChild()  # |  |_02
+        n3 = n2.createChild()  # |  |  |_03
+        n4 = n3.createChild()  # |  |  |  |_04
+        n5 = n2.createChild()  # |  |  |_05
+        n6 = n2.createChild()  # |  |  |_06
+        n7 = n1.createChild()  # |  |_07
+        n8 = n1.createChild()  # |  |_08
+        n9 = n0.createChild()  # |_09
+        n10 = n0.createChild()  # |_10
+        globals().update(locals())  # Make all local vars global for easy access
 
     def testCreate(self):
         self.assertEqual(n1.id, '1')
@@ -57,13 +59,13 @@ class TestNode(unittest.TestCase):
 
     def testMove(self):
         # Test Moving nodes up down left and right etc.
-        n4.move(n0,n1)
+        n4.move(n0, n1)
         assert n4.parent is n0
         assert n0.children[0] is n4
         assert n0.children[1] is n1
         assert str(n4.title) == 'Topic', str(n4.title)
         # Send it down a layer at the end
-        n4.move(n1, None) # At the end of the list
+        n4.move(n1, None)  # At the end of the list
         assert n4.parent is n1
         assert str(n4.title) == 'Section'
         assert n4 not in n0.children
@@ -79,7 +81,7 @@ class TestNode(unittest.TestCase):
         assert str(n4.title) == 'Unit'
         # Just move it up one (vertically, not in the tree)
         n4.move(n2, n5)
-        assert n2.children == [n3,n4,n5,n6]
+        assert n2.children == [n3, n4, n5, n6]
         # Put it back where it was
         n4.move(n3, None)
         assert n4.parent is n3
@@ -88,8 +90,8 @@ class TestNode(unittest.TestCase):
         assert str(n4.title) == '?????'
 
     def testTitle(self):
-        """Tests that we can set the title. 
-        Auto title changes are tested in 
+        """Tests that we can set the title.
+        Auto title changes are tested in
         testMove
         """
         # Change its title
@@ -116,9 +118,9 @@ class TestNode(unittest.TestCase):
         n2.delete()
         for n in '3456':
             assert package.findNode(n) is None, n
-        assert n2.children == [] # Not necessary as long as 4 is cut of
-        assert n1.children == [n7,n8]
+        assert n2.children == []  # Not necessary as long as 4 is cut of
+        assert n1.children == [n7, n8]
 
-        
+
 if __name__ == "__main__":
     unittest.main()

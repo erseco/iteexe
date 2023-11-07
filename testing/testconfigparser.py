@@ -11,7 +11,8 @@ import unittest
 from exe.engine.configparser import ConfigParser, Section
 from tempfile import TemporaryFile
 from pprint import pprint
-import sys, os
+import sys
+import os
 
 TEST_TEXT = ('nosection=here\n'
              '[main]\n'
@@ -30,6 +31,7 @@ TEST_TEXT = ('nosection=here\n'
              '~comment2=2\n'
              ' available\t=   yes\n'
              'funny-name_mate: crusty the clown')
+
 
 def testFile():
     """Creates and returns a test file that you
@@ -56,11 +58,11 @@ class TestConfigParser(unittest.TestCase):
         file_ = testFile()
         self.c.read(file_)
         assert self.c._sections == {'second':
-                                       {'good': 'yes',
+                                    {'good': 'yes',
                                         'bad': 'no',
-                                         'available': 'yes',
-                                         'funny-name_mate': 'crusty the clown'}, 
-                                    'main': 
+                                        'available': 'yes',
+                                     'funny-name_mate': 'crusty the clown'},
+                                    'main':
                                         {'running': 'on\t\u0100\u01100',
                                          'testing': 'false',
                                          'two words': 'are better than one',
@@ -70,12 +72,12 @@ class TestConfigParser(unittest.TestCase):
 
     def testReadFileName(self):
         """Can read text"""
-        goodDict = {'second': 
-                        {'good': 'yes',
-                         'bad': 'no',
-                          'available': 'yes',
-                          'funny-name_mate': 'crusty the clown'}, 
-                    'main': 
+        goodDict = {'second':
+                    {'good': 'yes',
+                     'bad': 'no',
+                     'available': 'yes',
+                     'funny-name_mate': 'crusty the clown'},
+                    'main':
                         {'running': 'on\t\u0100\u01100',
                          'testing': 'false',
                          'two words': 'are better than one',
@@ -92,6 +94,7 @@ class TestConfigParser(unittest.TestCase):
         self.c.read('temp.ini')
         assert self.c._sections == goodDict, self.c._sections
         # Can read funny string object filenames
+
         class MyStr(str):
             """Simply overrides string to make it a different type"""
         self.c.read(MyStr('temp.ini'))
@@ -114,7 +117,7 @@ class TestConfigParser(unittest.TestCase):
         self.c.write(file_)
         file_.seek(0)
         result = file_.readlines()
-        result = list(map(str, result, ['utf8']*len(result)))
+        result = list(map(str, result, ['utf8'] * len(result)))
         goodResult = ['nosection=here\n',
                       '[main]\n',
                       'level=5\n',
@@ -214,7 +217,7 @@ class TestConfigParser(unittest.TestCase):
 
     def testShortening(self):
         """There was a bug (Issue 66) where when a longer name was read
-        and a shorter name was written, the extra characters of the 
+        and a shorter name was written, the extra characters of the
         longer name would remain in the entry"""
         file_ = open('temp.ini', 'w')
         file_.write(TEST_TEXT)
@@ -308,7 +311,7 @@ class TestAutoWrite(unittest.TestCase):
         assert 'name = Matthew' in self.getVal(file_), self.getVal(file_)
         del c.main.name
         assert 'Matthew' not in self.getVal(file_)
-        
+
 
 class TestSections(unittest.TestCase):
     """
@@ -417,16 +420,16 @@ class TestSections(unittest.TestCase):
         assert othersec is mysec is self.c.main is self.c._sections['main']
         newsec = Section('newsection', self.c)
         assert newsec is \
-               self.c.addSection('newsection') is \
-               self.c.newsection is \
-               self.c._sections['newsection']
+            self.c.addSection('newsection') is \
+            self.c.newsection is \
+            self.c._sections['newsection']
         newsec2 = self.c.addSection('newsection2')
         assert newsec2 is \
-               self.c.addSection('newsection2') is \
-               Section('newsection2', self.c) is \
-               self.c.newsection2 is \
-               self.c._sections['newsection2'] and \
-               newsec2 is not newsec
+            self.c.addSection('newsection2') is \
+            Section('newsection2', self.c) is \
+            self.c.newsection2 is \
+            self.c._sections['newsection2'] and \
+            newsec2 is not newsec
         # Different parent should create new object
         otherConf = ConfigParser()
         sec1 = otherConf.addSection('x')
@@ -444,9 +447,13 @@ class TestSections(unittest.TestCase):
         self.assertRaises(AttributeError, lambda: self.c.notexists.notexists)
         # Try with default as None
         self.c.defaultValue = None
-        assert self.c.get('main', 'not exists') is None, self.c.get('main', 'not exists')
+        assert self.c.get(
+            'main', 'not exists') is None, self.c.get(
+            'main', 'not exists')
         assert self.c.main.notexists is None
-        self.assertRaises(AttributeError, lambda: self.c.notexists.notexists) # This cannot be helped
+        self.assertRaises(
+            AttributeError,
+            lambda: self.c.notexists.notexists)  # This cannot be helped
         # Try with a string default
         self.c.defaultValue = 'Happy Face'
         assert self.c.get('main', 'not exists') == 'Happy Face'
@@ -458,7 +465,5 @@ class TestSections(unittest.TestCase):
         assert self.c.second.notexists == 'second.notexists'
 
 
-
-    
 if __name__ == '__main__':
     unittest.main()

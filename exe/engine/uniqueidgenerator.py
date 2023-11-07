@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@ log = logging.getLogger(__name__)
 
 # ===========================================================================
 
+
 class UniqueIdGenerator(object):
     """
     Utility class to create (reasonably) unique identifiers
@@ -39,22 +40,21 @@ class UniqueIdGenerator(object):
 
     def __init__(self, packageName, exePath):
         """Initialize the generator"""
-        self.prefix  = "eXe" 
+        self.prefix = "eXe"
         self.prefix += re.sub(r"\W", "", packageName)[-10:]
 
         if exePath:
             self.prefix += "%x" % int(getmtime(exePath))
-
 
     def generate(self):
         """
         Generate the next identifier
         Identifier is made up of
         "eXe" + last 10 alphanumeric characters of packageName +
-         timestamp of eXe program + current timestamp + a sequential number 
+         timestamp of eXe program + current timestamp + a sequential number
         """
-        uniqueId  = self.prefix
-        uniqueId += "%x" % int(time.time()*100)
+        uniqueId = self.prefix
+        uniqueId += "%x" % int(time.time() * 100)
         uniqueId += "%x" % UniqueIdGenerator.nextId
         UniqueIdGenerator.nextId += 1
 

@@ -29,7 +29,9 @@ import shutil
 import json
 import unicodedata
 import cgi
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 try:
     import xml.etree.cElementTree as ET
@@ -67,7 +69,8 @@ class CreateStyleExistsError(CreateStyleError):
     def __init__(self, absolute_style_dir, message=''):
         self.absolute_style_dir = absolute_style_dir
         if message == '':
-            self.message = _('Error creating style, local style already exists. ')
+            self.message = _(
+                'Error creating style, local style already exists. ')
         else:
             self.message = message
 
@@ -82,7 +85,7 @@ class StyleDesigner(Renderable, Resource):
     name = 'styleDesigner'
 
     def __init__(self, parent):
-        """ 
+        """
         Initialize
         """
         parent.putChild(self.name, self)
@@ -92,7 +95,7 @@ class StyleDesigner(Renderable, Resource):
     def styleIdFromName(self, style_name):
         """
         Gets the style ID from the style full name
-        
+
         Replaces ' ', '\t', '\f', '\r' with '_', accented with non accented characters,
         cleans non alphanumeric chars and converts to lower case
         """
@@ -101,7 +104,7 @@ class StyleDesigner(Renderable, Resource):
         style_id = unicodedata.normalize('NFKD', style_id)
         style_id = style_id.encode('ascii', 'ignore')
 
-        clean_non_alphanum = re.compile('\W+')
+        clean_non_alphanum = re.compile('\\W+')
         style_id = clean_non_alphanum.sub(' ', style_id).strip()
         style_id = style_id.replace(' ', '_')
 
@@ -117,25 +120,30 @@ class StyleDesigner(Renderable, Resource):
             response = {}
 
             if action == 'createStyle':
-                # Get style directory (which is also the style ID) from the style name
-                style_dirname = self.styleIdFromName(request.args['style_name'][-1])
+                # Get style directory (which is also the style ID) from the
+                # style name
+                style_dirname = self.styleIdFromName(
+                    request.args['style_name'][-1])
                 style = self.createStyle(style_dirname, request.args)
                 response['style_dirname'] = style.get_dirname()
                 response['success'] = True
-                response['message'] = _('Style %s successfully created!') % (style.get_name())
+                response['message'] = _(
+                    'Style %s successfully created!') % (style.get_name())
 
             if action == 'saveStyle':
                 # Style directory must has been explicitly set
                 style_dirname = request.args['style_dirname'][0]
                 try:
                     # Replace %xx escapes by their single-character equivalent.
-                    style_dirname = urllib.parse.unquote(style_dirname).decode('utf8')
-                except:
+                    style_dirname = urllib.parse.unquote(
+                        style_dirname).decode('utf8')
+                except BaseException:
                     pass
                 style = self.saveStyle(style_dirname, request.args)
                 response['style_dirname'] = style.get_dirname()
                 response['success'] = True
-                response['message'] = _('Style %s successfully saved!') % (style.get_name())
+                response['message'] = _(
+                    'Style %s successfully saved!') % (style.get_name())
 
         except Exception as e:
             # Operation has failed, but we can inform the user about the error
@@ -159,7 +167,9 @@ class StyleDesigner(Renderable, Resource):
         theme = ET.Element('theme')
         ET.SubElement(theme, 'name').text = style_config['name']
         ET.SubElement(theme, 'version').text = style_config['version']
-        ET.SubElement(theme, 'compatibility').text = style_config['compatibility']
+        ET.SubElement(
+            theme,
+            'compatibility').text = style_config['compatibility']
         ET.SubElement(theme, 'author').text = style_config['author']
         ET.SubElement(theme, 'author-url').text = style_config['author-url']
         ET.SubElement(theme, 'license').text = style_config['license']
@@ -180,11 +190,14 @@ class StyleDesigner(Renderable, Resource):
         # UGLY HACK (mclois): 'extra-head' and 'extra-body' can contain HTML headers and scripts,
         # they must be wrapped on <![CDATA[ ]] tags, and HTML entities should not be escaped
         # ElementTree escapes HTML entities, so I add those attributes here
-        extra = '    <extra-head><![CDATA[' + style_config['extra-head'] + ']]></extra-head>\n'
-        extra = extra + '    <extra-body><![CDATA[' + style_config['extra-body'] + ']]></extra-body>\n'
+        extra = '    <extra-head><![CDATA[' + \
+            style_config['extra-head'] + ']]></extra-head>\n'
+        extra = extra + \
+            '    <extra-body><![CDATA[' + style_config['extra-body'] + ']]></extra-body>\n'
         try:
-            extra = extra + '    <edition-extra-head><![CDATA[' + style_config['edition-extra-head'] + ']]></edition-extra-head>\n'
-        except:
+            extra = extra + \
+                '    <edition-extra-head><![CDATA[' + style_config['edition-extra-head'] + ']]></edition-extra-head>\n'
+        except BaseException:
             # The Style has no edition-extra-head
             extra = extra
         extra = extra + '</theme>'
@@ -193,7 +206,7 @@ class StyleDesigner(Renderable, Resource):
         configxml_file = open(styleDir / 'config.xml', 'w')
         configxml_file.write(configxml_pretty)
         configxml_file.close()
-        
+
         return styleDir
 
     def createStyle(self, style_dirname, style_data):
@@ -207,7 +220,9 @@ class StyleDesigner(Renderable, Resource):
 
         styleDir = self.config.stylesDir / style_dirname
         if os.path.isdir(styleDir):
-            raise CreateStyleExistsError(styleDir, _('Style directory %s already exists') % (style_dirname))
+            raise CreateStyleExistsError(
+                styleDir, _('Style directory %s already exists') %
+                (style_dirname))
         else:
             try:
                 os.mkdir(styleDir)
@@ -238,17 +253,19 @@ class StyleDesigner(Renderable, Resource):
 
                 description = ''
                 if 'description' in style_data:
-                    description = cgi.escape(style_data['description'][0], True)
+                    description = cgi.escape(
+                        style_data['description'][0], True)
 
                 # extra-head and extra-body attributes can contain user defined scripts or headers
                 # ('base' style contains scripts and parameters needed for responsiveness).
                 # The UI has no fields to modify these attributes, so they will never be in
                 # 'style_data', but since user can edit 'config.xml' any time, the values
-                # present in there must be kept 
+                # present in there must be kept
                 config_base = ET.parse(baseStyleDir / 'config.xml')
                 extra_head = config_base.find('extra-head').text
                 extra_body = config_base.find('extra-body').text
-                edition_extra_head = config_base.find('edition-extra-head').text
+                edition_extra_head = config_base.find(
+                    'edition-extra-head').text
                 configxml = {
                     'name': style_data['style_name'][-1],
                     'version': '1.0',
@@ -269,7 +286,8 @@ class StyleDesigner(Renderable, Resource):
                 if style.isValid():
                     if not self.config.styleStore.addStyle(style):
                         styleDir.rmtree()
-                        raise CreateStyleExistsError(styleDir, _('The style name already exists'))
+                        raise CreateStyleExistsError(
+                            styleDir, _('The style name already exists'))
 
                 return style
 
@@ -286,7 +304,8 @@ class StyleDesigner(Renderable, Resource):
 
         # Check that the target dir already exists and update files
         if not os.path.isdir(styleDir):
-            raise StyleDesignerError(_('Error saving style, style directory does not exist'))
+            raise StyleDesignerError(
+                _('Error saving style, style directory does not exist'))
         else:
             try:
                 style = Style(styleDir)
@@ -309,7 +328,8 @@ class StyleDesigner(Renderable, Resource):
 
                 description = ''
                 if 'description' in style_data:
-                    description = cgi.escape(style_data['description'][0], True)
+                    description = cgi.escape(
+                        style_data['description'][0], True)
 
                 new_version = style.get_version()
                 if 'version' in style_data:
@@ -319,32 +339,35 @@ class StyleDesigner(Renderable, Resource):
                 if new_version != style.get_version():
                     next_version = new_version
                 else:
-                    current_version = tuple(map(int, style.get_version().split('.')));
-                    next_version = (current_version[0], current_version[1] + 1);
+                    current_version = tuple(
+                        map(int, style.get_version().split('.')))
+                    next_version = (current_version[0], current_version[1] + 1)
                     next_version = '.'.join(map(str, next_version))
 
                 # extra-head and extra-body attributes can contain user defined scripts or headers
                 # ('base' style contains scripts and parameters needed for responsiveness).
                 # The UI has no fields to modify these attributes, so they will never be in
                 # 'style_data', but since user can edit 'config.xml' any time, the values
-                # present in there must be kept 
+                # present in there must be kept
                 config_org = ET.parse(styleDir / 'config.xml')
                 extra_head = config_org.find('extra-head').text
                 extra_body = config_org.find('extra-body').text
                 if config_org.find('edition-extra-head'):
-                    edition_extra_head = config_org.find('edition-extra-head').text
+                    edition_extra_head = config_org.find(
+                        'edition-extra-head').text
                 else:
                     # To review
                     # edition-extra-head was not in the previous version of StyleDesigner
                     # edition_extra_head was not found in the Style
                     copy_from = 'base'
-                    baseStyleDir = self.config.stylesDir / copy_from                
+                    baseStyleDir = self.config.stylesDir / copy_from
                     config_base = ET.parse(baseStyleDir / 'config.xml')
                     config_extra_head = config_base.find('extra-head').text
                     if config_extra_head == extra_head:
                         # The user did not change the original 'extra-head', so _style_js.js exists
                         # We just use Base's 'edition-extra-head'
-                        edition_extra_head = config_base.find('edition-extra-head').text
+                        edition_extra_head = config_base.find(
+                            'edition-extra-head').text
                     else:
                         # The user changed the original 'extra-head', so _style_js.js might not exist
                         # edition_extra_head
@@ -362,13 +385,14 @@ class StyleDesigner(Renderable, Resource):
                     'extra-body': extra_body,
                     'edition-extra-head': edition_extra_head
                 }
-                
-                newStyleDir= self.updateStyle(styleDir, contentcss, navcss, configxml)
-                
+
+                newStyleDir = self.updateStyle(
+                    styleDir, contentcss, navcss, configxml)
+
                 newStyle = Style(newStyleDir)
                 self.config.styleStore.delStyle(style)
                 self.config.styleStore.addStyle(newStyle)
-                
+
                 return newStyle
 
             except Exception as e:

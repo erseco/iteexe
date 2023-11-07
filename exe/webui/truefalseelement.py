@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org
 #
@@ -22,34 +22,37 @@ TrueFalseElement is responsible for a block of question. Used by TrueFalseBlock.
 """
 
 import logging
-from exe.webui         import common
+from exe.webui import common
 from exe.webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 # ===========================================================================
+
+
 class TrueFalseElement(object):
     """
-    TrueFalseElement is responsible for a block of question. 
+    TrueFalseElement is responsible for a block of question.
     Used by TrueFalseBlock.
     """
+
     def __init__(self, index, idevice, question):
         """
         Initialize
         """
-        self.index      = index
-        self.id         = str(index) + "b" + idevice.id        
-        self.idevice    = idevice
+        self.index = index
+        self.id = str(index) + "b" + idevice.id
+        self.idevice = idevice
 
-        self.question   = question
+        self.question = question
         # also split out each part for a separate TextAreaElement:
         # but first...
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if question.questionTextArea.idevice is None: 
+        if question.questionTextArea.idevice is None:
             question.questionTextArea.idevice = idevice
-        if question.feedbackTextArea.idevice is None: 
+        if question.feedbackTextArea.idevice is None:
             question.feedbackTextArea.idevice = idevice
-        if question.hintTextArea.idevice is None: 
+        if question.hintTextArea.idevice is None:
             question.hintTextArea.idevice = idevice
         #
         self.question_question = TextAreaElement(question.questionTextArea)
@@ -57,20 +60,20 @@ class TrueFalseElement(object):
         self.question_hint = TextAreaElement(question.hintTextArea)
 
         # note, question.isCorrect is left as it was, and not split out.
-        # because there are low-level mechanisms in place somewhere 
+        # because there are low-level mechanisms in place somewhere
         # with the radio buttons or ??? expecting that as such.
-        
-        self.questionId = "question"+ str(index) + "b" + idevice.id
+
+        self.questionId = "question" + str(index) + "b" + idevice.id
         self.question_question.id = self.questionId
-        self.feedbackId = "feedback" + str(index) + "b" + idevice.id 
+        self.feedbackId = "feedback" + str(index) + "b" + idevice.id
         self.question_feedback.id = self.feedbackId
-        self.hintId     = "hint" + str(index) + "b" + idevice.id 
+        self.hintId = "hint" + str(index) + "b" + idevice.id
         self.question_hint.id = self.hintId
-        self.keyId      = "Key" + str(index) + "b" + idevice.id       
+        self.keyId = "Key" + str(index) + "b" + idevice.id
 
     def process(self, request):
         """
-        Process arguments from the web server.  Return any which apply to this 
+        Process arguments from the web server.  Return any which apply to this
         element.
         """
         log.debug("process " + repr(request.args))
@@ -78,110 +81,109 @@ class TrueFalseElement(object):
         is_cancel = common.requestHasCancel(request)
 
         if self.questionId in request.args \
-        and not is_cancel:
+                and not is_cancel:
             self.question_question.process(request)
-            
+
         if self.hintId in request.args \
-        and not is_cancel:
+                and not is_cancel:
             self.question_hint.process(request)
-                        
+
         if self.keyId in request.args \
-        and not is_cancel:
+                and not is_cancel:
             if request.args[self.keyId][0] == "true":
-                self.question.isCorrect = True 
+                self.question.isCorrect = True
                 log.debug("question " + repr(self.question.isCorrect))
             else:
-                self.question.isCorrect = False        
-        
+                self.question.isCorrect = False
+
         if self.feedbackId in request.args \
-        and not is_cancel:
+                and not is_cancel:
             self.question_feedback.process(request)
-            
+
         if "action" in request.args and request.args["action"][0] == self.id:
             # before deleting the question object, remove any internal anchors:
             for q_field in self.question.getRichTextFields():
-                 q_field.ReplaceAllInternalAnchorsLinks()  
-                 q_field.RemoveAllInternalLinks()  
+                q_field.ReplaceAllInternalAnchorsLinks()
+                q_field.RemoveAllInternalLinks()
             self.idevice.questions.remove(self.question)
-            # disable Undo once a question has been deleted: 
+            # disable Undo once a question has been deleted:
             self.idevice.undo = False
 
     def renderEdit(self):
         """
         Returns an XHTML string for editing this option element
         """
-        
+
         html = self.question_question.renderEdit()
 
-        html += _("True") + " " 
-        html += common.option(self.keyId, self.question.isCorrect, "true") 
-        html += _("False") + " " 
-        html += common.option(self.keyId, not self.question.isCorrect, "false") 
+        html += _("True") + " "
+        html += common.option(self.keyId, self.question.isCorrect, "true")
+        html += _("False") + " "
+        html += common.option(self.keyId, not self.question.isCorrect, "false")
 
         html += "<br/><br/>\n"
 
         html += common.elementInstruc(self.idevice.keyInstruc)
-        
+
         html += self.question_feedback.renderEdit()
         html += self.question_hint.renderEdit()
-        
-        html += common.submitImage(self.id, self.idevice.id, 
+
+        html += common.submitImage(self.id, self.idevice.id,
                                    "/images/stock-cancel.png",
                                    _("Delete question"))
         html += "<br/><br/>\n"
         return html
-    
+
     def renderQuestionView(self):
         """
         Returns an XHTML string for viewing this question element
         """
         is_preview = 0
-        html  = self.renderQuestion(is_preview)        
+        html = self.renderQuestion(is_preview)
         return html
 
     """
     Will render this for XML - is actually designed to change this into
     an MCQ (because I'm lazy at the moment to make more J2ME)
     """
+
     def renderQuestionXML(self):
         questionFormatted = self.question_question.renderView()
         questionFormatted = questionFormatted.replace("align=\"right\"", "")
         xml = "<question><![CDATA["
         xml += questionFormatted
         xml += "]]>"
-        
+
         options = [True, False]
-        
+
         for currentOption in options:
             answerCorrectStr = "false"
             if currentOption == self.question.isCorrect:
                 answerCorrectStr = "true"
-                
+
             xml += "<answer iscorrect='%s'><![CDATA[\n" % answerCorrectStr
             xml += "<span class='exe_tfmob'>" + str(currentOption) + "</span>"
             xml += "]]><feedback>\n<![CDATA["
             if currentOption == self.question.isCorrect:
-                #this is a correct answer
+                # this is a correct answer
                 xml += "<img src='icon_mobile_stockcorrect.png'/>"
             else:
                 xml += "<img src='icon_mobile_stockwrong.png'/>"
-                            
+
             xml += "]]></feedback>\n"
             xml += "</answer>\n"
-            
+
         xml += "</question>\n"
-        
+
         return xml
 
-
-    
     def renderQuestionPreview(self):
-        #TODO merge renderQuestionView and renderQuestionPreview
+        # TODO merge renderQuestionView and renderQuestionPreview
         """
         Returns an XHTML string for previewing this question element
         """
         is_preview = 1
-        html  = self.renderQuestion(is_preview)
+        html = self.renderQuestion(is_preview)
         return html
 
     def renderQuestion(self, is_preview):
@@ -189,48 +191,54 @@ class TrueFalseElement(object):
         Returns an XHTML string for viewing and previewing this question element
         """
         log.debug("renderPreview called in the form of renderQuestion")
-        
-        lb = "\n" #Line breaks
+
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         titleTag = "h3"
         if dT == "HTML5":
             titleTag = "h1"
-        
+
         if is_preview:
-            html = '<'+titleTag+' class="js-sr-av">' + c_("Question")+' '+str(self.index+1)+'</'+titleTag+'>'+lb
+            html = '<' + titleTag + ' class="js-sr-av">' + \
+                c_("Question") + ' ' + str(self.index + 1) + '</' + titleTag + '>' + lb
             html += self.question_question.renderPreview()
             if self.question_hint.field.content:
-                html += common.ideviceHint(self.question_hint.field.content,"preview","h4")
-        else: 
-            html = '<form name="true-false-form-'+self.id+'" action="#" class="activity-form">'+lb        
-            html += '<'+titleTag+' class="js-sr-av">' + c_("Question")+' '+str(self.index+1)+'</'+titleTag+'>'+lb
+                html += common.ideviceHint(
+                    self.question_hint.field.content, "preview", "h4")
+        else:
+            html = '<form name="true-false-form-' + self.id + \
+                '" action="#" class="activity-form">' + lb
+            html += '<' + titleTag + ' class="js-sr-av">' + \
+                c_("Question") + ' ' + str(self.index + 1) + '</' + titleTag + '>' + lb
             html += self.question_question.renderView()
             if self.question_hint.field.content:
-                html += common.ideviceHint(self.question_hint.field.content,"view","h4")
+                html += common.ideviceHint(
+                    self.question_hint.field.content, "view", "h4")
 
-        html += '<p class="iDevice_answer js-required">'+lb
-        html += '<label for="true'+self.id+'">'
-        html += self.__option(0, 2, "true")+' '
+        html += '<p class="iDevice_answer js-required">' + lb
+        html += '<label for="true' + self.id + '">'
+        html += self.__option(0, 2, "true") + ' '
         html += c_("True")
-        html += '</label> '+lb
-        html += '<label for="false'+self.id+'">'
-        html += self.__option(1, 2, "false")+' '
+        html += '</label> ' + lb
+        html += '<label for="false' + self.id + '">'
+        html += self.__option(1, 2, "false") + ' '
         html += c_("False")
-        html += '</label>'+lb
-        html += '</p>'+lb
-        
+        html += '</label>' + lb
+        html += '</p>' + lb
+
         if not is_preview:
-            html += '</form>'+lb
-       
+            html += '</form>' + lb
+
         return html
-    
+
     def __option(self, index, length, true):
         """Add a option input"""
-        html  = '<input type="radio" name="option%s" ' % self.id
+        html = '<input type="radio" name="option%s" ' % self.id
         html += 'id="%s%s" ' % (true, self.id)
-        html += 'class="exe-radio-option exe-radio-option-%d-%d-%s-truefalse" />' % (index, length, self.id)
+        html += 'class="exe-radio-option exe-radio-option-%d-%d-%s-truefalse" />' % (
+            index, length, self.id)
         return html
-    
+
     def renderFeedbackPreview(self):
         """
         Merely a front-end to renderFeedbackView(), setting preview mode.
@@ -243,27 +251,31 @@ class TrueFalseElement(object):
         """
         return xhtml string for display this option's feedback
         """
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         sectionTag = "div"
         titleTag = "h4"
         if dT == "HTML5":
             sectionTag = "section"
-            titleTag = "h1"     
-        
+            titleTag = "h1"
+
         if is_preview:
             content = self.question_feedback.field.content_w_resourcePaths
         else:
-            content = self.question_feedback.field.content_wo_resourcePaths        
-        
-        html = '<'+sectionTag+' id="s'+self.id+'" class="feedback js-feedback js-hidden">'+lb
-        html += '<'+titleTag+' class="js-sr-av">'+c_("Feedback")+'</'+titleTag+'>'+lb
+            content = self.question_feedback.field.content_wo_resourcePaths
+
+        html = '<' + sectionTag + ' id="s' + self.id + \
+            '" class="feedback js-feedback js-hidden">' + lb
+        html += '<' + titleTag + ' class="js-sr-av">' + \
+            c_("Feedback") + '</' + titleTag + '>' + lb
         if self.question.isCorrect:
-            html += '<p><strong id="s'+self.id+'-result" class="right">'+c_("True")+'</strong></p>'+lb
+            html += '<p><strong id="s' + self.id + \
+                '-result" class="right">' + c_("True") + '</strong></p>' + lb
         else:
-            html += '<p><strong id="s'+self.id+'-result" class="wrong">'+c_("False")+'</strong></p>'+lb
-        html += content+lb
-        html += '</'+sectionTag+'>'+lb   
-        
+            html += '<p><strong id="s' + self.id + \
+                '-result" class="wrong">' + c_("False") + '</strong></p>' + lb
+        html += content + lb
+        html += '</' + sectionTag + '>' + lb
+
         return html
 # ===========================================================================

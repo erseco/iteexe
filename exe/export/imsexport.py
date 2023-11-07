@@ -87,7 +87,10 @@ class Manifest(object):
             metadata = copy.deepcopy(self.package.lomEs)
             title = metadata.get_general().get_title() or lomsubs.titleSub([])
             if not title.get_string():
-                title.add_string(lomsubs.LangStringSub(self.package.lang.encode('utf-8'), self.package.name))
+                title.add_string(
+                    lomsubs.LangStringSub(
+                        self.package.lang.encode('utf-8'),
+                        self.package.name))
                 metadata.get_general().set_title(title)
             if self.package.exportSource:
                 technical = metadata.get_technical()
@@ -104,17 +107,30 @@ class Manifest(object):
                         found = True
                 if not found:
                     opr.add_string(
-                        lomsubs.LangStringSub(self.package.lang.encode('utf-8'), self.package.lomESPlatformMark))
-            metadata.export(output, 0, namespace_=namespace, pretty_print=False)
+                        lomsubs.LangStringSub(
+                            self.package.lang.encode('utf-8'),
+                            self.package.lomESPlatformMark))
+            metadata.export(
+                output,
+                0,
+                namespace_=namespace,
+                pretty_print=False)
             xml = output.getvalue()
         if self.metadataType == 'LOM':
             output = io.StringIO()
             metadata = copy.deepcopy(self.package.lom)
             title = metadata.get_general().get_title() or lomsubs.titleSub([])
             if not title.get_string():
-                title.add_string(lomsubs.LangStringSub(self.package.lang.encode('utf-8'), self.package.name))
+                title.add_string(
+                    lomsubs.LangStringSub(
+                        self.package.lang.encode('utf-8'),
+                        self.package.name))
                 metadata.get_general().set_title(title)
-            metadata.export(output, 0, namespace_=namespace, pretty_print=False)
+            metadata.export(
+                output,
+                0,
+                namespace_=namespace,
+                pretty_print=False)
             xml = output.getvalue()
         if self.metadataType == 'DC':
             lrm = self.package.dublinCore.__dict__.copy()
@@ -133,7 +149,7 @@ class Manifest(object):
                 lrm['date'] = time.strftime('%Y-%m-%d')
             # if they don't look like VCARD entries, coerce to fn:
             for f in ('creator', 'publisher', 'contributors'):
-                if re.match('.*[:;]', lrm[f]) == None:
+                if re.match('.*[:;]', lrm[f]) is None:
                     lrm[f] = 'FN:' + lrm[f]
             templateFilename = self.config.webDir / 'templates' / 'imslrm.xml'
             template = open(templateFilename, 'rb').read()
@@ -211,7 +227,8 @@ class Manifest(object):
         # If NOT commoncartridge, finally, special resource with
         # all the common files, as binded with de active style ones:
         xmlStr += """  <resource identifier="COMMON_FILES" type="webcontent" adlcp:scormtype="asset">\n"""
-        my_style = G.application.config.styleStore.getStyle(page.node.package.style)
+        my_style = G.application.config.styleStore.getStyle(
+            page.node.package.style)
         for x in my_style.get_style_dir().files('*.*'):
             xmlStr += """    <file href="%s"/>\n""" % x.basename()
         # we do want base.css and some images:
@@ -225,13 +242,14 @@ class Manifest(object):
         xmlStr += """    <file href="common.js"/>\n"""
         xmlStr += """    <file href="common_i18n.js"/>\n"""
         if my_style.hasValidConfig():
-            if my_style.get_jquery() == True:
+            if my_style.get_jquery():
                 xmlStr += """    <file href="exe_jquery.js"/>\n"""
         else:
             xmlStr += """    <file href="exe_jquery.js"/>\n"""
 
         # SCORM 1.2 and SCORM 2004:
-        # So that certain platforms do not delete the necessary files so that the resources can be editable
+        # So that certain platforms do not delete the necessary files so that
+        # the resources can be editable
         if page.node.package.exportSource:
             xmlStr += """    <file href="content.xsd"/>\n"""
             xmlStr += """    <file href="content.data"/>\n"""
@@ -287,22 +305,29 @@ class Manifest(object):
         fileStr = ""
 
         resources = page.node.getResources()
-        my_style = G.application.config.styleStore.getStyle(page.node.package.style)
+        my_style = G.application.config.styleStore.getStyle(
+            page.node.package.style)
         if common.nodeHasMediaelement(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'mediaelement').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'mediaelement').files()]
         if common.nodeHasTooltips(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'exe_tooltips').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'exe_tooltips').files()]
         if common.hasGalleryIdevice(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'exe_lightbox').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'exe_lightbox').files()]
         if common.hasFX(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'exe_effects').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'exe_effects').files()]
         if common.hasSH(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'exe_highlighter').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'exe_highlighter').files()]
         if common.hasGames(page.node):
-            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" / 'exe_games').files()]
+            resources = resources + \
+                [f.basename() for f in (self.config.webDir / "scripts" / 'exe_games').files()]
         if common.hasABCMusic(page.node):
-            resources = resources + [f.basename() for f in (
-                        self.config.webDir / "scripts" / 'tinymce_4' / 'js' / 'tinymce' / 'plugins' / 'abcmusic' / 'export').files()]
+            resources = resources + [f.basename() for f in (self.config.webDir / "scripts" /
+                                                            'tinymce_4' / 'js' / 'tinymce' / 'plugins' / 'abcmusic' / 'export').files()]
 
         for resource in resources:
             fileStr += "    <file href=\"" + escape(resource) + "\"/>\n"
@@ -360,7 +385,8 @@ class IMSPage(Page):
         lenguaje = G.application.config.locale
         if self.node.package.dublinCore.language != "":
             lenguaje = self.node.package.dublinCore.language
-        html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">" + lb
+        html += "<html lang=\"" + lenguaje + "\" xml:lang=\"" + \
+            lenguaje + "\" xmlns=\"http://www.w3.org/1999/xhtml\">" + lb
         html += "<head>" + lb
         html += "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" + lb
         html += "<title>"
@@ -371,16 +397,19 @@ class IMSPage(Page):
                 html += escape(self.node.titleLong)
         else:
             if self.node.package.title != '':
-                html += escape(self.node.titleLong) + " | " + escape(self.node.package.title)
+                html += escape(self.node.titleLong) + " | " + \
+                    escape(self.node.package.title)
             else:
                 html += escape(self.node.titleLong)
         html += " </title>" + lb
         if dT != "HTML5" and self.node.package.dublinCore.language != "":
             html += '<meta http-equiv="content-language" content="' + lenguaje + '" />' + lb
         if self.node.package.author != "":
-            html += '<meta name="author" content="' + escape(self.node.package.author, True) + '" />' + lb
+            html += '<meta name="author" content="' + \
+                escape(self.node.package.author, True) + '" />' + lb
         html += common.getLicenseMetadata(self.node.package.license)
-        html += '<meta name="generator" content="eXeLearning ' + release + ' - exelearning.net" />' + lb
+        html += '<meta name="generator" content="eXeLearning ' + \
+            release + ' - exelearning.net" />' + lb
         if self.node.id == '0':
             if self.node.package.description != "":
                 desc = self.node.package.description
@@ -402,14 +431,16 @@ class IMSPage(Page):
         html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"content.css\" />" + lb
         if dT == "HTML5" or common.nodeHasMediaelement(self.node):
             html += '<!--[if lt IE 9]><script type="text/javascript" src="exe_html5.js"></script><![endif]-->' + lb
-        style = G.application.config.styleStore.getStyle(self.node.package.style)
+        style = G.application.config.styleStore.getStyle(
+            self.node.package.style)
 
         # jQuery
         if style.hasValidConfig():
-            if style.get_jquery() == True:
+            if style.get_jquery():
                 html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
             else:
-                html += '<script type="text/javascript" src="' + style.get_jquery() + '"></script>' + lb
+                html += '<script type="text/javascript" src="' + \
+                    style.get_jquery() + '"></script>' + lb
         else:
             html += '<script type="text/javascript" src="exe_jquery.js"></script>' + lb
 
@@ -431,7 +462,8 @@ class IMSPage(Page):
 
         if common.hasMagnifier(self.node):
             html += '<script type="text/javascript" src="mojomagnify.js"></script>' + lb
-        # Some styles might have their own JavaScript files (see their config.xml file)
+        # Some styles might have their own JavaScript files (see their
+        # config.xml file)
         if style.hasValidConfig():
             html += style.get_extra_head()
         html += common.getExtraHeadContent(self.node.package)
@@ -439,7 +471,8 @@ class IMSPage(Page):
         extraCSS = ''
         if self.node.package.get_loadMathEngine():
             extraCSS = ' exe-auto-math'
-        html += '<body class="exe-ims' + extraCSS + '" id="exe-node-' + self.node.id + '"><script type="text/javascript">document.body.className+=" js"</script>' + lb
+        html += '<body class="exe-ims' + extraCSS + '" id="exe-node-' + self.node.id + \
+            '"><script type="text/javascript">document.body.className+=" js"</script>' + lb
         html += "<div id=\"outer\">" + lb
         html += "<" + sectionTag + " id=\"main\">" + lb
         html += "<" + headerTag + " id=\"nodeDecoration\">"
@@ -456,13 +489,14 @@ class IMSPage(Page):
             if idevice.klass != 'NotaIdevice':
                 e = " em_iDevice"
                 if idevice.icon and idevice.icon != "":
-                    _iconNameToClass = re.sub('[^A-Za-z0-9_-]+', '', idevice.icon)  # Allowed CSS classNames only
+                    _iconNameToClass = re.sub(
+                        '[^A-Za-z0-9_-]+', '', idevice.icon)  # Allowed CSS classNames only
                     if _iconNameToClass != "":
                         e += ' em_iDevice_' + _iconNameToClass
                 if str(idevice.emphasis) == '0':
                     e = ""
                 html += '<' + articleTag + ' class="iDevice_wrapper %s%s" id="id%s">%s' % (
-                idevice.klass, e, idevice.id, lb)
+                    idevice.klass, e, idevice.id, lb)
                 block = g_blockFactory.createBlock(None, idevice)
                 if not block:
                     log.critical("Unable to render iDevice.")
@@ -476,8 +510,8 @@ class IMSPage(Page):
 
         if self.node.package.get_addPagination():
             html += "<p class='pagination page-counter'>" + c_('Page %s of %s') % (
-            '<strong>' + str(pages.index(self) + 1) + '</strong>',
-            '<strong>' + str(len(pages)) + '</strong>') + "</p>" + lb
+                '<strong>' + str(pages.index(self) + 1) + '</strong>',
+                '<strong>' + str(len(pages)) + '</strong>') + "</p>" + lb
 
         html += "</" + sectionTag + ">" + lb  # /#main
         html += self.renderLicense()
@@ -498,10 +532,18 @@ class IMSPage(Page):
         # Then let's change the & of the glossary links
         html = html.replace("&concept", "&amp;concept")
         # Remove "resources/" from data="resources/ and the url param
-        html = html.replace("video/quicktime\" data=\"resources/", "video/quicktime\" data=\"")
-        html = html.replace("application/x-mplayer2\" data=\"resources/", "application/x-mplayer2\" data=\"")
-        html = html.replace("audio/x-pn-realaudio-plugin\" data=\"resources/", "audio/x-pn-realaudio-plugin\" data=\"")
-        html = html.replace("<param name=\"url\" value=\"resources/", "<param name=\"url\" value=\"")
+        html = html.replace(
+            "video/quicktime\" data=\"resources/",
+            "video/quicktime\" data=\"")
+        html = html.replace(
+            "application/x-mplayer2\" data=\"resources/",
+            "application/x-mplayer2\" data=\"")
+        html = html.replace(
+            "audio/x-pn-realaudio-plugin\" data=\"resources/",
+            "audio/x-pn-realaudio-plugin\" data=\"")
+        html = html.replace(
+            "<param name=\"url\" value=\"resources/",
+            "<param name=\"url\" value=\"")
         # embed tags
         html = html.replace("></embed>", " />")
         return html
@@ -585,7 +627,12 @@ class IMSExport(object):
             page.save(outputDir, self.pages)
 
         # Create the manifest file
-        manifest = Manifest(self.config, outputDir, package, self.pages, self.metadataType)
+        manifest = Manifest(
+            self.config,
+            outputDir,
+            package,
+            self.pages,
+            self.metadataType)
         manifest.save("imsmanifest.xml")
 
         # Create lang file
@@ -594,9 +641,10 @@ class IMSExport(object):
         langGameFile.close()
 
         # jQuery
-        my_style = G.application.config.styleStore.getStyle(page.node.package.style)
+        my_style = G.application.config.styleStore.getStyle(
+            page.node.package.style)
         if my_style.hasValidConfig():
-            if my_style.get_jquery() == True:
+            if my_style.get_jquery():
                 jsFile = (self.scriptsDir / 'exe_jquery.js')
                 jsFile.copyfile(outputDir / 'exe_jquery.js')
 
@@ -639,8 +687,7 @@ class IMSExport(object):
             if isBreak:
                 break
             for idevice in page.node.idevices:
-                if (
-                        hasFlowplayer and hasMagnifier and hasXspfplayer and hasGallery and hasFX and hasSH and hasGames and hasElpLink and hasWikipedia and hasInstructions and hasMediaelement and hasTooltips and hasABCMusic):
+                if (hasFlowplayer and hasMagnifier and hasXspfplayer and hasGallery and hasFX and hasSH and hasGames and hasElpLink and hasWikipedia and hasInstructions and hasMediaelement and hasTooltips and hasABCMusic):
                     isBreak = True
                     break
                 if not hasFlowplayer:
@@ -675,9 +722,10 @@ class IMSExport(object):
                 if not hasABCMusic:
                     hasABCMusic = common.ideviceHasABCMusic(idevice)
                 if hasattr(idevice, "_iDeviceDir"):
-                    listIdevicesFiles.append((idevice.get_jsidevice_dir() / 'export'))
+                    listIdevicesFiles.append(
+                        (idevice.get_jsidevice_dir() / 'export'))
 
-            common.exportJavaScriptIdevicesFiles(page.node.idevices, outputDir);
+            common.exportJavaScriptIdevicesFiles(page.node.idevices, outputDir)
 
         if hasFlowplayer:
             videofile = (self.templatesDir / 'flowPlayer.swf')
@@ -714,7 +762,8 @@ class IMSExport(object):
             wikipediaCSS = (self.cssDir / 'exe_wikipedia.css')
             wikipediaCSS.copyfile(outputDir / 'exe_wikipedia.css')
         if hasInstructions:
-            common.copyFileIfNotInStyle('panel-amusements.png', self, outputDir)
+            common.copyFileIfNotInStyle(
+                'panel-amusements.png', self, outputDir)
             common.copyFileIfNotInStyle('stock-stop.png', self, outputDir)
         if hasMediaelement:
             mediaelement = (self.scriptsDir / 'mediaelement')
@@ -726,10 +775,12 @@ class IMSExport(object):
             exe_tooltips = (self.scriptsDir / 'exe_tooltips')
             exe_tooltips.copyfiles(outputDir)
         if hasABCMusic:
-            pluginScripts = (self.scriptsDir / 'tinymce_4/js/tinymce/plugins/abcmusic/export')
+            pluginScripts = (self.scriptsDir /
+                             'tinymce_4/js/tinymce/plugins/abcmusic/export')
             pluginScripts.copyfiles(outputDir)
         if hasattr(package, 'exportSource') and package.exportSource:
-            (G.application.config.webDir / 'templates' / 'content.xsd').copyfile(outputDir / 'content.xsd')
+            (G.application.config.webDir / 'templates' /
+             'content.xsd').copyfile(outputDir / 'content.xsd')
             (outputDir / 'content.data').write_bytes(encodeObject(package))
             (outputDir / 'contentv3.xml').write_bytes(encodeObjectToXML(package))
 
@@ -738,7 +789,10 @@ class IMSExport(object):
             (self.templatesDir / 'fdl.html').copyfile(outputDir / 'fdl.html')
 
         # Zip it up!
-        self.filename.safeSave(self.doZip, _('EXPORT FAILED!\nLast succesful export is %s.'), outputDir)
+        self.filename.safeSave(
+            self.doZip,
+            _('EXPORT FAILED!\nLast succesful export is %s.'),
+            outputDir)
         # Clean up the temporary dir
         outputDir.rmtree()
 
@@ -766,7 +820,11 @@ class IMSExport(object):
             if not pageName:
                 pageName = "__"
 
-            page = IMSPage(pageName, depth, child, metadataType=self.metadataType)
+            page = IMSPage(
+                pageName,
+                depth,
+                child,
+                metadataType=self.metadataType)
 
             self.pages.append(page)
             self.generatePages(child, depth + 1)
@@ -778,7 +836,9 @@ class IMSExport(object):
         for page in self.pages:
             for idevice in page.node.idevices:
                 for resource in idevice.userResources:
-                    if type(resource) == Resource and len(resource.storageName) > 12:
+                    if isinstance(
+                            resource, Resource) and len(
+                            resource.storageName) > 12:
                         return True
         return False
 

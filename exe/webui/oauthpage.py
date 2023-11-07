@@ -22,6 +22,7 @@ from oauthlib.oauth2 import InvalidClientError
 
 from exe.webui.renderable import Renderable
 
+
 class ProcomunOauth(Renderable, rend.Page):
     CLIENT_ID = '1Zl5ATaKchp8hecNGGhpfvQnUZaRTxkS'
     CLIENT_SECRET = '5ESrTI1QXb971YdZk22t5XOWCRWOuzHRV1L1Ho8aOl7NuTFN'
@@ -47,14 +48,15 @@ class ProcomunOauth(Renderable, rend.Page):
         request = inevow.IRequest(ctx)
         state = self.states.get(request.args.get('state', [None])[0])
         script = (
-          '''top.Ext.getCmp('oauthprocomun').close()'''
+            '''top.Ext.getCmp('oauthprocomun').close()'''
         )
         if state:
             code = request.args.get('code', [None])[0]
             oauth2Session, client = state
             script = ''
             try:
-                client.session.oauthToken['procomun'] = oauth2Session.fetch_token(self.TOKEN_URL, client_secret=self.CLIENT_SECRET, code=code)
+                client.session.oauthToken['procomun'] = oauth2Session.fetch_token(
+                    self.TOKEN_URL, client_secret=self.CLIENT_SECRET, code=code)
                 script = ('''
                     top.Ext.getCmp('oauthprocomun').hide();
                     top.eXe.app.getController("Toolbar").exportProcomun();

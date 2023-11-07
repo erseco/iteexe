@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -30,16 +30,17 @@ from copy import copy, deepcopy
 from PIL import Image, ImageDraw
 from twisted.persisted.styles import requireUpgrade
 
-from exe                  import globals as G
-from exe.engine.field     import TextField
-from exe.engine.idevice   import Idevice
-from exe.engine.path      import Path, TempDirPath, toUnicode
-from exe.engine.persist   import Persistable
-from exe.engine.resource  import Resource
+from exe import globals as G
+from exe.engine.field import TextField
+from exe.engine.idevice import Idevice
+from exe.engine.path import Path, TempDirPath, toUnicode
+from exe.engine.persist import Persistable
+from exe.engine.resource import Resource
 from exe.engine.translate import lateTranslate
-from exe.webui.common     import docType
+from exe.webui.common import docType
 
 log = logging.getLogger(__name__)
+
 
 class _ShowsResources(Persistable):
     """
@@ -76,13 +77,12 @@ class GalleryImage(_ShowsResources):
     persistenceVersion = 3
 
     # Default attribute values
-    _parent       = None
-    _caption       = None
-    _id           = None
+    _parent = None
+    _caption = None
+    _id = None
     thumbnailSize = (175, 175)
-    size          = thumbnailSize
-    bgColour      = 0x808080
-
+    size = thumbnailSize
+    bgColour = 0x808080
 
     def __init__(self, parent, caption, originalImagePath, mkThumbnail=True):
         """
@@ -93,25 +93,25 @@ class GalleryImage(_ShowsResources):
         'mkThumbnail' allows easier other, non-image, embedding
                       by not attempting a thumbnail where not applicable.
         """
-        self.parent             = parent
-        self._caption            = TextField(caption)
-        self._imageResource     = None
+        self.parent = parent
+        self._caption = TextField(caption)
+        self._imageResource = None
         self._thumbnailResource = None
-        self.makeThumbnail = mkThumbnail      
+        self.makeThumbnail = mkThumbnail
         self._saveFiles(originalImagePath)
-        
+
     def _saveFiles(self, originalImagePath=None):
         """
         Copies the image file and saves the thumbnail file
         'originalImagePath' is a Path instance
         setting 'originalImagePath' to None, will just recreate the
         thumbnail resources from the existing image resource.
-        """       
-        # protect against corrupt elps with images/resources which have 
+        """
+        # protect against corrupt elps with images/resources which have
         # somehow gone missing (appears to have been due to faulty Extracts)
         if originalImagePath is not None:
             if not os.path.exists(originalImagePath) \
-            or not os.path.isfile(originalImagePath):
+                    or not os.path.isfile(originalImagePath):
                 # If we can't find the image, apologize to the user...
                 log.error("Couldn't find image: %s\n" % (originalImagePath))
                 # and then gracefully bow out of the rest of this:
@@ -132,17 +132,23 @@ class GalleryImage(_ShowsResources):
             image = Image.open(toUnicode(self._imageResource.path))
         except Exception as e:
             # If we can't load the image, apologize to the user...
-            log.error("Couldn't load image: %s\nBecause: %s" % (self._imageResource.path, str(e)))
+            log.error(
+                "Couldn't load image: %s\nBecause: %s" %
+                (self._imageResource.path, str(e)))
             image = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
-            self._msgImage(image, _("No Thumbnail Available. Could not load original image."))
+            self._msgImage(
+                image, _("No Thumbnail Available. Could not load original image."))
         self.size = image.size
         try:
             image.thumbnail(self.thumbnailSize, Image.ANTIALIAS)
         except Exception as e:
             # If we can't load the image, apologize to the user...
-            log.error("Couldn't shrink image: %s\nBecause: %s" % (self._imageResource.path, str(e)))
+            log.error(
+                "Couldn't shrink image: %s\nBecause: %s" %
+                (self._imageResource.path, str(e)))
             image = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
-            self._msgImage(image, _("No Thumbnail Available. Could not shrink original image."))
+            self._msgImage(
+                image, _("No Thumbnail Available. Could not shrink original image."))
         image2 = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
         width1, height1 = image.size
         width2, height2 = image2.size
@@ -156,43 +162,52 @@ class GalleryImage(_ShowsResources):
             self._defaultThumbnail(image2)
 
         tmpDir = TempDirPath()
-        thumbnailPath = Path(tmpDir/self._imageResource.path.namebase + "Thumbnail.png").unique()
+        thumbnailPath = Path(
+            tmpDir /
+            self._imageResource.path.namebase +
+            "Thumbnail.png").unique()
         try:
             image2.save(thumbnailPath)
             self._thumbnailResource = Resource(self.parent, thumbnailPath)
         finally:
             thumbnailPath.remove()
-            
+
     def replace(self, originalImagePath):
         """
         JR: Reemplazamos la imagen actual y su thumbnail
-        """       
+        """
         package = self.parent.parentNode.package
-        
-        #Borramos la imagen antigua y su miniatura
+
+        # Borramos la imagen antigua y su miniatura
         if self._imageResource:
             self._imageResource.delete()
         if self.makeThumbnail and self._thumbnailResource:
             self._thumbnailResource.delete()
-        
-        #Creamos la imagen
+
+        # Creamos la imagen
         if originalImagePath is not None:
             originalImagePath = Path(originalImagePath)
             self._imageResource = Resource(self.parent, originalImagePath)
-        #Creamos la miniatura
+        # Creamos la miniatura
         try:
             image = Image.open(toUnicode(self._imageResource.path))
         except Exception as e:
-            log.error("Couldn't load image: %s\nBecause: %s" % (self._imageResource.path, str(e)))
+            log.error(
+                "Couldn't load image: %s\nBecause: %s" %
+                (self._imageResource.path, str(e)))
             image = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
-            self._msgImage(image, _("No Thumbnail Available. Could not load original image."))
+            self._msgImage(
+                image, _("No Thumbnail Available. Could not load original image."))
         self.size = image.size
         try:
             image.thumbnail(self.thumbnailSize, Image.ANTIALIAS)
         except Exception as e:
-            log.error("Couldn't shrink image: %s\nBecause: %s" % (self._imageResource.path, str(e)))
+            log.error(
+                "Couldn't shrink image: %s\nBecause: %s" %
+                (self._imageResource.path, str(e)))
             image = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
-            self._msgImage(image, _("No Thumbnail Available. Could not shrink original image."))
+            self._msgImage(
+                image, _("No Thumbnail Available. Could not shrink original image."))
         image2 = Image.new('RGBA', self.thumbnailSize, (0xFF, 0, 0, 0))
         width1, height1 = image.size
         width2, height2 = image2.size
@@ -203,7 +218,10 @@ class GalleryImage(_ShowsResources):
         except IOError:
             self._defaultThumbnail(image2)
         tmpDir = TempDirPath()
-        thumbnailPath = Path(tmpDir/self._imageResource.path.namebase + "Thumbnail.png").unique()
+        thumbnailPath = Path(
+            tmpDir /
+            self._imageResource.path.namebase +
+            "Thumbnail.png").unique()
         try:
             image2.save(thumbnailPath)
             self._thumbnailResource = Resource(self.parent, thumbnailPath)
@@ -215,7 +233,7 @@ class GalleryImage(_ShowsResources):
         Draws a nice default thumbnail on 'image'
         """
         self._msgImage(image,
-            _("No Thumbnail Available. Could not shrink image."))
+                       _("No Thumbnail Available. Could not shrink image."))
 
     def _msgImage(self, image, msg):
         """
@@ -235,7 +253,7 @@ class GalleryImage(_ShowsResources):
             # Find the longest string of words that can fit on this line
             for ln in range(len(words), -1, -1):
                 size = draw.textsize(' '.join(words[:ln]))
-                if size[0] <= self.thumbnailSize[0]: 
+                if size[0] <= self.thumbnailSize[0]:
                     break
             draw.text((1, top), ' '.join(words[:ln]))
             words = words[ln:]
@@ -251,7 +269,7 @@ class GalleryImage(_ShowsResources):
             self._imageResource.delete()
         if self.makeThumbnail and self._thumbnailResource:
             self._thumbnailResource.delete()
-        self.parent = None # This also removes our self from our parent's list
+        self.parent = None  # This also removes our self from our parent's list
 
     # Property Handlers
 
@@ -281,7 +299,7 @@ class GalleryImage(_ShowsResources):
         """
         if self._imageResource:
             self._imageResource.delete()
-            if self.makeThumbnail and self._thumbnailResource: 
+            if self.makeThumbnail and self._thumbnailResource:
                 self._thumbnailResource.delete()
         self._saveFiles(filename)
 
@@ -289,7 +307,7 @@ class GalleryImage(_ShowsResources):
         """
         Returns the full path to the thumbnail
         """
-        if (not self.makeThumbnail) or (not self._thumbnailResource): 
+        if (not self.makeThumbnail) or (not self._thumbnailResource):
             return None
         return self._thumbnailResource.path
 
@@ -305,18 +323,20 @@ class GalleryImage(_ShowsResources):
         """
         return '<GalleryImage for "' + self.get_imageFilename() + '">'
 
-
-
     # Properties
 
     imageFilename = property(get_imageFilename, set_imageFilename)
     thumbnailFilename = property(get_thumbnailFilename)
     caption = property(lambda self: self._caption.content, set_caption)
-    parent  = property(lambda self: self._parent, set_parent)
-    imageSrc = property(lambda self: '%s%s' % (self.resourcesUrl , self._imageResource.storageName))
+    parent = property(lambda self: self._parent, set_parent)
+    imageSrc = property(
+        lambda self: '%s%s' %
+        (self.resourcesUrl, self._imageResource.storageName))
 
-    thumbnailSrc = property(lambda self: '%s%s' % (self.resourcesUrl, self._thumbnailResource.storageName))
-    # note that the above thumbnailSrc might also eventually want some 
+    thumbnailSrc = property(
+        lambda self: '%s%s' %
+        (self.resourcesUrl, self._thumbnailResource.storageName))
+    # note that the above thumbnailSrc might also eventually want some
     # error checking for cases where self.makeThumbnail == false
     # For now, though, it is left to the objects using makeThumbnail==false
     # to not inappropriately reference thumbnailSrc.
@@ -339,7 +359,8 @@ class GalleryImage(_ShowsResources):
         # In case upgradeToVersion1 above has not been called yet
         requireUpgrade(self)
         self._imageResource = Resource(self.parent, Path(self._imageFilename))
-        self._thumbnailResource = Resource(self.parent, Path(self._thumbnailFilename))
+        self._thumbnailResource = Resource(
+            self.parent, Path(self._thumbnailFilename))
         self._htmlResource = Resource(self.parent, Path(self._htmlFilename))
         del self._imageFilename
         del self._thumbnailFilename
@@ -366,6 +387,8 @@ class GalleryImage(_ShowsResources):
         self.makeThumbnail = True
 
 # ===========================================================================
+
+
 class GalleryImages(Persistable, list):
     """
     Allows easy access to gallery images
@@ -430,7 +453,8 @@ class GalleryImages(Persistable, list):
         """
         Represents 'GalleryImages' as a string for the programmer
         """
-        return '<GalleryImages for "' + repr(self.idevice) + '", containing: ' + repr(self[0:len(self)]) + '>'
+        return '<GalleryImages for "' + \
+            repr(self.idevice) + '", containing: ' + repr(self[0:len(self)]) + '>'
 
 
 # ===========================================================================
@@ -442,36 +466,36 @@ class GalleryIdevice(_ShowsResources, Idevice):
 
     # Class attributes
     persistenceVersion = 8
-    previewSize        = (320.0, 240.0)
-    
+    previewSize = (320.0, 240.0)
+
     # Default attribute values
-    _htmlResource      = None
+    _htmlResource = None
 
     def __init__(self, parentNode=None):
         """
         Sets up the idevice title and instructions etc
         """
-        Idevice.__init__(self, 
-                         x_("Image Gallery"), 
-                         x_("eXe Project"), 
-                         x_("""<p>Where you have a number of images that relate 
-to each other or to a particular learning exercise you may wish to display 
+        Idevice.__init__(self,
+                         x_("Image Gallery"),
+                         x_("eXe Project"),
+                         x_("""<p>Where you have a number of images that relate
+to each other or to a particular learning exercise you may wish to display
 these in a gallery context rather then individually.</p>"""),
                          x_("Use this Idevice if you have a lot of images to "
                              "show."),
-                             "gallery",
-                             parentNode)
-        self.emphasis          = Idevice.SomeEmphasis
-        self.nextImageId       = 0
-        self.images            = GalleryImages(self)
+                         "gallery",
+                         parentNode)
+        self.emphasis = Idevice.SomeEmphasis
+        self.nextImageId = 0
+        self.images = GalleryImages(self)
         self.currentImageIndex = 0
-        self.userResources     = []
-        self._titleInstruc     = x_('Enter a title for the gallery')
-        self._addImageInstr    = x_("Click on the Add images button to select "
-                                    "an image file. The image will appear "
-                                    "below where you will be able to label "
-                                    "it. It's always good practice to put "
-                                    "the file size in the label.")
+        self.userResources = []
+        self._titleInstruc = x_('Enter a title for the gallery')
+        self._addImageInstr = x_("Click on the Add images button to select "
+                                 "an image file. The image will appear "
+                                 "below where you will be able to label "
+                                 "it. It's always good practice to put "
+                                 "the file size in the label.")
         '''
         self.systemResources += ['exe_lightbox.css']
             etc.
@@ -493,11 +517,11 @@ these in a gallery context rather then individually.</p>"""),
                 self._htmlResource.delete()
             self._htmlResource = None
 
-        #pedro_pena: Fix bug #1661
+        # pedro_pena: Fix bug #1661
         if hasattr(self, 'images'):
-            if type(self.images) == list:
+            if isinstance(self.images, list):
                 images = self.images
-                from exe.engine.galleryidevice  import GalleryImages
+                from exe.engine.galleryidevice import GalleryImages
                 self.images = GalleryImages(self)
                 while len(images) > 0:
                     self.images.append(images.pop())
@@ -510,39 +534,39 @@ these in a gallery context rather then individually.</p>"""),
         if hasattr(self, 'images'):
             for this_image in self.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.images
         return None
-       
+
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         # GalleryIdevice has no rich-text fields:
         return []
-        
+
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         resourceDir = self.parentNode.package.resourceDir
-        
+
         # GalleryImage Idevice:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        images = i.findAll(name='div', attrs={'class' : 'gallery_image' })
+        images = i.findAll(name='div', attrs={'class': 'gallery_image'})
         # image src is stored in the image div tag's value
-        captions = i.findAll(name='div', attrs={'class' : 'caption' })
-        popup = i.find(name='div', attrs={'class' : 'gallery_popup' })
+        captions = i.findAll(name='div', attrs={'class': 'caption'})
+        popup = i.find(name='div', attrs={'class': 'gallery_popup'})
 
         for image_loop in range(len(images)):
             image = images[image_loop].attrMap['value'].decode('utf-8')
             caption = captions[image_loop].renderContents().decode('utf-8')
-            gallery_image = self.addImage(resourceDir/image)
+            gallery_image = self.addImage(resourceDir / image)
             gallery_image._caption.content = caption
 
     def genImageId(self):
@@ -573,9 +597,9 @@ these in a gallery context rather then individually.</p>"""),
         Kills images that have somehow gotten corrupted and lost their
         reference to their resource (See #601)
         """
-        for i in range(len(self.images)-1, -1, -1):
+        for i in range(len(self.images) - 1, -1, -1):
             image = self.images[i]
-            if hasattr(image, '_htmlResource'): 
+            if hasattr(image, '_htmlResource'):
                 if image._imageResource is None or image._htmlResource is None:
                     del self.images[i]
 
@@ -613,7 +637,8 @@ these in a gallery context rather then individually.</p>"""),
         Upgrades to v0.19
         Some old resources had no storageName.
         """
-        self.userResources = [res for res in self.userResources if res.storageName is not None]
+        self.userResources = [
+            res for res in self.userResources if res.storageName is not None]
 
     def upgradeToVersion6(self):
         """
@@ -624,13 +649,14 @@ these in a gallery context rather then individually.</p>"""),
         G.application.afterUpgradeHandlers.append(self._killBadImages)
 
     def upgradeToVersion7(self):
-        """ 
-        a wrapper to upgrade_recreateResources(self), such that it might be called 
-        after the package has been loaded and upgraded.  Otherwise, due 
-        to the seemingly random upgrading of the package and resource objects, 
+        """
+        a wrapper to upgrade_recreateResources(self), such that it might be called
+        after the package has been loaded and upgraded.  Otherwise, due
+        to the seemingly random upgrading of the package and resource objects,
         this might be called too early.
         """
-        G.application.afterUpgradeHandlers.append(self.upgrade_recreateResources)
+        G.application.afterUpgradeHandlers.append(
+            self.upgrade_recreateResources)
 
     def upgradeToVersion8(self):
         """
@@ -648,5 +674,3 @@ these in a gallery context rather then individually.</p>"""),
         if not hasattr(package, 'resources'):
             package.resources = {}
         self.recreateResources()
-
-

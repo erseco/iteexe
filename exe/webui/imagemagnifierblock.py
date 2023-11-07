@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 ImageMagnifierBlock can render and process ImageMagnifierIdevices as XHTML
 """
 
+from exe.engine.imagemagnifieridevice import ImageMagnifierIdevice
+from exe.webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block   import Block
+from exe.webui.block import Block
 from exe.webui.element import TextAreaElement, MagnifierElement
-from exe.webui         import common
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
@@ -43,16 +45,15 @@ class ImageMagnifierBlock(Block):
         Block.__init__(self, parent, idevice)
         self.imageMagnifierElement = MagnifierElement(idevice.imageMagnifier)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
         # (only applies to the image-embeddable ones, not MagnifierElement)
-        if idevice.text.idevice is None: 
+        if idevice.text.idevice is None:
             idevice.text.idevice = idevice
-        self.textElement  = TextAreaElement(idevice.text)
+        self.textElement = TextAreaElement(idevice.text)
 
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -64,7 +65,7 @@ class ImageMagnifierBlock(Block):
 
         is_cancel = common.requestHasCancel(request)
 
-        if ("action" not in request.args 
+        if ("action" not in request.args
             or (request.args["action"][0] != "delete"
                 and not is_cancel)):
             self.imageMagnifierElement.process(request)
@@ -72,43 +73,42 @@ class ImageMagnifierBlock(Block):
 
         if "action" in request.args and request.args["action"][0] == "done":
             # remove the undo flag in order to reenable it next time:
-            if hasattr(self.idevice,'undo'): 
+            if hasattr(self.idevice, 'undo'):
                 del self.idevice.undo
 
-        if "float"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.float = request.args["float"+self.id][0]
-            
-        if "caption"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.caption = request.args["caption"+self.id][0]
-            
-        if "glass"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.imageMagnifier.glassSize = \
-                request.args["glass"+self.id][0]
-            
-        if "initial"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.imageMagnifier.initialZSize = \
-                request.args["initial"+self.id][0]
-                
-        if "maxZoom"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.imageMagnifier.maxZSize = \
-                request.args["maxZoom"+self.id][0]
+        if "float" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.float = request.args["float" + self.id][0]
 
+        if "caption" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.caption = request.args["caption" + self.id][0]
+
+        if "glass" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.imageMagnifier.glassSize = \
+                request.args["glass" + self.id][0]
+
+        if "initial" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.imageMagnifier.initialZSize = \
+                request.args["initial" + self.id][0]
+
+        if "maxZoom" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.imageMagnifier.maxZSize = \
+                request.args["maxZoom" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form elements for editing this block
         """
         log.debug("renderEdit")
-        floatArr        = [[_('Left'), 'left'],
-                          [_('Right'), 'right'],
-                          [_('None'),  'none']]
-        html  = "<div class=\"iDevice\">\n"
-        
+        floatArr = [[_('Left'), 'left'],
+                    [_('Right'), 'right'],
+                    [_('None'), 'none']]
+        html = "<div class=\"iDevice\">\n"
+
         # Caption
         html += '<div class="block">'
         html += "<strong>%s</strong>" % _("Caption:")
@@ -117,14 +117,14 @@ class ImageMagnifierBlock(Block):
         html += '<div class="block">'
         html += common.textInput("caption" + self.id, self.idevice.caption)
         html += '</div>'
-        
+
         # Text
         html += '<div class="block">'
         html += self.textElement.renderEdit()
         html += '</div>'
 
         # Image
-        html += self.imageMagnifierElement.renderEdit()       
+        html += self.imageMagnifierElement.renderEdit()
 
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
@@ -147,26 +147,26 @@ class ImageMagnifierBlock(Block):
                                  "initial" + self.id, '',
                                  self.idevice.initialZoomInstruc,
                                  zoomOpts, selection)
-            
+
         # Maximum Zoom
         selection = self.idevice.imageMagnifier.maxZSize
         html += common.formField('select', this_package, _("Maximum zoom"),
                                  "maxZoom" + self.id, '',
                                  self.idevice.maxZoomInstruc,
                                  zoomOpts, selection)
-            
+
         # Size of Magnifying Glass
-        glassSizeArr    = [[_('Small'), '1'],
-                          [_('Medium'),'2'],
-                          [_('Large'),'3'],
-                          [_('Extra large'),'4'],]
-        html += common.formField('select', this_package, 
+        glassSizeArr = [[_('Small'), '1'],
+                        [_('Medium'), '2'],
+                        [_('Large'), '3'],
+                        [_('Extra large'), '4'],]
+        html += common.formField('select', this_package,
                                  _("Size of magnifying glass: "),
                                  "glass" + self.id, '',
                                  self.idevice.glassSizeInstruc,
-                                 glassSizeArr, 
+                                 glassSizeArr,
                                  self.idevice.imageMagnifier.glassSize)
- 
+
         html += self.renderEditButtons(undo=self.idevice.undo)
         html += "</div>\n"
         return html
@@ -176,85 +176,101 @@ class ImageMagnifierBlock(Block):
         Returns an XHTML string for previewing this block
         """
 
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         figureTag = "div"
         if dT == "HTML5":
-            figureTag = "figure"         
-        
+            figureTag = "figure"
+
         html = common.ideviceHeader(self, style, "preview")
-        
-        html += '<div class="iDevice_content">'+lb
-        html += '<'+figureTag+' class="image_text" style="width:'+str(self.idevice.imageMagnifier.width)+'px;float:'+self.idevice.float+';'
+
+        html += '<div class="iDevice_content">' + lb
+        html += '<' + figureTag + ' class="image_text" style="width:' + \
+            str(self.idevice.imageMagnifier.width) + 'px;float:' + self.idevice.float + ';'
         if self.idevice.float == 'left':
             html += 'margin:0 20px 20px 0'
         if self.idevice.float == 'right':
             html += 'margin:0 0 20px 20px'
-        html += '">'+lb
+        html += '">' + lb
         html += self.imageMagnifierElement.renderPreview()
         if self.idevice.caption != '':
-            html = html.replace(' alt="" ',' alt="'+self.idevice.caption.replace('"','&quot;')+'" ', 1)
+            html = html.replace(
+                ' alt="" ',
+                ' alt="' +
+                self.idevice.caption.replace(
+                    '"',
+                    '&quot;') +
+                '" ',
+                1)
             if dT == "HTML5":
-                html += '<figcaption style="font-weight:bold">'+self.idevice.caption+'</figcaption>'+lb
+                html += '<figcaption style="font-weight:bold">' + \
+                    self.idevice.caption + '</figcaption>' + lb
             else:
-                html += '<strong>'+self.idevice.caption+'</strong>'+lb
-        html += '</'+figureTag+'>'+lb 
+                html += '<strong>' + self.idevice.caption + '</strong>' + lb
+        html += '</' + figureTag + '>' + lb
         text = self.textElement.renderPreview()
         if text:
             text = text.replace('"block iDevice_content"', '"iDevice_text"', 1)
             html += text
         else:
             html += '&nbsp;'
-        html += '</div>'+lb # /.iDevice_content
-        
+        html += '</div>' + lb  # /.iDevice_content
+
         html += common.ideviceFooter(self, style, "preview")
 
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """     
+        """
 
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         figureTag = "div"
         if dT == "HTML5":
-            figureTag = "figure"        
-        
+            figureTag = "figure"
+
         html = common.ideviceHeader(self, style, "view")
-        
-        html += '<div class="iDevice_content">'+lb
-        html += '<'+figureTag+' class="image_text" style="width:'+str(self.idevice.imageMagnifier.width)+'px;float:'+self.idevice.float+';'
+
+        html += '<div class="iDevice_content">' + lb
+        html += '<' + figureTag + ' class="image_text" style="width:' + \
+            str(self.idevice.imageMagnifier.width) + 'px;float:' + self.idevice.float + ';'
         if self.idevice.float == 'left':
             html += 'margin:0 20px 20px 0'
         if self.idevice.float == 'right':
             html += 'margin:0 0 20px 20px'
-        html += '">'  
+        html += '">'
         html += lb
         html += self.imageMagnifierElement.renderView()
         if self.idevice.caption != '':
-            html = html.replace(' alt="" ',' alt="'+self.idevice.caption.replace('"','&quot;')+'" ', 1)
+            html = html.replace(
+                ' alt="" ',
+                ' alt="' +
+                self.idevice.caption.replace(
+                    '"',
+                    '&quot;') +
+                '" ',
+                1)
             if dT == "HTML5":
-                html += '<figcaption style="font-weight:bold">'+self.idevice.caption+'</figcaption>'+lb
+                html += '<figcaption style="font-weight:bold">' + \
+                    self.idevice.caption + '</figcaption>' + lb
             else:
-                html += '<strong>'+self.idevice.caption+'</strong>'+lb
-        html += '</'+figureTag+'>'+lb 
+                html += '<strong>' + self.idevice.caption + '</strong>' + lb
+        html += '</' + figureTag + '>' + lb
         text = self.textElement.renderView()
         if text:
             text = text.replace('"block iDevice_content"', '"iDevice_text"', 1)
             html += text
         else:
             html += '&nbsp;'
-        html += '</div>'+lb # /.iDevice_content
-        
+        html += '</div>' + lb  # /.iDevice_content
+
         html += common.ideviceFooter(self, style, "view")
 
         return html
 
-from exe.engine.imagemagnifieridevice import ImageMagnifierIdevice
-from exe.webui.blockfactory           import g_blockFactory
-g_blockFactory.registerBlockType(ImageMagnifierBlock, ImageMagnifierIdevice)    
+
+g_blockFactory.registerBlockType(ImageMagnifierBlock, ImageMagnifierIdevice)
 
 # ===========================================================================

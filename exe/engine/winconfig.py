@@ -25,15 +25,17 @@ configuration
 import sys
 
 from exe.engine.config import Config
-from exe.engine.path   import Path
+from exe.engine.path import Path
 
 # Constants for directory name codes
-APPDATA        = 0x001a
+APPDATA = 0x001a
 COMMON_APPDATA = 0x0023
-MYDOCUMENTS    = 0x0005 # Code for c:\documents and settings\myuser\My Documents
-PROGRAMFILES   = 0x0026
+MYDOCUMENTS = 0x0005  # Code for c:\documents and settings\myuser\My Documents
+PROGRAMFILES = 0x0026
 
 # ===========================================================================
+
+
 class WinConfig(Config):
     """
     The WinConfig overrides the Config class with Windows specific
@@ -47,12 +49,12 @@ class WinConfig(Config):
         if not self.exePath.exists():
             self.exePath = Path(self.exePath + ".exe")
         exeDir = self.exePath.dirname()
-        self.dataDir      = Path(self.__getWinFolder(MYDOCUMENTS))
-        self.lastDir      = Path(self.__getWinFolder(MYDOCUMENTS))
-        self.configDir    = Path(self.__getWinFolder(APPDATA))/'exe'
-        self.stylesDir    = Path(self.configDir)/'style'
-        self.templatesDir = Path(self.configDir)/'content_template'
-        
+        self.dataDir = Path(self.__getWinFolder(MYDOCUMENTS))
+        self.lastDir = Path(self.__getWinFolder(MYDOCUMENTS))
+        self.configDir = Path(self.__getWinFolder(APPDATA)) / 'exe'
+        self.stylesDir = Path(self.configDir) / 'style'
+        self.templatesDir = Path(self.configDir) / 'content_template'
+
         self.videoMediaConverter_ogv = ""
         self.videoMediaConverter_3gp = 'ffmpeg -i %(infile)s -s qcif -vcodec h263 -acodec libvo_aacenc -ac 1 -ar 8000 -r 25 -ab 32 -y %(outfile)s'
         self.videoMediaConverter_mpg = "ffmpeg -i %(infile)s -s qcif -vcodec mpeg1 -acodec wav -ac 1 -ar 8000 -r 25 -ab 32 -y %(outfile)s"
@@ -69,11 +71,11 @@ class WinConfig(Config):
         # Find out where our nice config file is
         folders = list(map(self.__getWinFolder, [APPDATA, COMMON_APPDATA]))
         # Add unique dir names
-        folders = [folder/'exe' for folder in folders] 
+        folders = [folder / 'exe' for folder in folders]
         folders.append(self.__getInstallDir())
         folders.append('.')
         # Filter out non existant folders
-        options = [folder/'exe.conf' for folder in map(Path, folders)]
+        options = [folder / 'exe.conf' for folder in map(Path, folders)]
         return options
 
     def __getWinFolder(self, code):
@@ -89,11 +91,11 @@ class WinConfig(Config):
         # google: "ShellSpecialConstants site:msdn.microsoft.com"
         result = create_unicode_buffer(260)
         resource = dll.SHGetFolderPathW(None, code, None, 0, result)
-        if resource != 0: 
+        if resource != 0:
             return Path('')
-        else: 
+        else:
             return Path(result.value)
-                
+
     def __getInstallDir(self):
         """
         Returns the path to where we were installed

@@ -8,24 +8,25 @@
 
 import logging
 from exe.engine.idevice import Idevice
-from exe.engine.field   import TextAreaField
-from exe.engine.field   import TextField
-from exe.engine.field   import ImageField
-from exe.engine.field   import Field
-from exe.webui.block            import Block
-from exe.webui.element          import TextAreaElement
-from exe.webui.element          import TextElement
-from exe.webui.element          import ImageElement
-from exe.webui.element          import Element
-from string                     import Template
-from exe.webui              import common
-from exe.engine.path          import Path, toUnicode
-from exe.engine.persist       import Persistable
-from exe.engine.resource      import Resource
-from exe                     import     globals
+from exe.engine.field import TextAreaField
+from exe.engine.field import TextField
+from exe.engine.field import ImageField
+from exe.engine.field import Field
+from exe.webui.block import Block
+from exe.webui.element import TextAreaElement
+from exe.webui.element import TextElement
+from exe.webui.element import ImageElement
+from exe.webui.element import Element
+from string import Template
+from exe.webui import common
+from exe.engine.path import Path, toUnicode
+from exe.engine.persist import Persistable
+from exe.engine.resource import Resource
+from exe import globals
 from twisted.web.microdom import escape
 
-import os,sys
+import os
+import sys
 log = logging.getLogger(__name__)
 
 
@@ -34,35 +35,48 @@ EXEFIELDINFO_DESC = 1
 EXEFIELDINFO_HELP = 2
 EXEFIELDINFO_EXTRAINFODICT = 3
 
-EXEFIELD_JQUERYUI_EFFECTLIST = [ ["blind" , x_("Blind")], ["bounce" , x_("Bounce")], \
-    ["drop" , x_("Drop")], ["explode", x_("Explode")], ["fold", x_("Fold")], ["highlight", x_("Highlight")], ["puff", x_("Puff")], \
-    ["pulsate", x_("Pulsate")], ["scale", x_("Scale")], ["shake", x_("Shake")], ["size", x_("Size")], ["slide", x_("Slide")], \
-    ["transfer",  x_("Transfer")] ]
+EXEFIELD_JQUERYUI_EFFECTLIST = [
+    [
+        "blind", x_("Blind")], [
+            "bounce", x_("Bounce")], [
+                "drop", x_("Drop")], [
+                    "explode", x_("Explode")], [
+                        "fold", x_("Fold")], [
+                            "highlight", x_("Highlight")], [
+                                "puff", x_("Puff")], [
+                                    "pulsate", x_("Pulsate")], [
+                                        "scale", x_("Scale")], [
+                                            "shake", x_("Shake")], [
+                                                "size", x_("Size")], [
+                                                    "slide", x_("Slide")], [
+                                                        "transfer", x_("Transfer")]]
 
 """
 For different field types that we can show/hide have the complete string
 so that it can be translated without gender/word etc. difficulties
 """
-SHOWHIDEFIELDOPTIONNAMES = {"advanced" : x_("Show Advanced Options")}
+SHOWHIDEFIELDOPTIONNAMES = {"advanced": x_("Show Advanced Options")}
 
 """
 Field that contains a bunch of fields with utility methods
 """
+
+
 class ExtendedFieldSet(Field):
 
     persistenceVersion = 3
 
     # Pass a dictionary in the format of:
     # fieldId => ["<field type - text|textarea|image|choice", "Field title text to show in editor", {options dict}]
-    # fieldOrder - list of fieldids in order that they should be displayed in form, processed, etc
-    def __init__(self, idevice, fieldOrder = [], fieldInfoDict = {}):
+    # fieldOrder - list of fieldids in order that they should be displayed in
+    # form, processed, etc
+    def __init__(self, idevice, fieldOrder=[], fieldInfoDict={}):
         Field.__init__(self, "fieldgroup", "group")
         self.idevice = idevice
-        #list in order of id keys from the dictionary
+        # list in order of id keys from the dictionary
         self.fieldOrder = fieldOrder
         self.fieldInfoDict = fieldInfoDict
         self.fields = {}
-        
 
     def getFieldOrderList(self):
         return self.fieldOrder
@@ -71,15 +85,18 @@ class ExtendedFieldSet(Field):
         return self.fieldInfoDict
 
     def makeFields(self):
-        field_engine_build_fields_on_idevice(self.fieldInfoDict, self.fields, self.idevice)
+        field_engine_build_fields_on_idevice(
+            self.fieldInfoDict, self.fields, self.idevice)
 
     def makeElementDict(self):
-        elementDict = field_engine_build_elements_on_block(self.fieldInfoDict, self.fields, self.idevice)
+        elementDict = field_engine_build_elements_on_block(
+            self.fieldInfoDict, self.fields, self.idevice)
         return elementDict
 
-    def renderEditInOrder(self, elementDict, request = None):
+    def renderEditInOrder(self, elementDict, request=None):
         html = ""
-        #when field has a "type" go and render those types with a show/hide option to simplify editing
+        # when field has a "type" go and render those types with a show/hide
+        # option to simplify editing
         otherFieldTypeDict = {}
         for fieldId in self.fieldOrder:
             currentElement = elementDict[fieldId]
@@ -87,57 +104,61 @@ class ExtendedFieldSet(Field):
             if len(self.fieldInfoDict[fieldId]) > EXEFIELDINFO_EXTRAINFODICT:
                 if "type" in self.fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]:
                     isOtherType = True
-            
-            if isOtherType is False:        
+
+            if isOtherType is False:
                 html += currentElement.renderEdit()
             else:
                 fieldType = self.fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]['type']
-                if not fieldType in otherFieldTypeDict:
+                if fieldType not in otherFieldTypeDict:
                     otherFieldTypeDict[fieldType] = []
-                
+
                 otherFieldTypeDict[fieldType].append(fieldId)
-        
+
         for fieldType in otherFieldTypeDict:
             divId = "fieldtype_" + fieldType + self.id
             sectionChecked = False
             if request is not None:
                 if "showbox" + divId in request.args:
                     sectionChecked = True
-            
-            
-            html += "<input name='showbox" + divId + "' type='checkbox' onchange='$(\"#" + divId + "\").toggle()'"
+
+            html += "<input name='showbox" + divId + \
+                "' type='checkbox' onchange='$(\"#" + divId + "\").toggle()'"
             if sectionChecked is True:
                 html += " checked='checked' "
             html += "/>"
-            
+
             labelForType = SHOWHIDEFIELDOPTIONNAMES[fieldType]
-            
-            html += _(labelForType) 
+
+            html += _(labelForType)
             html += "<div id='" + divId + "' "
             if sectionChecked is False:
                 html += " style='display: none' "
             html += ">"
-            
+
             for fieldId in otherFieldTypeDict[fieldType]:
                 currentElement = elementDict[fieldId]
                 html += currentElement.renderEdit()
             html += "</div>"
-        
+
         return html
 
     def getRenderDictionary(self, elementDict, keyPrefix, previewMode):
-        ourDict = make_dictionary_from_element_dict(keyPrefix, elementDict, \
-                self.fieldInfoDict, self, previewMode)
+        ourDict = make_dictionary_from_element_dict(
+            keyPrefix, elementDict, self.fieldInfoDict, self, previewMode)
         return ourDict
-    
-        
-    def applyFileTemplateToDict(self, dictToApply, templateFileName, pathIsAbsolute = False):
-        #see if it is in our base directory (e.g. ~/.exe/idevices)
-        templateLoadFileName = field_engine_get_template_absolute_path(templateFileName)
-        
+
+    def applyFileTemplateToDict(
+            self,
+            dictToApply,
+            templateFileName,
+            pathIsAbsolute=False):
+        # see if it is in our base directory (e.g. ~/.exe/idevices)
+        templateLoadFileName = field_engine_get_template_absolute_path(
+            templateFileName)
+
         templateFile = open(templateLoadFileName)
-        
-        #if file_exists()
+
+        # if file_exists()
         templateStr = templateFile.read()
         templateFile.close()
         template = Template(templateStr)
@@ -147,28 +168,32 @@ class ExtendedFieldSet(Field):
 
 """
 Field for storing dropdown selection text
-"""        
-class ChoiceField(Field): 
-    
+"""
+
+
+class ChoiceField(Field):
+
     persistenceVersion = 3
 
-    #options should be a 2 dimensional list [index][val, desc]
+    # options should be a 2 dimensional list [index][val, desc]
     def __init__(self, idevice, options, name, helptext, defaultText=""):
         Field.__init__(self, name, helptext)
         self.idevice = idevice
         self.options = options
         self.content = defaultText
-        
+
+
 """
 Element for dropdown choice items
 Makes a drop down list for renderEdit
 """
+
+
 class ChoiceElement(Element):
-        
+
     def __init__(self, field):
         Element.__init__(self, field)
-        
- 
+
     def process(self, request):
         is_cancel = common.requestHasCancel(request)
         if self.id in request.args and not is_cancel:
@@ -177,14 +202,18 @@ class ChoiceElement(Element):
     def renderEdit(self):
         html = ""
         html += "<b>" + self.field.name + "</b><br/>"
-        html += "<select id='%(elementid)s' name='%(elementid)s'>\"" % {'elementid' : str(self.id) }
+        html += "<select id='%(elementid)s' name='%(elementid)s'>\"" % {
+            'elementid': str(self.id)}
         for currentOption in self.field.options:
             selectStr = ""
             if self.field.content == currentOption[0]:
                 selectStr = " selected='selected' "
 
-            html += "<option value='%(elementval)s' %(selectstr)s >%(elementdesc)s</option>\n" \
-                % {'elementval' : currentOption[0], 'elementdesc' : _(currentOption[1]), 'selectstr' : selectStr }
+            html += "<option value='%(elementval)s' %(selectstr)s >%(elementdesc)s</option>\n" % {
+                'elementval': currentOption[0],
+                'elementdesc': _(
+                    currentOption[1]),
+                'selectstr': selectStr}
         html += "</select><br/><br/>"
         return html
 
@@ -200,23 +229,30 @@ class FileField(Field):
     Field for storing an individual file
     """
     persistenceVersion = 5
-    
+
     """
     alwaysNameTo - make sure that this file always a certain final name
     """
-    def __init__(self, idevice, alwaysNameTo=None, desc="File Field", help="File Field Help"):
+
+    def __init__(
+            self,
+            idevice,
+            alwaysNameTo=None,
+            desc="File Field",
+            help="File Field Help"):
         Field.__init__(self, desc, help)
         self.idevice = idevice
         self.fileResource = None
-        self.fileInstruc = _("Upload a file. Please avoid names or paths with spaces or special characters.")
+        self.fileInstruc = _(
+            "Upload a file. Please avoid names or paths with spaces or special characters.")
         self.alwaysNameTo = alwaysNameTo
         self.fileDescription = TextField("Description")
         self.fileDescription.idevice = self
-        
+
     def uploadFile(self, filePath):
         if self.fileResource is not None:
             self.fileResource.delete()
-            
+
         finalName = str(filePath)
         if self.alwaysNameTo is not None:
             from os.path import dirname
@@ -224,15 +260,15 @@ class FileField(Field):
             dirName = dirname(filePath)
             finalName = dirName + "/" + self.alwaysNameTo
             copyfile(filePath, finalName)
-        
+
         if self.fileDescription.content == "":
             self.fileDescription.content = os.path.basename(filePath)
-            
+
         resourceFile = Path(finalName)
         if resourceFile.isfile():
             self.idevice.message = ""
             self.fileResource = Resource(self.idevice, resourceFile)
-    
+
     def deleteFile(self):
         if self.fileResource is not None:
             self.fileResource.delete()
@@ -265,101 +301,103 @@ class FileField(Field):
 
 
 class FileElement(Element):
-    
-    def __init__(self, field, showDelFileButton = True):
+
+    def __init__(self, field, showDelFileButton=True):
         Element.__init__(self, field)
         self.fileDescriptionElement = TextElement(field.fileDescription)
         self.showDelFile = showDelFileButton
-    
-        
-    
+
     """
     Check and see if a new file has been uploaded
     or if we need to delete a file on user request
     """
+
     def process(self, request):
         self.fileDescriptionElement.process(request)
-        
+
         if "upload" + self.id in request.args:
             if "path" + self.id in request.args:
-                filePath = request.args["path"+self.id][0]
+                filePath = request.args["path" + self.id][0]
                 self.field.uploadFile(filePath)
-                self.field.idevice.edit = True    
+                self.field.idevice.edit = True
                 self.field.idevice.undo = False
-                
-        if "action" in request.args and request.args["action"][0] == "delfile"+self.id:
+
+        if "action" in request.args and request.args["action"][0] == "delfile" + self.id:
             self.field.deleteFile()
             self.field.idevice.edit = True
             self.field.idevice.undo = False
-            
-                
-    
+
     def renderEdit(self):
-        html  = "<div>\n"
-        
-        
-        html += common.textInput("path"+self.id, "", 50, \
-                    onclick="addFile('%s')" % self.id, readonly="readonly" )
+        html = "<div>\n"
+
+        html += common.textInput("path" +
+                                 self.id, "", 50, onclick="addFile('%s')" %
+                                 self.id, readonly="readonly")
         html += '<input type="button" onclick="addFile(\'%s\')"' % self.id
         html += 'value="%s" />\n' % _("Browse")
-        
+
         buttonName = _("Replace")
         if self.field.fileResource is None:
-            buttonName = _("Upload") 
-        
-        html += '<input type="submit" name="%s" value="%s" />' % ("upload"+self.id,
-                                                                buttonName)
+            buttonName = _("Upload")
+
+        html += '<input type="submit" name="%s" value="%s" />' % (
+            "upload" + self.id, buttonName)
         html += common.elementInstruc(self.field.fileInstruc)
-        
+
         html += self.fileDescriptionElement.renderEdit()
-        
+
         if self.field.fileResource is not None:
             html += "<div class='block'><strong>"
             html += _("File") + ": %s " % self.field.fileResource.storageName
-            
+
             if self.showDelFile:
-                html += common.submitImage("delfile" + self.id, self.field.fileResource.storageName,
-                                            "/images/stock-cancel.png",
-                                            _("Delete File"))
+                html += common.submitImage("delfile" + self.id,
+                                           self.field.fileResource.storageName,
+                                           "/images/stock-cancel.png",
+                                           _("Delete File"))
             html += "</strong></div>"
         else:
             if (self.field.fileDescription and self.field.fileDescription.content):
-                html += '<script>checkFileAttachmentNameWarning("'+escape(self.field.fileDescription.content)+'")</script>'
-            html += "<i>"+_("No File Uploaded Currently") + "</i>"
+                html += '<script>checkFileAttachmentNameWarning("' + escape(
+                    self.field.fileDescription.content) + '")</script>'
+            html += "<i>" + _("No File Uploaded Currently") + "</i>"
         html += "<br/></div>"
-        
+
         html += field_engine_make_delete_button(self)
-        
+
         return html
-        
-        
+
     def renderView(self):
         return ""
-        
+
     """
     Return the filename of this item if there is one now
     """
+
     def getFileName(self):
         if self.field.fileResource is not None:
             return self.field.fileResource.storageName
-        
+
         return ""
-    
+
     """
     Return the description if there is one now
     """
+
     def getDescription(self):
         return self.fileDescriptionElement.renderView()
-    
-        
+
     def renderPreview(self):
         html = ""
         if self.field.fileResource is not None:
-            html += _("Attachment") + ": %s " % self.field.fileResource.storageName
+            html += _("Attachment") + \
+                ": %s " % self.field.fileResource.storageName
         else:
-            html += _("Attachment") +" :  <i>" + _("None") + "</i>"
+            html += _("Attachment") + " :  <i>" + _("None") + "</i>"
         html += "<br/>"
         return html
+
+
 """
 This method will add fields to the field array in accordance with fieldInfoArr
 
@@ -367,25 +405,38 @@ fieldOrder is a list of field ids that are in the field dictionary
 fieldDict is a dictionary of those ids -> an array of information about
  that field - type, name, instruction (optional: further info dict)
 """
-def field_engine_build_fields_on_idevice(fieldInfoDict, fieldDict, idevice):
-    
-    for fieldInfoKey, fieldInfoArr in list(fieldInfoDict.items()):
-        field_engine_check_field(fieldInfoKey, fieldInfoDict, fieldDict, idevice)
 
-    
+
+def field_engine_build_fields_on_idevice(fieldInfoDict, fieldDict, idevice):
+
+    for fieldInfoKey, fieldInfoArr in list(fieldInfoDict.items()):
+        field_engine_check_field(
+            fieldInfoKey,
+            fieldInfoDict,
+            fieldDict,
+            idevice)
+
+
 """
-This method will create new elements on the basis of info from the fieldInfoArr 
-as per the format above and connect it with the corresponding fieldArr.  Everything 
+This method will create new elements on the basis of info from the fieldInfoArr
+as per the format above and connect it with the corresponding fieldArr.  Everything
 must remain in the same order.
 """
+
+
 def field_engine_build_elements_on_block(fieldInfoDict, fieldDict, idevice):
     fieldCounter = 0
     elementDict = {}
     for fieldInfoKey, fieldInfoArr in list(fieldInfoDict.items()):
         elementTypeName = fieldInfoArr[EXEFIELDINFO_TYPE]
-        
-        #check the field - if this is a new one or src code edit etc. then add this field...
-        field_engine_check_field(fieldInfoKey, fieldInfoDict, fieldDict, idevice)
+
+        # check the field - if this is a new one or src code edit etc. then add
+        # this field...
+        field_engine_check_field(
+            fieldInfoKey,
+            fieldInfoDict,
+            fieldDict,
+            idevice)
         newElement = ""
         if elementTypeName == 'image':
             newElement = ImageElement(fieldDict[fieldInfoKey])
@@ -405,63 +456,85 @@ def field_engine_build_elements_on_block(fieldInfoDict, fieldDict, idevice):
 """
 This method will take a given http request and process all elements in the array
 """
+
+
 def field_engine_process_all_elements(elementDict, request):
     for elementId, element in list(elementDict.items()):
         element.process(request)
+
 
 def getFieldDefaultVal(fieldId, fieldInfoDict):
     if len(fieldInfoDict[fieldId]) > EXEFIELDINFO_EXTRAINFODICT:
         if "defaultval" in fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]:
             return fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]['defaultval']
-        
+
     return None
 
 #
-#Check and see if this field is already in the master fieldDict for this
+# Check and see if this field is already in the master fieldDict for this
 # idevice - if not then create the field and set the parent idevice
 #
+
+
 def field_engine_check_field(fieldId, fieldInfoDict, fieldDict, idevice):
     if fieldId in list(fieldDict.keys()):
         return
 
     fieldTypeName = fieldInfoDict[fieldId][EXEFIELDINFO_TYPE]
     defaultVal = getFieldDefaultVal(fieldId, fieldInfoDict)
-    
+
     newField = 0
     if fieldTypeName == 'image':
-        newField = ImageField(fieldInfoDict[fieldId][EXEFIELDINFO_DESC], fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
-        #must do this before attempting to set default value
+        newField = ImageField(
+            fieldInfoDict[fieldId][EXEFIELDINFO_DESC],
+            fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
+        # must do this before attempting to set default value
         newField.idevice = idevice
         if defaultVal is not None:
-            #right about here do setImage
-            newField.defaultImage = str(field_engine_get_template_absolute_path(defaultVal))
+            # right about here do setImage
+            newField.defaultImage = str(
+                field_engine_get_template_absolute_path(defaultVal))
             pass
-        
+
     elif fieldTypeName == 'text':
-        newField = TextField(fieldInfoDict[fieldId][EXEFIELDINFO_DESC], fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
+        newField = TextField(
+            fieldInfoDict[fieldId][EXEFIELDINFO_DESC],
+            fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
         if defaultVal is not None:
             newField.content = defaultVal
-        
+
     elif fieldTypeName == 'textarea':
-        newField = TextAreaField(fieldInfoDict[fieldId][EXEFIELDINFO_DESC], fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
+        newField = TextAreaField(
+            fieldInfoDict[fieldId][EXEFIELDINFO_DESC],
+            fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
     elif fieldTypeName == 'choice':
-        newField = ChoiceField(idevice, fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]['choices'], fieldInfoDict[fieldId][EXEFIELDINFO_DESC], fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
+        newField = ChoiceField(
+            idevice,
+            fieldInfoDict[fieldId][EXEFIELDINFO_EXTRAINFODICT]['choices'],
+            fieldInfoDict[fieldId][EXEFIELDINFO_DESC],
+            fieldInfoDict[fieldId][EXEFIELDINFO_HELP])
 
     newField.idevice = idevice
-    
-    
 
     if newField != 0:
-        fieldDict[fieldId] = newField   
-            
+        fieldDict[fieldId] = newField
+
+
 """
-Turns an array of elements into a dictionary mapped prefix.id = element.renderView 
+Turns an array of elements into a dictionary mapped prefix.id = element.renderView
 or element.renderPreview if previewMode = true
 """
-def make_dictionary_from_element_dict(dictkeyPrefix, elementDict, fieldInfoDict, extendedFieldSet, previewMode):
+
+
+def make_dictionary_from_element_dict(
+        dictkeyPrefix,
+        elementDict,
+        fieldInfoDict,
+        extendedFieldSet,
+        previewMode):
     ourDict = {}
- 
-    if previewMode == True:
+
+    if previewMode:
         ourDict['RESPATH'] = 'resources/'
     else:
         ourDict['RESPATH'] = ''
@@ -473,48 +546,52 @@ def make_dictionary_from_element_dict(dictkeyPrefix, elementDict, fieldInfoDict,
         dictKeyName += str(fieldId)
         dictEntryVal = ""
         if fieldInfoDict[fieldId][EXEFIELDINFO_TYPE] == 'image' and element.field.imageResource is None:
-            #catch this to make sure that we dont have that nasty crash if no image yet selected
+            # catch this to make sure that we dont have that nasty crash if no
+            # image yet selected
             dictEntryVal = "<img src='' alt='' width='0' height='0' />"
         else:
-            if previewMode == True:
+            if previewMode:
                 dictEntryVal = element.renderPreview()
             else:
                 dictEntryVal = element.renderView()
 
-        #special kinds of fields - set extra keys for more info
+        # special kinds of fields - set extra keys for more info
         if fieldInfoDict[fieldId][EXEFIELDINFO_TYPE] == 'image':
             if element.field.imageResource and element.field.imageResource is not None:
-                ourDict[dictKeyName + "_imgsrc"] = ourDict['RESPATH'] + element.field.imageResource.storageName
+                ourDict[dictKeyName + "_imgsrc"] = ourDict['RESPATH'] + \
+                    element.field.imageResource.storageName
                 ourDict[dictKeyName + "_imgwidth"] = element.field.width
                 ourDict[dictKeyName + "_imgheight"] = element.field.height
             else:
                 ourDict[dictKeyName + "_imgsrc"] = ""
                 ourDict[dictKeyName + "_imgwidth"] = "0"
                 ourDict[dictKeyName + "_imgheight"] = "0"
-            
 
         ourDict[dictKeyName] = dictEntryVal
         ourDict[dictKeyName + "_elementid"] = str(element.id)
-    
+
     mainElementKey = "elementid"
     if dictkeyPrefix != "":
         mainElementKey = dictkeyPrefix + "_" + mainElementKey
     ourDict[mainElementKey] = str(extendedFieldSet.id)
 
     ourDict['ideviceid'] = str(extendedFieldSet.idevice.id)
-    
 
     return ourDict
+
 
 """
 For use with field_engine_check_delete
 
 """
+
+
 def field_engine_is_delete(element, request, fieldList):
-    if "action" in request.args and request.args["action"][0] == "delfile"+element.id:
+    if "action" in request.args and request.args["action"][0] == "delfile" + element.id:
         return True
-    
+
     return False
+
 
 """
 Check and see if there is a reques to delete this element given by
@@ -523,51 +600,70 @@ common.submitButton with teh element id
 If there is delete it from the given field list that would be associated
 with the idevice
 """
+
+
 def field_engine_check_delete(element, request, fieldList):
     if field_engine_is_delete(element, request, fieldList):
         fieldList.remove(element.field)
         element.field.idevice.undo = False
         element.field.idevice.edit = True
         return True
-    
+
     return False
+
 
 """
 Go through all the elements in the given list and check to see
 if they need deleted
 """
+
+
 def field_engine_check_delete_all(elementList, request, fieldList):
     for element in elementList:
         field_engine_check_delete(element, request, fieldList)
-    
+
+
 """
 Utility method to make a delete button for elements in an idevice to remove
 them from a list - works together with field_engine_check_delete
 """
-def field_engine_make_delete_button(element, imgAltText = "Delete Item", prefix = "delfile"):
+
+
+def field_engine_make_delete_button(
+        element,
+        imgAltText="Delete Item",
+        prefix="delfile"):
     html = ""
-    html += common.submitImage(prefix + element.id, element.field.idevice.id, 
-                                   "/images/stock-cancel.png",
-                                   _(imgAltText))
+    html += common.submitImage(prefix + element.id, element.field.idevice.id,
+                               "/images/stock-cancel.png",
+                               _(imgAltText))
     return html
+
 
 """
 Check to see if this request means to delete the idevice
 """
+
+
 def field_engine_is_delete_request(request):
     if 'action' in request.args and "delete" in request.args['action']:
         return True
-    
+
     return False
 
+
 """
 
 """
-def field_engine_apply_template_to_element_arr(templateString, elementArr, fieldInfoArr):
+
+
+def field_engine_apply_template_to_element_arr(
+        templateString, elementArr, fieldInfoArr):
     template = Template(templateString)
     ourDict = make_dictionary_from_element_array("", elementArr, fieldInfoArr)
     retVal = template.safe_substitute(ourDict)
     return retVal
+
 
 """
 Validates to see if a given list of elements are actually integers
@@ -579,7 +675,14 @@ elementNameDict: If not None this will be used to look up a user friendly name f
 Idevice - the idevice we are working with
 Field - if a specific field that can take its own message (eg. a collection of fields itself)
 """
-def field_engine_check_fields_are_ints(elementDict, elementToCheckArr, elementNamesDict = None, thisIdevice = None, messageField = None):
+
+
+def field_engine_check_fields_are_ints(
+        elementDict,
+        elementToCheckArr,
+        elementNamesDict=None,
+        thisIdevice=None,
+        messageField=None):
     errMsg = ""
     for fieldName in elementToCheckArr:
         try:
@@ -588,27 +691,33 @@ def field_engine_check_fields_are_ints(elementDict, elementToCheckArr, elementNa
             fieldNameFriendly = fieldName
             if elementNamesDict is not None and fieldName in elementNamesDict:
                 fieldNameFriendly = elementNamesDict[fieldName]
-            
-            errMsg += fieldNameFriendly + " " + _("is not a valid number - please try again<br/>")
-    
+
+            errMsg += fieldNameFriendly + " " + \
+                _("is not a valid number - please try again<br/>")
+
     if errMsg != "" and thisIdevice is not None:
         thisIdevice.edit = True
         if messageField is None:
             thisIdevice.message += errMsg
         else:
             messageField.message += errMsg
-    
-    return errMsg 
-            
+
+    return errMsg
+
+
 """
-Will get the absolute path either from the current directory where 
-this file lives or if that fails then using the templates folder 
+Will get the absolute path either from the current directory where
+this file lives or if that fails then using the templates folder
 """
+
+
 def field_engine_get_template_absolute_path(templateFileName):
-    templateLoadFileBaseName1 = os.path.dirname(__file__) + "/" + templateFileName
+    templateLoadFileBaseName1 = os.path.dirname(
+        __file__) + "/" + templateFileName
     if os.path.isfile(templateLoadFileBaseName1):
-       templateLoadFileName = templateLoadFileBaseName1
+        templateLoadFileName = templateLoadFileBaseName1
     else:
-        templateLoadFileName = globals.application.config.webDir/"templates"/templateFileName
-    
+        templateLoadFileName = globals.application.config.webDir / \
+            "templates" / templateFileName
+
     return templateLoadFileName

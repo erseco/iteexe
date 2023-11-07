@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2006-2009 eXe Project, http://eXeLearning.org/
 #
@@ -22,38 +22,39 @@
 An Attachment Idevice allows a file to be attached to a package.
 """
 
-from exe.engine.idevice   import Idevice
-from exe.engine.path      import Path
+from exe.engine.idevice import Idevice
+from exe.engine.path import Path
 from exe.engine.translate import lateTranslate
-from exe.engine.resource  import Resource
-from exe.engine.field     import TextAreaField
+from exe.engine.resource import Resource
+from exe.engine.field import TextAreaField
 
 import logging
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class AttachmentIdevice(Idevice):
     """
     An Attachment Idevice allows a file to be attached to a package.
     """
     persistenceVersion = 4
-    
+
     # 2013-11-04, JRF: added .odp examples to the .ppt references
     def __init__(self):
-        Idevice.__init__(self, 
-                         x_("Attachment"), 
-                         x_("University of Auckland"), 
-                         x_("The attachment iDevice is used to attach "
-                             "existing files to your .elp content. For example, "
-                             "you might have a PDF file or a PPT or .ODP presentation "
-                             "file that you wish the learners to have access "
-                             "to, these can be attached and labeled to indicate "
-                             "what the attachment is and how large the file is. "
-                             "Learners can click on the attachment link and can "
-                             "download the attachment."), "", "")
+        Idevice.__init__(
+            self, x_("Attachment"), x_("University of Auckland"), x_(
+                "The attachment iDevice is used to attach "
+                "existing files to your .elp content. For example, "
+                "you might have a PDF file or a PPT or .ODP presentation "
+                "file that you wish the learners to have access "
+                "to, these can be attached and labeled to indicate "
+                "what the attachment is and how large the file is. "
+                "Learners can click on the attachment link and can "
+                "download the attachment."), "", "")
 
-        self.emphasis           = Idevice.NoEmphasis
-        self.label              = ''
+        self.emphasis = Idevice.NoEmphasis
+        self.label = ''
 
         self._descriptionInstruc = x_("Enter the text you wish to associate "
                                       "with the downloaded file. You might "
@@ -62,49 +63,47 @@ class AttachmentIdevice(Idevice):
                                       "the file is downloaded or how the "
                                       "material should be used.")
 
-        self.descriptionTextArea   = TextAreaField(x_('Description:'), 
-                                          self._descriptionInstruc, '')
+        self.descriptionTextArea = TextAreaField(x_('Description:'),
+                                                 self._descriptionInstruc, '')
         self.descriptionTextArea.idevice = self
 
-        self._filenameInstruc   = x_('Click <strong>Select a file</strong>, '
-                                    'browse to the file you want '
-                                    'to attach and select it.')
-        self._labelInstruc      = x_("<p>"
-                                    "Assign a label for the attachment. It "
-                                    "is useful to include the type of file. "
-                                    "Eg. pdf, ppt, .odp, etc."
-                                    "</p>"
-                                    "<p>"
-                                    "Including the size is also recommended so "
-                                    "that after your package is exported "
-                                    "to a web site, people will have an idea "
-                                    "how long it would take to download this "
-                                    "attachment."
-                                    "</p>"
-                                    "<p>"
-                                    "For example: "
-                                    "<code>Sales Forecast.doc (500kb)</code>"
-                                    "</p>")
-
+        self._filenameInstruc = x_('Click <strong>Select a file</strong>, '
+                                   'browse to the file you want '
+                                   'to attach and select it.')
+        self._labelInstruc = x_("<p>"
+                                "Assign a label for the attachment. It "
+                                "is useful to include the type of file. "
+                                "Eg. pdf, ppt, .odp, etc."
+                                "</p>"
+                                "<p>"
+                                "Including the size is also recommended so "
+                                "that after your package is exported "
+                                "to a web site, people will have an idea "
+                                "how long it would take to download this "
+                                "attachment."
+                                "</p>"
+                                "<p>"
+                                "For example: "
+                                "<code>Sales Forecast.doc (500kb)</code>"
+                                "</p>")
 
     # Properties
     filenameInstruc = lateTranslate('filenameInstruc')
     labelInstruc = lateTranslate('labelInstruc')
     descriptionInstruc = lateTranslate('descriptionInstruc')
 
-
     def setAttachment(self, attachmentPath):
         """
         Store the attachment in the package
         Needs to be in a package to work.
-        """ 
-        log.debug("setAttachment "+str(attachmentPath))
+        """
+        log.debug("setAttachment " + str(attachmentPath))
         resourceFile = Path(attachmentPath)
 
         assert self.parentNode, \
-               _('Attachment %s has no parentNode') % self.id
+            _('Attachment %s has no parentNode') % self.id
         assert self.parentNode.package, \
-               _('iDevice %s has no package') % self.parentNode.id
+            _('iDevice %s has no package') % self.parentNode.id
 
         if resourceFile.isfile():
             if self.userResources:
@@ -122,10 +121,10 @@ class AttachmentIdevice(Idevice):
         """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'descriptionTextArea')\
-        and hasattr(self.descriptionTextArea, 'images'):
+                and hasattr(self.descriptionTextArea, 'images'):
             for this_image in self.descriptionTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource:
+                        and this_resource == this_image._imageResource:
                     return self.descriptionTextArea
 
         # if this_resource wasn't found in the above TextArea, but is still
@@ -138,19 +137,17 @@ class AttachmentIdevice(Idevice):
             return this_resource
 
         return None
-      
+
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, 'descriptionTextArea'):
             fields_list.append(self.descriptionTextArea)
         return fields_list
-        
-
 
     def upgradeToVersion1(self):
         """
@@ -163,10 +160,9 @@ class AttachmentIdevice(Idevice):
         Upgrades to v0.10
         """
         self._upgradeIdeviceToVersion1()
-        self._filenameInstruc    = self.__dict__.get('filenameInstruc', '')
-        self._labelInstruc       = self.__dict__.get('labelInstruc', '')
+        self._filenameInstruc = self.__dict__.get('filenameInstruc', '')
+        self._labelInstruc = self.__dict__.get('labelInstruc', '')
         self._descriptionInstruc = self.__dict__.get('descriptionInstruc', '')
-
 
     def upgradeToVersion3(self):
         """
@@ -180,12 +176,12 @@ class AttachmentIdevice(Idevice):
     def upgradeToVersion4(self):
         """
         Upgrades to somewhere before version 0.25 (post-v0.24)
-        Taking the old .description unicode string field, 
+        Taking the old .description unicode string field,
         and converting it into an image-enabled TextAreaField:
         """
-        self.descriptionTextArea   = TextAreaField(x_('Description:'), 
-                                         self._descriptionInstruc, 
-                                         self.description)
+        self.descriptionTextArea = TextAreaField(x_('Description:'),
+                                                 self._descriptionInstruc,
+                                                 self.description)
         self.descriptionTextArea.idevice = self
 
 # ===========================================================================

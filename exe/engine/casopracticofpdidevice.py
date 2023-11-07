@@ -9,34 +9,40 @@ Caso practico mas iDevice
 """
 
 import logging
-from exe.engine.idevice   import Idevice
+from exe.engine.idevice import Idevice
 from exe.engine.translate import lateTranslate
-from exe.engine.field     import TextAreaField
+from exe.engine.field import TextAreaField
 import re
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class CasopracticofpdIdevice(Idevice):
     """
     El iDevice Caso practico permite al alumnado introducirse en una historia que le guiara a traves de su aprendizaje
     """
     persistenceVersion = 9
-    
-    def __init__(self, activity = "", answer = ""):
+
+    def __init__(self, activity="", answer=""):
         """
-        Initialize 
+        Initialize
         """
-        Idevice.__init__(self, 
-                         x_("FPD - Situation"),
-                         x_("Jose Ramon Jimenez Reyes"), 
-                         x_("""Situation is an iDevice that provides the student with a story that will guide her along the learning process."""), "", "casopracticofpd")
+        Idevice.__init__(
+            self,
+            x_("FPD - Situation"),
+            x_("Jose Ramon Jimenez Reyes"),
+            x_("""Situation is an iDevice that provides the student with a story that will guide her along the learning process."""),
+            "",
+            "casopracticofpd")
 #        self.emphasis         = Idevice.SomeEmphasis
-        self.emphasis         = "_casopracticofpd"
-        self._activityInstruc = x_("""Enter the text that will appear on this iDevice""")
+        self.emphasis = "_casopracticofpd"
+        self._activityInstruc = x_(
+            """Enter the text that will appear on this iDevice""")
 #        self.systemResources += ["common.js"]
-        
-        self.activityTextArea = TextAreaField(x_('Situation Text:'), 
-                                    self._activityInstruc, activity)
+
+        self.activityTextArea = TextAreaField(x_('Situation Text:'),
+                                              self._activityInstruc, activity)
         self.activityTextArea.idevice = self
 
     # Properties
@@ -45,14 +51,14 @@ class CasopracticofpdIdevice(Idevice):
     def getResourcesField(self, this_resource):
         """
         implement the specific resource finding mechanism for this iDevice:
-        """ 
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'activityTextArea')\
-        and hasattr(self.activityTextArea, 'images'):
-            for this_image in self.activityTextArea.images: 
+                and hasattr(self.activityTextArea, 'images'):
+            for this_image in self.activityTextArea.images:
                 if hasattr(this_image, '_imageResource') \
-                    and this_resource == this_image._imageResource: 
-                        return self.activityTextArea
+                        and this_resource == this_image._imageResource:
+                    return self.activityTextArea
 
         return None
 
@@ -65,29 +71,28 @@ class CasopracticofpdIdevice(Idevice):
 
     def burstHTML(self, i):
         # Casopracticofpd Idevice:
-        title = i.find(name='span', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='span', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        reflections = i.findAll(name='div', attrs={'id' : re.compile('^ta') })
+        reflections = i.findAll(name='div', attrs={'id': re.compile('^ta')})
         # should be exactly two of these:
         # 1st = field[0] == Activity
         if len(reflections) >= 1:
             self.activityTextArea.content_wo_resourcePaths = \
-                    reflections[0].renderContents().decode('utf-8')
+                reflections[0].renderContents().decode('utf-8')
             # and add the LOCAL resource paths back in:
             self.activityTextArea.content_w_resourcePaths = \
-                    self.activityTextArea.MassageResourceDirsIntoContent( \
-                        self.activityTextArea.content_wo_resourcePaths)
+                self.activityTextArea.MassageResourceDirsIntoContent(
+                    self.activityTextArea.content_wo_resourcePaths)
             self.activityTextArea.content = \
-                    self.activityTextArea.content_w_resourcePaths
+                self.activityTextArea.content_w_resourcePaths
 
     def upgradeToVersion1(self):
         """
         Upgrades the node from version 0 to 1.
         """
         log.debug("Upgrading iDevice")
-        self.icon       = "casopracticofpd"
-
+        self.icon = "casopracticofpd"
 
     def upgradeToVersion2(self):
         """
@@ -96,14 +101,13 @@ class CasopracticofpdIdevice(Idevice):
         """
         log.debug("Upgrading iDevice")
 #        self.emphasis         = Idevice.SomeEmphasis
-        self.emphasis         = "_casopracticofpd"
-        
+        self.emphasis = "_casopracticofpd"
+
     def upgradeToVersion3(self):
         """
         Upgrades v0.6 to v0.7.
         """
         self.lastIdevice = False
-
 
     def upgradeToVersion4(self):
         """
@@ -118,7 +122,6 @@ class CasopracticofpdIdevice(Idevice):
         """
         self._upgradeIdeviceToVersion1()
 
-
     def upgradeToVersion6(self):
         """
         Upgrades to v0.12
@@ -126,15 +129,14 @@ class CasopracticofpdIdevice(Idevice):
         self._upgradeIdeviceToVersion2()
 #        self.systemResources += ["common.js"]
 
-
     def upgradeToVersion7(self):
-        """ 
-        Upgrades to somewhere before version 0.25 (post-v0.24) 
-        Taking the old unicode string fields, and converting them 
+        """
+        Upgrades to somewhere before version 0.25 (post-v0.24)
+        Taking the old unicode string fields, and converting them
         into image-enabled TextAreaFields:
         """
-        self.activityTextArea = TextAreaField(x_('Situation Text:'), 
-                                    self._activityInstruc, self.activity)
+        self.activityTextArea = TextAreaField(
+            x_('Situation Text:'), self._activityInstruc, self.activity)
         self.activityTextArea.idevice = self
 
     def upgradeToVersion8(self):
@@ -155,7 +157,6 @@ class CasopracticofpdIdevice(Idevice):
             self._activityInstruc = """Enter the text that will appear on this iDevice"""
         if self.activityTextArea._name == 'Texto Caso pr&aacute;ctico:':
             self.activityTextArea._name = 'Situation Text:'
-
 
 
 # ===========================================================================

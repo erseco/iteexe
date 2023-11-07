@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2006-2007 eXe Project, New Zealand Tertiary Education Commission
 #
@@ -21,11 +21,13 @@
 AttachmentBlock can render and process AttachmentIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.attachmentidevice import AttachmentIdevice
 import os.path
-from exe.webui.block   import Block
-from exe.webui         import common
+from exe.webui.block import Block
+from exe.webui import common
 from exe.webui.element import TextAreaElement
-from exe               import globals as G
+from exe import globals as G
 
 import logging
 log = logging.getLogger(__name__)
@@ -36,20 +38,20 @@ class AttachmentBlock(Block):
     """
     AttachmentBlock can render and process AttachmentIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize
         """
 
-        Block.__init__(self, parent, idevice) 
+        Block.__init__(self, parent, idevice)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.descriptionTextArea.idevice is None: 
+        if idevice.descriptionTextArea.idevice is None:
             idevice.descriptionTextArea.idevice = idevice
-        
-        self.descriptionElement = TextAreaElement(idevice.descriptionTextArea)
 
+        self.descriptionElement = TextAreaElement(idevice.descriptionTextArea)
 
     def process(self, request):
         """
@@ -60,28 +62,27 @@ class AttachmentBlock(Block):
         Block.process(self, request)
 
         if ("action" not in request.args or
-            request.args["action"][0] != "delete"):
+                request.args["action"][0] != "delete"):
             if "label" + self.id in request.args:
                 self.idevice.label = request.args["label" + self.id][0]
-                
+
             self.descriptionElement.process(request)
 
             if "path" + self.id in request.args:
-                attachmentPath = request.args["path"+self.id][0]
+                attachmentPath = request.args["path" + self.id][0]
 
                 if attachmentPath:
                     self.idevice.setAttachment(attachmentPath)
-                
+
                 if self.idevice.label == "":
                     self.idevice.label = os.path.basename(attachmentPath)
-
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form elements for editing this block
         """
         log.debug("renderEdit")
-        html  = '<div class="iDevice">\n'
+        html = '<div class="iDevice">\n'
         html += '<div class="block">\n'
 
         label = _('Filename:')
@@ -90,25 +91,25 @@ class AttachmentBlock(Block):
             label += '<span style="text-decoration:underline">'
             label += self.idevice.userResources[0].storageName
             label += '</span>\n'
-        html += '<div>' 
+        html += '<div>'
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
             this_package = self.idevice.parentNode.package
         html += common.formField('textInput',
                                  this_package,
                                  label,
-                                 'path'+self.id, '',
+                                 'path' + self.id, '',
                                  self.idevice.filenameInstruc,
                                  size=40)
         html += '<input type="button" onclick="addFile(\'%s\')"' % self.id
         html += ' value="%s" />\n' % _("Select a file")
-        html += '</div><br style="clear:both;" />' 
+        html += '</div><br style="clear:both;" />'
         html += '</div>\n'
         html += '<div class="block">\n'
         html += '\n<b>%s</b>\n' % _('Label:')
         html += common.elementInstruc(self.idevice.labelInstruc)
         html += '</div>\n'
-        html += common.textInput('label'+self.id, self.idevice.label)
+        html += common.textInput('label' + self.id, self.idevice.label)
         html += self.descriptionElement.renderEdit()
         html += '<div class="block">\n'
         html += self.renderEditButtons()
@@ -117,15 +118,14 @@ class AttachmentBlock(Block):
 
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
         log.debug("renderPreview")
-        html  = "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\" "
-        html += "ondblclick=\"submitLink('edit',"+self.id+", 0);\">\n"
+        html = "<div class=\"iDevice "
+        html += "emphasis" + str(self.idevice.emphasis) + "\" "
+        html += "ondblclick=\"submitLink('edit'," + self.id + ", 0);\">\n"
 
         if self.idevice.userResources:
             html += "<img src='/images/stock-attach.png'> <a style=\"cursor: pointer;\" "
@@ -145,16 +145,15 @@ class AttachmentBlock(Block):
         html += "</div>\n"
 
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """        
+        """
         log.debug("renderView")
-        html  = "<!-- attachment iDevice -->\n"
+        html = "<!-- attachment iDevice -->\n"
         html += "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\">\n"
+        html += "emphasis" + str(self.idevice.emphasis) + "\">\n"
 
         if self.idevice.userResources:
             html += "<img src='stock-attach.png'> "
@@ -170,11 +169,9 @@ class AttachmentBlock(Block):
         html += "</div>\n"
 
         return html
-    
 
-from exe.engine.attachmentidevice import AttachmentIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(AttachmentBlock, AttachmentIdevice)    
+
+g_blockFactory.registerBlockType(AttachmentBlock, AttachmentIdevice)
 
 
 # ===========================================================================

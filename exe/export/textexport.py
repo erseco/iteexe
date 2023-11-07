@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2005, University of Auckland
 # Copyright 2004-2007 eXe Project, New Zealand Tertiary Education Commission
 #
@@ -22,11 +22,11 @@ TextPageExport will export a package as a text file.
 """
 
 import os
-from html                      import escape
-from exe.webui.blockfactory   import g_blockFactory
-from exe.engine.error         import Error
-from exe.engine.path          import Path
-from exe.engine.htmlToText    import HtmlToText
+from html import escape
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.error import Error
+from exe.engine.path import Path
+from exe.engine.htmlToText import HtmlToText
 
 import logging
 log = logging.getLogger(__name__)
@@ -37,18 +37,19 @@ class TextExport(object):
     """
     TextExport will export a package as a text file
     """
+
     def __init__(self, filename):
-        
-        self.html         = ""
-        self.filename         = filename
+
+        self.html = ""
+        self.filename = filename
 
     def export(self, package):
-        """ 
+        """
         Export web site
         Cleans up the previous packages pages and performs the export
         """
-        
-        self.html  = "***" + escape(package.title) + "***"
+
+        self.html = "***" + escape(package.title) + "***"
         self.renderNode(package.root)
         if package.license != "None":
             self.html += "<br/>***" + c_("Licensed under the")
@@ -57,15 +58,12 @@ class TextExport(object):
             self.html += "<p>" + package.footer + "</p>"
         self.save(self.filename)
 
-
-    
     def renderNode(self, node):
         """
         Returns an XHTML string for this node and recurse for the children
         """
 
-        self.html += os.linesep*2 + "**" + escape(node.titleLong) + "**"
-
+        self.html += os.linesep * 2 + "**" + escape(node.titleLong) + "**"
 
         for idevice in node.idevices:
             if idevice.klass != 'NotaIdevice':
@@ -83,12 +81,12 @@ class TextExport(object):
 
     def save(self, filename):
         """
-        Save page to a file.  
+        Save page to a file.
         """
         converter = HtmlToText(self.html)
         text = converter.convertToText()
         outfile = open(filename, "w")
         outfile.write(text.encode('utf8'))
         outfile.close()
-        
+
 # ===========================================================================

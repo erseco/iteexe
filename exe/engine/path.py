@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 path.py - An object representing a path to a file or directory.
@@ -35,8 +35,12 @@ Date:    7 Mar 2004
 #     __radd__().  Test this.
 
 
-
-import sys, os, fnmatch, glob, shutil, codecs
+import sys
+import os
+import fnmatch
+import glob
+import shutil
+import codecs
 import hashlib
 from tempfile import mkdtemp
 import logging
@@ -46,7 +50,8 @@ log = logging.getLogger(__name__)
 __version__ = '2.0.4'
 __all__ = ['Path', 'TempDirPath']
 
-# In Python 3, just use 'r' for reading text files with universal newline support
+# In Python 3, just use 'r' for reading text files with universal newline
+# support
 _textmode = 'r'
 
 
@@ -80,11 +85,12 @@ class Path(str):
         if encoding is None:
             encoding = Path.fileSystemEncoding
 
-        if os.name == 'nt' and len(filename) >= 256: # Fix MAX_PATH limit in windows
+        if os.name == 'nt' and len(
+                filename) >= 256:  # Fix MAX_PATH limit in windows
             device_namespace_prefix = '\\\\?\\'
             if filename[:4] != device_namespace_prefix:
-                filename = device_namespace_prefix+filename
-        
+                filename = device_namespace_prefix + filename
+
         return str.__new__(cls, toUnicode(filename, encoding))
 
     def __repr__(self):
@@ -122,24 +128,31 @@ class Path(str):
     def abspath(self):
         """Wraps os.path.abspath"""
         return Path(os.path.abspath(self))
+
     def normcase(self):
         """Wraps os.path.normcase"""
         return Path(os.path.normcase(self))
+
     def normpath(self):
         """Wraps os.path.normpath"""
         return Path(os.path.normpath(self))
+
     def realpath(self):
         """Wraps os.path.realpath"""
         return Path(os.path.realpath(self))
+
     def expanduser(self):
         """Wraps os.path.expanduser"""
         return Path(os.path.expanduser(self))
+
     def expandvars(self):
         """Wraps os.path.expandvars"""
         return Path(os.path.expandvars(self))
+
     def dirname(self):
         """Wraps os.path.dirname"""
         return Path(os.path.dirname(self))
+
     def basename(self):
         """Wraps os.path.basename"""
         return Path(os.path.basename(self))
@@ -240,16 +253,16 @@ class Path(str):
         def splitunc(self):
             """NT Only: Split a pathname into UNC mount point and relative path
             specifiers.
-            eg. Path(r'\\dbserver\homes\matthew\work\stuff.py').splitunc() == \
-            (Path(r'\\dbserver\homes'), Path(r'\\matthew\work\stuff.py'))"""
+            eg. Path(r'\\dbserver\\homes\\matthew\\work\\stuff.py').splitunc() == \
+            (Path(r'\\dbserver\\homes'), Path(r'\\matthew\\work\\stuff.py'))"""
             unc, rest = os.path.splitunc(self)
             return Path(unc), Path(rest)
 
         def _get_uncshare(self):
             """NT Only: Returns only the server and share name from a unc path
             name.
-            eg. Path(r'\\dbserver\homes\matthew\work\stuff.py').uncshare() == \
-            Path(r'\\dbserver\homes')"""
+            eg. Path(r'\\dbserver\\homes\\matthew\\work\\stuff.py').uncshare() == \
+            Path(r'\\dbserver\\homes')"""
             return Path(os.path.splitunc(self)[0])
 
         uncshare = property(
@@ -329,7 +342,6 @@ class Path(str):
             return Path(os.curdir)
         else:
             return Path(os.path.join(*segments))
-
 
     # --- Listing, searching, walking, and matching
 
@@ -439,7 +451,6 @@ class Path(str):
         of all the files users have in their bin directories.
         """
         return list(map(Path, glob.glob(toUnicode(self / pattern))))
-
 
     # --- Reading or writing an entire file at once.
 
@@ -619,7 +630,9 @@ class Path(str):
                     backupName = self.dirname() / self.namebase + '.old' + str(i) + self.ext
                 self.rename(backupName)
             except Exception as e:
-                log.warn('Failed to rename file on saving: %s -> %s -- %s' % (repr(self), repr(backupName), str(e)))
+                log.warn(
+                    'Failed to rename file on saving: %s -> %s -- %s' %
+                    (repr(self), repr(backupName), str(e)))
                 backupName = None
             try:
                 # Begin saving
@@ -636,7 +649,9 @@ class Path(str):
                                 crashedFilename = self.dirname() / self.namebase + '.crashed' + str(i) + self.ext
                             self.rename(crashedFilename)
                         except Exception as e:
-                            log.warn('Failed to rename crashed file on saving: %s -> %s -- %s' % (self, crashedFilename, str(e)))
+                            log.warn(
+                                'Failed to rename crashed file on saving: %s -> %s -- %s' %
+                                (self, crashedFilename, str(e)))
                             try:
                                 self.remove()
                             except Exception as e:
@@ -648,7 +663,9 @@ class Path(str):
                 try:
                     backupName.remove()
                 except Exception as e:
-                    log.warn('Save completed but unable to delete backup "%s"' % backupName)
+                    log.warn(
+                        'Save completed but unable to delete backup "%s"' %
+                        backupName)
 
     def unique(self):
         """
@@ -661,7 +678,12 @@ class Path(str):
         i = 1
         path = Path(self)
         while path.exists():
-            path = Path(self.dirname()/self.namebase + '.' + str(i) + self.ext)
+            path = Path(
+                self.dirname() /
+                self.namebase +
+                '.' +
+                str(i) +
+                self.ext)
             i = i + 1
         return path
 
@@ -775,7 +797,9 @@ class Path(str):
             """
             This is a hacky windows version.
             """
-            return toUnicode(self.abspath()) == toUnicode(Path(filename).abspath())
+            return toUnicode(
+                self.abspath()) == toUnicode(
+                Path(filename).abspath())
 
     getatime = os.path.getatime
     atime = property(
@@ -926,29 +950,38 @@ class Path(str):
             else:
                 return (self.parent / pth).abspath()
 
-
     # --- High-level functions from shutil
 
     def copyfile(self, dst):
         """Wraps shutil.copyfile"""
         return shutil.copyfile(toUnicode(self), toUnicode(dst))
+
     def copymode(self, dst):
         """Wraps shutil.copymode"""
         return shutil.copymode(toUnicode(self), toUnicode(dst))
+
     def copystat(self, dst):
         """Wraps shutil.copystat"""
         return shutil.copystat(toUnicode(self), toUnicode(dst))
+
     def copy(self, dst):
         """Wraps shutil.copy"""
         return shutil.copy(toUnicode(self), toUnicode(dst))
+
     def copy2(self, dst):
         """Wraps shutil.copy2"""
         return shutil.copy2(toUnicode(self), toUnicode(dst))
+
     def copytree(self, dst):
         """Wraps shutil.copytree"""
         return shutil.copytree(toUnicode(self), toUnicode(dst))
 
-    def copytreeFilter(self, dst, symlinks=False, filterDir=None, filterFile=None):
+    def copytreeFilter(
+            self,
+            dst,
+            symlinks=False,
+            filterDir=None,
+            filterFile=None):
         """Recursively copy a directory tree using copy2().
 
         The destination directory must not already exist.
@@ -969,8 +1002,8 @@ class Path(str):
         dst.mkdir()
         errors = []
         for name in names:
-            srcname = self/self.relpathto(name)
-            dstname = dst/self.relpathto(name)
+            srcname = self / self.relpathto(name)
+            dstname = dst / self.relpathto(name)
             try:
                 if symlinks and os.path.islink(srcname):
                     linkto = os.readlink(srcname)
@@ -979,7 +1012,8 @@ class Path(str):
                     if filterDir is not None:
                         if not filterDir(srcname):
                             continue
-                    srcname.copytreeFilter(dstname, symlinks, filterDir, filterFile)
+                    srcname.copytreeFilter(
+                        dstname, symlinks, filterDir, filterFile)
                 else:
                     if filterFile is not None:
                         if not filterFile(srcname):
@@ -1005,16 +1039,17 @@ class Path(str):
         def move(self, dst):
             """Wraps shutil.move"""
             return shutil.move(toUnicode(self), toUnicode(dst))
+
     def rmtree(self):
         """Wraps shutil.rmtree"""
         path = toUnicode(self)
-        if os.name == 'nt': # Fix MAX_PATH limit in windows
+        if os.name == 'nt':  # Fix MAX_PATH limit in windows
             try:
                 device_namespace_prefix = '\\\\?\\'
                 if path[:4] != device_namespace_prefix:
-                    path = device_namespace_prefix+path
+                    path = device_namespace_prefix + path
                 return shutil.rmtree(path)
-            except:
+            except BaseException:
                 path = toUnicode(self)
                 return shutil.rmtree(path)
         else:
@@ -1067,7 +1102,7 @@ class Path(str):
         """Returns an md5 hash for an object with read() method."""
         try:
             file_ = file(self, 'rb')
-        except:
+        except BaseException:
             raise Exception("Could not open %s" % self)
         hasher = hashlib.md5()
         if hasattr(self, 'salt'):
@@ -1099,6 +1134,7 @@ class TempDirPath(Path):
         """Destroy the temporary directory"""
         if self.exists():
             self.rmtree()
+
 
 def toUnicode(string, encoding='utf8'):
     """

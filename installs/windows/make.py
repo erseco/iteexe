@@ -1,10 +1,13 @@
 #!C:\Python27\python
 
+from exe.engine import version
 import sys
 import os
 import shutil
 import subprocess
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from PIL import Image, ImageFont, ImageDraw
 
@@ -25,9 +28,9 @@ VCREDIST = 'http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95
 # Specify any options necessary when building installers
 nsis_options = ''
 # If makensis.exe is not in your PATH, specify explicit pathname here
-nsis = PROGRAM_FILES + '\NSIS\makensis.exe'
+nsis = PROGRAM_FILES + '\NSIS\\makensis.exe'
 if not os.path.exists(nsis):
-    nsis = PROGRAM_FILES_32 + '\NSIS\makensis.exe'
+    nsis = PROGRAM_FILES_32 + '\NSIS\\makensis.exe'
 
 # Save current dir
 CUR_DIR = os.path.abspath('.')
@@ -42,17 +45,19 @@ shutil.rmtree(os.path.join(SRC_DIR, 'build'), True)
 shutil.rmtree(os.path.join(SRC_DIR, 'dist'), True)
 
 # Build the executable
-subprocess.check_call('C:\Python27\python win-setup.py py2exe', shell=True, cwd=SRC_DIR)
+subprocess.check_call(
+    'C:\\Python27\\python win-setup.py py2exe',
+    shell=True,
+    cwd=SRC_DIR)
 
 # Append the source path to Python path so we can import eXe modules
 sys.path.append(SRC_DIR)
 
 # Get the version
-from exe.engine import version
 
 # Compose version parameters string
 versions = "/DEXE_VERSION=%s /DEXE_REVISION=%s /DEXE_BUILD=%s /DEXE_SPLASH=%s" \
-        % (version.release, version.revision, version.version, BRANDED_JPG)
+    % (version.release, version.revision, version.version, BRANDED_JPG)
 
 # Write version file to dist folder
 open('dist/version', 'w').write(version.version)
@@ -75,7 +80,8 @@ draw = ImageDraw.Draw(im)
 
 # Brand the splash screen (if we can)
 if candrawfont:
-    draw.text((150, 102), "Version: " + version.release, font=font, fill=fontcolor)
+    draw.text((150, 102), "Version: " +
+              version.release, font=font, fill=fontcolor)
     # draw.text((150, 105 + font_height), "Revision: " + version.revision, font=font, fill=fontcolor)
 
 # Remove the image from memory
@@ -84,16 +90,32 @@ del draw
 im.save(os.path.join(CUR_DIR, BRANDED_JPG))
 
 # Download the Visual C++ Redistibutable installer
-urllib.request.urlretrieve(VCREDIST, os.path.join(CUR_DIR, 'vcredist2008_x86.exe'))
+urllib.request.urlretrieve(
+    VCREDIST, os.path.join(
+        CUR_DIR, 'vcredist2008_x86.exe'))
 
 # Make the installers
 for installer in ('exe.nsi', 'exe.standalone.nsi'):
     # We try without path first in case it is on the system path var
     try:
-        pnsis = subprocess.Popen('%s %s %s %s' % ('makensis', nsis_options, versions, os.path.join(CUR_DIR, installer)))
+        pnsis = subprocess.Popen(
+            '%s %s %s %s' %
+            ('makensis',
+             nsis_options,
+             versions,
+             os.path.join(
+                 CUR_DIR,
+                 installer)))
     except OSError:
         try:
-            pnsis = subprocess.Popen('%s %s %s %s' % (nsis, nsis_options, versions, os.path.join(CUR_DIR, installer)))
+            pnsis = subprocess.Popen(
+                '%s %s %s %s' %
+                (nsis,
+                 nsis_options,
+                 versions,
+                 os.path.join(
+                     CUR_DIR,
+                     installer)))
         except OSError:
             print('*** unable to run makensis, check PATH or explicit pathname')
             print('    in make.py')

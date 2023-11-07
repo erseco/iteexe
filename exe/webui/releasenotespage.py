@@ -27,8 +27,8 @@ import os
 import codecs
 from twisted.web.resource import Resource
 from exe.webui.renderable import Renderable
-from nevow                import rend, tags
-from exe.engine           import version
+from nevow import rend, tags
+from exe.engine import version
 
 import logging
 
@@ -55,14 +55,19 @@ class ReleaseNotesPage(Renderable, rend.Page):
 
     def render_changelog(self, ctx, data):
         try:
-            # When eXe is run on an regular installation, ChangeLog file is in the webDir
+            # When eXe is run on an regular installation, ChangeLog file is in
+            # the webDir
             changelog_file = os.path.join(self.config.webDir, 'ChangeLog')
-            changelog_contents = codecs.open(changelog_file, 'r', 'utf-8').read()
+            changelog_contents = codecs.open(
+                changelog_file, 'r', 'utf-8').read()
         except IOError:
-            # When eXe is launched in dev enviroment, ChangeLog file is in the project root
+            # When eXe is launched in dev enviroment, ChangeLog file is in the
+            # project root
             try:
-                changelog_file = os.path.join(self.config.exePath, '../ChangeLog')
-                changelog_contents = codecs.open(changelog_file, 'r', 'utf-8').read()
+                changelog_file = os.path.join(
+                    self.config.exePath, '../ChangeLog')
+                changelog_contents = codecs.open(
+                    changelog_file, 'r', 'utf-8').read()
             except IOError:
                 # fail silently if we can't read either of the files
                 changelog_contents = ''

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,8 @@ a given field.
 """
 
 import logging
-from exe.engine.field  import TextField, TextAreaField, ImageField, FeedbackField
-from exe.engine.field  import MultimediaField, FlashField, AttachmentField
+from exe.engine.field import TextField, TextAreaField, ImageField, FeedbackField
+from exe.engine.field import MultimediaField, FlashField, AttachmentField
 from exe.webui.element import TextElement, TextAreaElement, ImageElement
 from exe.webui.element import FeedbackElement, MultimediaElement, FlashElement
 from exe.webui.element import AttachmentElement
@@ -31,21 +31,24 @@ from exe.webui.element import AttachmentElement
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class ElementFactory(object):
     """
     ElementFactory is responsible for creating the right element object to match
     a given field.  Elements register themselves with the factory, specifying
     which fields they can render
     """
+
     def __init__(self):
         """
         Initialize
         """
-        self.elementTypeMap = {TextField:      TextElement,
-                               TextAreaField:  TextAreaElement,
-                               ImageField:     ImageElement,
-                               FeedbackField:  FeedbackElement,
-                               FlashField:     FlashElement,
+        self.elementTypeMap = {TextField: TextElement,
+                               TextAreaField: TextAreaElement,
+                               ImageField: ImageElement,
+                               FeedbackField: FeedbackElement,
+                               FlashField: FlashElement,
                                MultimediaField: MultimediaElement,
                                AttachmentField: AttachmentElement}
 
@@ -57,13 +60,14 @@ class ElementFactory(object):
 
         if elementType:
             # Create an instance of the appropriate element class
-            log.debug("createElement "+elementType.__class__.__name__+
-                      " for "+field.__class__.__name__)
+            log.debug("createElement " + elementType.__class__.__name__ +
+                      " for " + field.__class__.__name__)
             return elementType(field)
         else:
             log.error("No element type registered for " +
                       field.__class__.__name__)
             return None
+
 
 g_elementFactory = ElementFactory()
 # ===========================================================================

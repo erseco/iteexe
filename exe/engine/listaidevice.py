@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -24,23 +24,25 @@
 
 import logging
 from exe.engine.idevice import Idevice
-from exe.engine.path    import Path, toUnicode
-from exe.engine.field   import Field,FieldWithResources,FeedbackField,TextAreaField
-from exe.engine.resource  import Resource
+from exe.engine.path import Path, toUnicode
+from exe.engine.field import Field, FieldWithResources, FeedbackField, TextAreaField
+from exe.engine.resource import Resource
 from exe.engine.persist import Persistable
 from exe.engine.translate import lateTranslate
-from exe                  import globals as G
-from exe.engine.node      import Node
+from exe import globals as G
+from exe.engine.node import Node
 import os
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import shutil
 from exe.engine.translate import lateTranslate
-from exe.engine.mimetex   import compile
-from html.parser           import HTMLParser
-from html.entities       import name2codepoint
+from exe.engine.mimetex import compile
+from html.parser import HTMLParser
+from html.entities import name2codepoint
 from exe.engine.htmlToText import HtmlToText
 from twisted.persisted.styles import Versioned
-from exe.webui                import common
+from exe.webui import common
 
 import re
 
@@ -53,18 +55,16 @@ class ListaIdevice(Idevice):
     """
     Actividad con lista desplegable
     """
-    
+
     persistenceVersion = 5
-    
 
     def __init__(self, parentNode=None):
         """
         Sets up the idevice title and instructions etc
         """
-       
-        
+
         Idevice.__init__(self, x_("DropDown Activity"),
-                         x_("INTEF"), 
+                         x_("INTEF"),
                          x_("<p>DropDown exercises are texts or "
                              "sentences where students must select the "
                              "correct words. They are often used for the "
@@ -123,70 +123,67 @@ class ListaIdevice(Idevice):
                              "  </p>"
                              "  </dd>"
                              "</dl>"),
-                            "question",
-                             parentNode)
+                         "question",
+                         parentNode)
         self.instructionsForLearners = TextAreaField(
             x_('Instructions'),
             x_("""Provide instruction on how the dropdown activity should be completed."""),
             x_('Read and complete'))
         self.instructionsForLearners.idevice = self
-        self._content = ListaField(x_('Dropdown'), 
-            x_("""<p>Enter the text for the dropdown activity in to the dropdown field 
-by either pasting text from another source or by typing text directly into the 
-field.</p><p> To select words to choose, double click on the word to select it and 
+        self._content = ListaField(x_('Dropdown'), x_(
+            """<p>Enter the text for the dropdown activity in to the dropdown field
+by either pasting text from another source or by typing text directly into the
+field.</p><p> To select words to choose, double click on the word to select it and
 click on the 'Hide/Show' button below.</p>"""))
         self._content.idevice = self
-        self._content.otras=''
-        self.feedback = TextAreaField(x_('Feedback'),
-            x_('Enter any feedback you wish to provide the learner '
+        self._content.otras = ''
+        self.feedback = TextAreaField(
+            x_('Feedback'), x_(
+                'Enter any feedback you wish to provide the learner '
                 'with-in the feedback field. This field can be left blank.'))
         self.feedback.idevice = self
         self.emphasis = Idevice.SomeEmphasis
-        #self.systemResources += ["common.js"]
+        # self.systemResources += ["common.js"]
         self.isCloze = True
 
-
-
-
     # Properties
-    content = property(lambda self: self._content, 
+    content = property(lambda self: self._content,
                        doc="Read only, use 'self.content.encodedContent = x' "
                            "instead")
 
-    def getResourcesField(self, this_resource): 
-        """ 
-        implement the specific resource finding mechanism for this iDevice: 
-        """ 
+    def getResourcesField(self, this_resource):
+        """
+        implement the specific resource finding mechanism for this iDevice:
+        """
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, '_content') and hasattr(self._content, 'images'):
-            for this_image in self._content.images: 
+            for this_image in self._content.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self._content
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'instructionsForLearners')\
-        and hasattr(self.instructionsForLearners, 'images'):
-            for this_image in self.instructionsForLearners.images: 
+                and hasattr(self.instructionsForLearners, 'images'):
+            for this_image in self.instructionsForLearners.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self.instructionsForLearners
 
         # be warned that before upgrading, this iDevice field could not exist:
         if hasattr(self, 'feedback') and hasattr(self.feedback, 'images'):
-            for this_image in self.feedback.images: 
+            for this_image in self.feedback.images:
                 if hasattr(this_image, '_imageResource') \
-                and this_resource == this_image._imageResource: 
+                        and this_resource == this_image._imageResource:
                     return self.feedback
-        
+
         return None
 
-      
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
         if hasattr(self, '_content'):
@@ -196,30 +193,33 @@ click on the 'Hide/Show' button below.</p>"""))
         if hasattr(self, 'feedback'):
             fields_list.append(self.feedback)
         return fields_list
-        
+
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         # lista Idevice:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        inner = i.find(name='div', attrs={'class' : 'iDevice_inner' })
+        inner = i.find(name='div', attrs={'class': 'iDevice_inner'})
 
-        instruct = inner.find(name='div', 
-                attrs={'class' : 'block' , 'style' : 'display:block' })
+        instruct = inner.find(
+            name='div',
+            attrs={
+                'class': 'block',
+                'style': 'display:block'})
         self.instructionsForLearners.content_wo_resourcePaths = \
-                instruct.renderContents().decode('utf-8')
+            instruct.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.instructionsForLearners.content_w_resourcePaths = \
-                self.instructionsForLearners.MassageResourceDirsIntoContent( \
-                    self.instructionsForLearners.content_wo_resourcePaths)
+            self.instructionsForLearners.MassageResourceDirsIntoContent(
+                self.instructionsForLearners.content_wo_resourcePaths)
         self.instructionsForLearners.content = \
-                self.instructionsForLearners.content_w_resourcePaths
+            self.instructionsForLearners.content_w_resourcePaths
 
-        content = inner.find(name='div', attrs={'id' : re.compile('^cloze') })
+        content = inner.find(name='div', attrs={'id': re.compile('^cloze')})
         rebuilt_contents = ""
         for this_content in content.contents:
             if not this_content.__str__().startswith('<input'):
@@ -237,9 +237,10 @@ click on the 'Hide/Show' button below.</p>"""))
                     while char_pos < len(code):
                         # first 2 chars = %u, replace with 0x to get int
                         # next 4 = the encoded unichr
-                        this_code_char = "0x" + code[char_pos+2 : char_pos+6]
+                        this_code_char = "0x" + \
+                            code[char_pos + 2: char_pos + 6]
                         this_code_ord = int(this_code_char, 16)
-                        letter = chr(ord(code_key)^this_code_ord)
+                        letter = chr(ord(code_key) ^ this_code_ord)
                         answer += letter
                         # key SHOULD be ^'d by letter, but seems to be:
                         code_key = letter
@@ -247,39 +248,41 @@ click on the 'Hide/Show' button below.</p>"""))
                     rebuilt_contents += "<U>" + answer + "</U>"
                 elif not this_content.__str__().startswith('<div'):
                     # this should be the un-clozed text:
-                    rebuilt_contents +=  this_content.__str__()
+                    rebuilt_contents += this_content.__str__()
         self._content.content_wo_resourcePaths = rebuilt_contents
         # and add the LOCAL resource paths back in:
         self._content.content_w_resourcePaths = \
-                self._content.MassageResourceDirsIntoContent( \
-                    self._content.content_wo_resourcePaths)
+            self._content.MassageResourceDirsIntoContent(
+                self._content.content_wo_resourcePaths)
         self._content.content = self._content.content_w_resourcePaths
 
-        feedback = inner.find(name='div', attrs={'class' : 'feedback' })
+        feedback = inner.find(name='div', attrs={'class': 'feedback'})
         self.feedback.content_wo_resourcePaths = \
-                feedback.renderContents().decode('utf-8')
+            feedback.renderContents().decode('utf-8')
         # and add the LOCAL resource paths back in:
         self.feedback.content_w_resourcePaths = \
-                self.feedback.MassageResourceDirsIntoContent( \
-                    self.feedback.content_wo_resourcePaths)
+            self.feedback.MassageResourceDirsIntoContent(
+                self.feedback.content_wo_resourcePaths)
         self.feedback.content = self.feedback.content_w_resourcePaths
         # and each cloze flag field (strict, case, instant):
-        flag_strict = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozeFlag.*strictMarking$') })
-        if flag_strict.attrMap['value']=="true":
+        flag_strict = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozeFlag.*strictMarking$')})
+        if flag_strict.attrMap['value'] == "true":
             self._content.strictMarking = True
-        flag_caps = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozeFlag.*checkCaps$') })
-        if flag_caps.attrMap['value']=="true":
+        flag_caps = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozeFlag.*checkCaps$')})
+        if flag_caps.attrMap['value'] == "true":
             self._content.checkCaps = True
-        flag_instant = inner.find(name='input', 
-                attrs={'id' : re.compile('^clozeFlag.*instantMarking$') })
-        if flag_instant.attrMap['value']=="true":
+        flag_instant = inner.find(
+            name='input', attrs={
+                'id': re.compile('^clozeFlag.*instantMarking$')})
+        if flag_instant.attrMap['value'] == "true":
             self._content.instantMarking = True
-            
-        cotras= inner.find(name='input', attrs={'id' : re.compile('^clOtras') })    
-        self._content.otras=cotras
-    
+
+        cotras = inner.find(name='input', attrs={'id': re.compile('^clOtras')})
+        self._content.otras = cotras
 
     def upgradeToVersion1(self):
         """
@@ -295,27 +298,25 @@ click on the 'Hide/Show' button below.</p>"""))
         self.feedback = TextAreaField(x_('Feedback'))
         self.feedback.idevice = self
 
-
-
     def upgradeToVersion2(self):
         """
         Upgrades exe to v0.11
         """
         self.content.autoCompletion = True
-        self.content.autoCompletionInstruc =  ""
+        self.content.autoCompletionInstruc = ""
 
     def upgradeToVersion3(self):
         """
         Upgrades to v0.12
         """
         self._upgradeIdeviceToVersion2()
-        #self.systemResources += ["common.js"]
-        
+        # self.systemResources += ["common.js"]
+
     def upgradeToVersion4(self):
         """
         Upgrades to v0.20.3
         """
-        
+
         self.isCloze = True
 
     def upgradeToVersion5(self):
@@ -324,18 +325,20 @@ click on the 'Hide/Show' button below.</p>"""))
         """
         self._upgradeIdeviceToVersion3()
 
-#================================================================
+# ================================================================
+
+
 class ListaField(FieldWithResources):
     """
     This field handles a passage with words that the student must choose in
     And can now support multiple images (and any other resources) via tinyMCE
     """
 
-    regex = re.compile('(%u)((\d|[A-F]){4})', re.UNICODE)
+    regex = re.compile('(%u)((\\d|[A-F]){4})', re.UNICODE)
     persistenceVersion = 3
 
     # these will be recreated in FieldWithResources' TwistedRePersist:
-    nonpersistant      = ['content', 'content_wo_resourcePaths']
+    nonpersistant = ['content', 'content_wo_resourcePaths']
 
     def __init__(self, name, instruc):
         """
@@ -348,21 +351,19 @@ class ListaField(FieldWithResources):
         self._setVersion2Attributes()
         self.otras = ''
         # self.otrasInstruc should have no HTML tags (#574)
-        otrasInstruc = \
-            _("<p>Optional: Write other words to complete the Dropdown activity.<br/> Use | (the vertical bar) to separate words.<br/> This field can be left blank. </p>")
+        otrasInstruc = _(
+            "<p>Optional: Write other words to complete the Dropdown activity.<br/> Use | (the vertical bar) to separate words.<br/> This field can be left blank. </p>")
         cleanr = re.compile('<.*?>')
         self.otrasInstruc = re.sub(cleanr, '', otrasInstruc)
-     
 
     def _setVersion2Attributes(self):
         """
         Sets the attributes that were added in persistenceVersion 2
         """
-        
-        #self.showScore = False
-        #self._showScoreInstruc = \
-            #x_(u"""<p>Si esta opci&oacute;n esta marcada se muestra la puntuaci&oacute;n obtenida.</p>""")
-       
+
+        # self.showScore = False
+        # self._showScoreInstruc = \
+        # x_(u"""<p>Si esta opci&oacute;n esta marcada se muestra la puntuaci&oacute;n obtenida.</p>""")
 
     # Property handlers
     def set_encodedContent(self, value):
@@ -383,24 +384,23 @@ class ListaField(FieldWithResources):
             if hidden:
                 encodedContent += ' <u>'
                 encodedContent += hidden
-                encodedContent += '</u> ' 
+                encodedContent += '</u> '
         self._encodedContent = encodedContent
-    
+
     # Properties
-    encodedContent        = property(lambda self: self._encodedContent,set_encodedContent)
-    #showScoreInstruc      = lateTranslate('showScoreInstruc')
-    otrasInstruc  = lateTranslate('otrasInstruc')
+    encodedContent = property(
+        lambda self: self._encodedContent,
+        set_encodedContent)
+    # showScoreInstruc      = lateTranslate('showScoreInstruc')
+    otrasInstruc = lateTranslate('otrasInstruc')
 
-
-    
     def upgradeToVersion1(self):
         """
         Upgrades to exe v0.11
         """
         self.autoCompletion = True
-        self.autoCompletionInstruc = _("""Allow auto completion when 
+        self.autoCompletionInstruc = _("""Allow auto completion when
                                        user filling the gaps.""")
-
 
     def upgradeToVersion2(self):
         """
@@ -413,17 +413,16 @@ class ListaField(FieldWithResources):
         self._setVersion2Attributes()
         self.strictMarking = strictMarking
 
-
     def upgradeToVersion3(self):
         """
-        Upgrades to somewhere before version 0.25 (post-v0.24) 
+        Upgrades to somewhere before version 0.25 (post-v0.24)
         to reflect that ClozeField now inherits from FieldWithResources,
         and will need its corresponding fields populated from content.
-        """ 
+        """
         self.content = self.encodedContent
         self.content_w_resourcePaths = self.encodedContent
         self.content_wo_resourcePaths = self.encodedContent
-        # NOTE: we don't need to actually process any of those contents for 
+        # NOTE: we don't need to actually process any of those contents for
         # image paths, either, since this is an upgrade from pre-images!
 
 
@@ -464,7 +463,7 @@ class ListaHTMLParser(HTMLParser):
                 else:
                     self.writeTag(tag, attrs)
             elif tag.lower() == 'br':
-                self.lastText += '<br/>' 
+                self.lastText += '<br/>'
             else:
                 self.writeTag(tag, attrs)
 
@@ -495,16 +494,15 @@ class ListaHTMLParser(HTMLParser):
         elif tag.lower() != 'br':
             self.writeTag(tag)
 
-
     def _endGap(self):
         """
         Handles finding the end of gap
         """
         # Tidy up and possibly split the gap
-        gapString = self.lastGap.strip()       
+        gapString = self.lastGap.strip()
         lastText = self.lastText
         # Deixa os espazos
-        self.result.append((lastText, gapString))      
+        self.result.append((lastText, gapString))
         self.lastGap = ''
         self.lastText = ''
 
@@ -523,7 +521,7 @@ class ListaHTMLParser(HTMLParser):
         """
         if self.lastText:
             self._endGap()
-            #self.result.append((self.lastText, self.lastGap))
+            # self.result.append((self.lastText, self.lastGap))
         HTMLParser.close(self)
 
 # ===========================================================================

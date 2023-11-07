@@ -23,10 +23,10 @@
 """
 
 import logging
-from twisted.web.resource      import Resource
-from exe.webui                 import common
-from exe.webui.renderable      import RenderableResource
-from urllib.parse                    import quote
+from twisted.web.resource import Resource
+from exe.webui import common
+from exe.webui.renderable import RenderableResource
+from urllib.parse import quote
 
 log = logging.getLogger(__name__)
 
@@ -43,13 +43,12 @@ class XliffImportPreferencesPage(RenderableResource):
         else:
             return Resource.getChild(self, name, request)
 
-
     def render_GET(self, request):
         """Render the preferences"""
         log.debug("render_GET")
-        
+
         # Rendering
-        html  = common.docType()
+        html = common.docType()
         html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
         html += "<head>\n"
         html += "<style type=\"text/css\">\n"
@@ -64,9 +63,9 @@ class XliffImportPreferencesPage(RenderableResource):
                 parent.Ext.getCmp("xliffimportwin").close();
             }
         </script>''' % quote(request.args['path'][0])
-        html += "<title>"+_("eXe : elearning XHTML editor")+"</title>\n"
+        html += "<title>" + _("eXe : elearning XHTML editor") + "</title>\n"
         html += "<meta http-equiv=\"content-type\" content=\"text/html; "
-        html += " charset=UTF-8\"></meta>\n";
+        html += " charset=UTF-8\"></meta>\n"
         html += "</head>\n"
         html += "<body>\n"
         html += "<div id=\"main\"> \n"
@@ -76,23 +75,32 @@ class XliffImportPreferencesPage(RenderableResource):
 
         # package not needed for the preferences, only for rich-text fields:
         this_package = None
-        html += common.formField('checkbox', this_package, _("Import from source language"),
-                                 'from_source',
-                                 name = 'from_source',
-                                 checked = False,
-                                 title = None,
-                                 instruction = _("If you choose this option, \
+        html += common.formField(
+            'checkbox',
+            this_package,
+            _("Import from source language"),
+            'from_source',
+            name='from_source',
+            checked=False,
+            title=None,
+            instruction=_("If you choose this option, \
 the import process will take the texts from source language instead of target \
 language."))
 
         html += "<div id=\"editorButtons\"> \n"
-        html += "<br/>" 
-        html += common.button("ok", _("OK"), enabled=True,
-                _class="button",
-                onClick="importXliff(document.forms.contentForm.from_source.checked \
+        html += "<br/>"
+        html += common.button(
+            "ok",
+            _("OK"),
+            enabled=True,
+            _class="button",
+            onClick="importXliff(document.forms.contentForm.from_source.checked \
                 )")
-        html += common.button("cancel", _("Cancel"), enabled=True,
-                _class="button", onClick="parent.Ext.getCmp('xliffimportwin').close()")
+        html += common.button("cancel",
+                              _("Cancel"),
+                              enabled=True,
+                              _class="button",
+                              onClick="parent.Ext.getCmp('xliffimportwin').close()")
         html += "</div>\n"
         html += "</div>\n"
         html += "<br/></form>\n"
@@ -100,15 +108,14 @@ language."))
         html += "</html>\n"
         return html.encode('utf8')
 
-
     def render_POST(self, request):
         """
         function replaced by nevow_clientToServerEvent to avoid POST message
         """
         log.debug("render_POST " + repr(request.args))
-        
+
         # should not be invoked, but if it is... refresh
-        html  = common.docType()
+        html = common.docType()
         html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
         html += "<head></head>\n"
         html += "<body onload=\"opener.location.reload(); "

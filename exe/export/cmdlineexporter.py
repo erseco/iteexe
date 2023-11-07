@@ -63,8 +63,8 @@ class CmdlineExporter(object):
 
     def do_export(self, inputf, outputf):
         if hasattr(self, 'export_' + self.options["export"]):
-            LOG.debug("Exporting to type %s, in: %s, out: %s, overwrite: %s" \
-            % (self.options["export"], inputf, outputf, str(self.options["overwrite"])))
+            LOG.debug("Exporting to type %s, in: %s, out: %s, overwrite: %s" % (
+                self.options["export"], inputf, outputf, str(self.options["overwrite"])))
             if not outputf:
                 if self.options["export"] in ('website', 'singlepage'):
                     outputf = inputf.rsplit(".elp")[0]
@@ -94,23 +94,22 @@ with a different filename') % outputf
                 getattr(self, 'export_' + self.options["export"])(pkg, outputf)
                 return outputf
         else:
-            raise Exception(_("Export format not implemented")\
-.encode(ENCODING))
-
+            raise Exception(_("Export format not implemented")
+                            .encode(ENCODING))
 
     def export_xml(self, pkg, outputf):
         open(outputf, "w").write(encodeObjectToXML(pkg))
 
     def export_scorm12(self, pkg, outputf):
         scormExport = ScormExport(self.config, self.styles_dir, outputf,
-'scorm1.2')
+                                  'scorm1.2')
         pkg.scowsinglepage = self.options['single-page']
         pkg.scowwebsite = self.options['website']
         scormExport.export(pkg)
 
     def export_scorm2004(self, pkg, outputf):
         scormExport = ScormExport(self.config, self.styles_dir, outputf,
-'scorm2004')
+                                  'scorm2004')
         pkg.scowsinglepage = self.options['single-page']
         pkg.scowwebsite = self.options['website']
         scormExport.export(pkg)
@@ -134,14 +133,21 @@ with a different filename') % outputf
         scripts_dir = self.web_dir.joinpath('scripts')
         css_dir = self.web_dir.joinpath('css')
         templates_dir = self.web_dir.joinpath('templates')
-        singlePageExport = SinglePageExport(self.styles_dir, outputf, \
-                             images_dir, scripts_dir, css_dir, templates_dir)
+        singlePageExport = SinglePageExport(
+            self.styles_dir,
+            outputf,
+            images_dir,
+            scripts_dir,
+            css_dir,
+            templates_dir)
         singlePageExport.export(pkg, print_flag)
 
     def export_xliff(self, pkg, outputf):
-        xliff = XliffExport(self.config, outputf, \
-                            source_copied_in_target=self.options["copy-source"], \
-                            wrap_cdata=self.options["wrap-cdata"])
+        xliff = XliffExport(
+            self.config,
+            outputf,
+            source_copied_in_target=self.options["copy-source"],
+            wrap_cdata=self.options["wrap-cdata"])
         xliff.export(pkg)
 
     def export_epub3(self, pkg, outputf):
@@ -153,10 +159,11 @@ with a different filename') % outputf
         epub3SubExport.export(pkg)
 
     def export_report(self, pkg, outputf):
-        websiteExport = WebsiteExport(self.config, self.styles_dir, outputf, report=True)
+        websiteExport = WebsiteExport(
+            self.config, self.styles_dir, outputf, report=True)
         websiteExport.export(pkg)
 
     def export_text(self, pkg, outputf):
-        textExport =TextExport(outputf)
+        textExport = TextExport(outputf)
         textExport.export(pkg)
         textExport.save(outputf)

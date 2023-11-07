@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,9 +20,11 @@
 ExternalUrlBlock can render and process ExternalUrlIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.externalurlidevice import ExternalUrlIdevice
 import logging
-from exe.webui.block            import Block
-from exe.webui                  import common
+from exe.webui.block import Block
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
@@ -32,11 +34,11 @@ class ExternalUrlBlock(Block):
     """
     ExternalUrlBlock can render and process ExternalUrlIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         Block.__init__(self, parent, idevice)
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -46,64 +48,64 @@ class ExternalUrlBlock(Block):
         is_cancel = common.requestHasCancel(request)
 
         Block.process(self, request)
-        if "url"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.url = request.args["url"+self.id][0]
-            #if (self.idevice.url and 
-            #    not self.idevice.url.startswith("http://") and 
+        if "url" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.url = request.args["url" + self.id][0]
+            # if (self.idevice.url and
+            #    not self.idevice.url.startswith("http://") and
             #    not self.idevice.url.startswith("https://") and
             #    not self.idevice.url.startswith("ftp://")):
             #    self.idevice.url = "http://" + self.idevice.url
 
-        if "height"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.height = request.args["height"+self.id][0]
+        if "height" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.height = request.args["height" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = '<p class="exe-text-field">\n'
+        html = '<p class="exe-text-field">\n'
         html += "<label for='url%s'>%s</label> " % (self.id, _('URL:'))
         html += common.elementInstruc(self.idevice.urlInstruc)
-        html += common.textInput("url"+self.id, self.idevice.url) 
-        html += ' <span class="exe-field-instructions">' + _("Remember that HTTP pages cannot be included into HTTPS websites.") + '</span>'
-        heightArr = [[_('small'),      '200'],
-                     [_('medium'),     '300'],
-                     [_('large'),      '500'],
+        html += common.textInput("url" + self.id, self.idevice.url)
+        html += ' <span class="exe-field-instructions">' + \
+            _("Remember that HTTP pages cannot be included into HTTPS websites.") + '</span>'
+        heightArr = [[_('small'), '200'],
+                     [_('medium'), '300'],
+                     [_('large'), '500'],
                      [_('super-size'), '800']]
         html += "</p>\n"
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
             this_package = self.idevice.parentNode.package
-        html += common.formField('select', this_package, _('Frame Height:'), 
-                                 "height"+self.id,
-                                 options = heightArr,
-                                 selection = self.idevice.height)
+        html += common.formField('select', this_package, _('Frame Height:'),
+                                 "height" + self.id,
+                                 options=heightArr,
+                                 selection=self.idevice.height)
         html += self.renderEditButtons()
         return html
-
 
     def renderViewContent(self):
         """
         Returns an XHTML string for previewing this block
         """
-        lb = "\n" #Line breaks
-        dT = common.getExportDocType()   
+        lb = "\n"  # Line breaks
+        dT = common.getExportDocType()
         if dT == "HTML5":
-            html = '<div class="iDevice_content" style="width:100%">'+lb
+            html = '<div class="iDevice_content" style="width:100%">' + lb
             if self.idevice.url:
-                html += '<iframe src="'+self.idevice.url+'" width="600" height="'+self.idevice.height+'" style="width:100%"></iframe>'+lb
-        else:        
-            html = '<div class="iDevice_content">'+lb
+                html += '<iframe src="' + self.idevice.url + '" width="600" height="' + \
+                    self.idevice.height + '" style="width:100%"></iframe>' + lb
+        else:
+            html = '<div class="iDevice_content">' + lb
             if self.idevice.url:
-                html += '<iframe src="'+self.idevice.url+'" width="100%" height="'+self.idevice.height+'px"></iframe>'+lb
-        html += '</div>'+lb
+                html += '<iframe src="' + self.idevice.url + '" width="100%" height="' + \
+                    self.idevice.height + 'px"></iframe>' + lb
+        html += '</div>' + lb
         return html
 
 
-from exe.engine.externalurlidevice import ExternalUrlIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(ExternalUrlBlock, ExternalUrlIdevice)    
+g_blockFactory.registerBlockType(ExternalUrlBlock, ExternalUrlIdevice)
 
 # ===========================================================================

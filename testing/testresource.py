@@ -18,15 +18,15 @@
 # ===========================================================================
 
 import unittest
-from os.path                   import join
-from utils                     import SuperTestCase
-from exe.engine.resource       import Resource
-from exe.engine.config         import Config
-from exe.engine.node           import Node
+from os.path import join
+from utils import SuperTestCase
+from exe.engine.resource import Resource
+from exe.engine.config import Config
+from exe.engine.node import Node
 from exe.engine.genericidevice import GenericIdevice
 from exe.engine.galleryidevice import GalleryIdevice
-from exe.engine.idevice        import Idevice
-from exe.engine.path           import Path
+from exe.engine.idevice import Idevice
+from exe.engine.path import Path
 
 
 # ===========================================================================
@@ -40,11 +40,17 @@ class TestResource(SuperTestCase):
         """
         Test we have a resource directory and resource files can be stored in
         """
-        myIdevice = Idevice("My Idevice", "UoA", "Testing", "Help tip", "icon", self.package.root)
+        myIdevice = Idevice(
+            "My Idevice",
+            "UoA",
+            "Testing",
+            "Help tip",
+            "icon",
+            self.package.root)
         oliver = Resource(myIdevice, Path("oliver.jpg"))
-        self.assertTrue((self.package.resourceDir/"oliver.jpg").exists())
+        self.assertTrue((self.package.resourceDir / "oliver.jpg").exists())
         oliver.delete()
-        self.assertTrue(not (self.package.resourceDir/"oliver.jpg").exists())
+        self.assertTrue(not (self.package.resourceDir / "oliver.jpg").exists())
 
     def testReferenceCounting(self):
         """
@@ -61,7 +67,10 @@ class TestResource(SuperTestCase):
             res4.dirname().makedirs()
         res4.write_bytes('SOME *DIFFERENT* DATA')
         res4md5 = res4.md5
-        res1, res2, res3, res4 = [Resource(self.package, f) for f in (res1, res2, res3, res4)]
+        res1, res2, res3, res4 = [
+            Resource(
+                self.package, f) for f in (
+                res1, res2, res3, res4)]
         assert res1.storageName == 'my.resource1.bin', res1.storageName
         assert res2.storageName == 'my.resource1.bin', res2.storageName
         assert res3.storageName == 'my.resource1.bin', res3.storageName
@@ -106,16 +115,17 @@ class TestResource(SuperTestCase):
             for res in resources:
                 storageNames.append(res.storageName)
                 userNames.append(res.userName)
-            assert len(set(storageNames)) == 1, 'Two identical resources have different storage names:\n%s' % storageNames
+            assert len(set(
+                storageNames)) == 1, 'Two identical resources have different storage names:\n%s' % storageNames
         allResourceNames = []
         for reses in list(package.resources.values()):
             allResourceNames.append(reses[0].storageName)
         filenames = [path.basename() for path in package.resourceDir.files()]
         withoutDups = set(filenames) - set(allResourceNames)
-        assert withoutDups == set([]), "Duplicate files weren't deleted %s" % withoutDups
+        assert withoutDups == set(
+            []), "Duplicate files weren't deleted %s" % withoutDups
         assert len(filenames) == len(allResourceNames)
         assert len(filenames) > 0, 'All resources have been deleted!'
-
 
 
 if __name__ == "__main__":

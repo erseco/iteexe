@@ -17,28 +17,32 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
-import unittest, sys, zipfile
-from exe.webui.block        import Block
-from exe.engine.idevice     import Idevice
+import unittest
+import sys
+import zipfile
+from exe.webui.block import Block
+from exe.engine.idevice import Idevice
 from exe.webui.blockfactory import g_blockFactory
-from exe.webui.renderable   import Renderable
-from exe.engine.node        import Node
-from exe.engine.path        import Path, TempDirPath
+from exe.webui.renderable import Renderable
+from exe.engine.node import Node
+from exe.engine.path import Path, TempDirPath
 from exe.export.scormexport import ScormExport
-from utils                  import SuperTestCase, HTMLChecker
-from nevow.context          import RequestContext, WovenContext
+from utils import SuperTestCase, HTMLChecker
+from nevow.context import RequestContext, WovenContext
 from nevow.livepage import IClientHandle
 from nevow.stan import Tag
 
 # ===========================================================================
+
+
 class TestBlock(SuperTestCase):
     """
     Tests that blocks can render stuff
     """
 
     # Default Attribute Values
-    ignoreErrorMsgs = [] # A list of regular expressions that match xmllint
-                         # stderr output
+    ignoreErrorMsgs = []  # A list of regular expressions that match xmllint
+    # stderr output
     quickCheck = '--quick' in sys.argv
 
     def createPackage(self):
@@ -48,12 +52,15 @@ class TestBlock(SuperTestCase):
         """
         # Add some idevices to the main page
         def addIdevice(id_):
-            request = self._request(action='AddIdevice', object=str(id_), currentNode = str(id_))
+            request = self._request(
+                action='AddIdevice',
+                object=str(id_),
+                currentNode=str(id_))
             ctx = RequestContext(request)
-            
-            #at start mainpage.authoringPage is None - test will 
-            #currently fail - Mike Dawson 5/Feb/2014
-            from exe.webui.authoringpage     import AuthoringPage
+
+            # at start mainpage.authoringPage is None - test will
+            # currently fail - Mike Dawson 5/Feb/2014
+            from exe.webui.authoringpage import AuthoringPage
             self.mainpage.authoringPage = AuthoringPage(self.mainpage)
             return self.mainpage.authoringPage.render(request)
         ideviceCount = len(self.app.ideviceStore.getIdevices())
@@ -75,7 +82,8 @@ class TestBlock(SuperTestCase):
             if mainOk:
                 return True
             else:
-                self.fail('Main XHTML failed, check tmp.html and tmp.html.errors')
+                self.fail(
+                    'Main XHTML failed, check tmp.html and tmp.html.errors')
                 return False
         # Backup tmp.html
         Path('tmp.html').rename('tmpall.html')
@@ -86,21 +94,25 @@ class TestBlock(SuperTestCase):
         ln = len(self.mainpage.authoringPage.blocks)
         assert ln >= 1, 'Should be at least one block, only %s' % ln
         chunks = list(zip(self.mainpage.authoringPage.blocks,
-                     self.package.currentNode.idevices))
+                          self.package.currentNode.idevices))
         for i, (block, idevice) in enumerate(chunks):
             assert block.idevice is idevice
             viewHTML = block.renderView('default')
             previewHTML = block.renderPreview('default')
             editHTML = block.renderEdit('default')
             if not checker.check(viewHTML, True, False):
-                self.fail('Block "%s" generated bad view XHTML' % idevice.title)
+                self.fail(
+                    'Block "%s" generated bad view XHTML' %
+                    idevice.title)
                 return False
             if not checker.check(previewHTML, True, True):
                 self.fail('Block "%s" generated bad preview XHTML' %
                           idevice.title)
                 return False
             if not checker.check(editHTML, True, True):
-                self.fail('Block "%s" generated bad edit XHTML' % idevice.title)
+                self.fail(
+                    'Block "%s" generated bad edit XHTML' %
+                    idevice.title)
                 return False
         if not mainOk:
             # Even if all the blocks pass, still the main html is bad
@@ -114,7 +126,7 @@ class TestBlock(SuperTestCase):
         output
         """
         self.createPackage()
-        stylesDir  = self.app.config.webDir/'style'/'default'
+        stylesDir = self.app.config.webDir / 'style' / 'default'
         filename = 'scormExport.zip'
         scormExport = ScormExport(self.app.config, stylesDir, filename)
         scormExport.export(self.package)
@@ -133,6 +145,7 @@ class TestBlock(SuperTestCase):
         checker = HTMLChecker(self.ignoreErrorMsgs)
         if not checker.check(html, False, False):
             self.fail('Scorm export generated bad XHTML')
+
 
 if __name__ == "__main__":
     if '--quick' in sys.argv:

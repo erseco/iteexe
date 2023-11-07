@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # setup.py
+import sys
 from distutils.core import setup
 from exe.engine.path import Path
 from exe.engine import version
@@ -21,12 +22,14 @@ if not Path('exe/main.py').exists():
     output.close()
 
 files = {'../Resources/exe': ["README",
-                             "COPYING",
-                             "NEWS",
-                             "ChangeLog",
-                             "exe/webui/mr_x.gif"],
-          '../Resources': ["exe_elp.icns", os.path.join(os.path.dirname(certifi.__file__), 'cacert.pem')],
-        }
+                              "COPYING",
+                              "NEWS",
+                              "ChangeLog",
+                              "exe/webui/mr_x.gif"],
+         '../Resources': ["exe_elp.icns",
+                          os.path.join(os.path.dirname(certifi.__file__),
+                                       'cacert.pem')],
+         }
 
 
 def dataFiles(baseSourceDir, baseDestDir, sourceDirs, excludes=[]):
@@ -63,7 +66,6 @@ dataFiles('exe', '../Resources/exe', ['locale'])
 
 dataFiles('exe/jsui', '../Resources/exe', ['scripts', 'templates'])
 
-import sys
 
 print(sys.path)
 
@@ -88,25 +90,34 @@ py2appParams = {
     'argv_emulation': True,
     'semi_standalone': False,
     'plist': plist,
-    'iconfile': 'exe.icns'
-}
+    'iconfile': 'exe.icns'}
 
-setup(name=version.project,
-      version=version.version,
-      description="The EXtremely Easy to use eLearning authoring tool",
-      long_description="""\
+setup(
+    name=version.project,
+    version=version.version,
+    description="The EXtremely Easy to use eLearning authoring tool",
+    long_description="""\
 The eXe project is an authoring environment to enable teachers to publish
 web content without the need to become proficient in HTML or XML markup.
 Content generated using eXe can be used by any Learning Management System.
 """,
-      url="http://exelearning.net",
-      author="INTEF-eXe Project",
-      author_email="admin@exelearning.net",
-      license="GPL",
-      packages=["exe", "exe.webui", "exe.jsui",
-                "exe.engine", "exe.export", "exe.importers", "exe.engine.lom", "exe.engine.exceptions"],
-      data_files=list(files.items()),
-      app=["exe/main.py"],
-      options={'py2app': py2appParams},
-      setup_requires=["py2app"],
-      )
+    url="http://exelearning.net",
+    author="INTEF-eXe Project",
+    author_email="admin@exelearning.net",
+    license="GPL",
+    packages=[
+        "exe",
+        "exe.webui",
+        "exe.jsui",
+        "exe.engine",
+        "exe.export",
+        "exe.importers",
+        "exe.engine.lom",
+        "exe.engine.exceptions"],
+    data_files=list(
+        files.items()),
+    app=["exe/main.py"],
+    options={
+        'py2app': py2appParams},
+    setup_requires=["py2app"],
+)

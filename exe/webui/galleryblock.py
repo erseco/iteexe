@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,15 +22,21 @@ Gallery block can render a group of images, each with desciptions and popup on
 a single image
 """
 
+from exe.engine.galleryidevice import GalleryIdevice
+from exe.webui.blockfactory import g_blockFactory
 import logging
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import re
-from exe.webui.block            import Block
-from exe.webui                  import common
+from exe.webui.block import Block
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class GalleryBlock(Block):
     """
     Gallery block can render a group of images, each with desciptions and popup
@@ -51,9 +57,9 @@ class GalleryBlock(Block):
         """
         Block.__init__(self, parent, idevice)
 
-        if not hasattr(self.idevice,'undo'):
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-        
+
     # Protected Methods
 
     def _generateTable(self, perCell):
@@ -63,21 +69,26 @@ class GalleryBlock(Block):
         argument, which is an 'exe.engine.galleryIdevice.GalleryImage' instance
         and return a list of strings that will be later joined with '\n' chars.
         """
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         width = self.idevice.images[0].thumbnailSize[0]
-        html = ['<ul class="exeImageGallery" id="exeImageGallery%s">' % self.idevice.id]
+        html = [
+            '<ul class="exeImageGallery" id="exeImageGallery%s">' %
+            self.idevice.id]
         html += [lb]
         i = 0
         for image in self.idevice.images:
             i += 1
             html += ['<li>']
-            html += perCell(image, i-1, self.idevice.id)
+            html += perCell(image, i - 1, self.idevice.id)
             html += ['</li>']
             html += [lb]
         html += ['</ul>']
         html += [lb]
         if self.mode != Block.Edit:
-            html += ['<script type="text/javascript">$exe.imageGallery.init("exeImageGallery'+self.idevice.id+'");</script>']
+            html += [
+                '<script type="text/javascript">$exe.imageGallery.init("exeImageGallery' +
+                self.idevice.id +
+                '");</script>']
         html += [lb]
         return html
 
@@ -91,30 +102,30 @@ class GalleryBlock(Block):
         # If the commit is not to do with us forget it
 
         is_cancel = common.requestHasCancel(request)
-        
+
         obj = request.args.get('object', [''])[0]
-        
-        if "title"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args["title"+self.id][0]
+
+        if "title" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args["title" + self.id][0]
             if obj != self.id:
                 self.idevice.recreateResources()
                 self.processCaptions(request)
-                    
+
         if obj != self.id:
             Block.process(self, request)
-            return 
+            return
         # Separate out the action we want to do and the params
         action = request.args.get('action', [''])[0]
         if action.startswith('gallery.'):
             self.processGallery(action)
         if self.mode == Block.Edit \
-        and not is_cancel:
+                and not is_cancel:
             self.processCaptions(request)
         if action == 'done':
             self.idevice.recreateResources()
             # remove the undo flag in order to reenable it next time:
-            if hasattr(self.idevice,'undo'): 
+            if hasattr(self.idevice, 'undo'):
                 del self.idevice.undo
         # Let our ancestor deal with the rest
         Block.process(self, request)
@@ -130,17 +141,17 @@ class GalleryBlock(Block):
             # Add an image
             if action == 'addImage':
                 # Decode multiple filenames
-                #JR: Cambiamos para que solo anada la ultima imagen y no como lo hacia antes que siempre
+                # JR: Cambiamos para que solo anada la ultima imagen y no como lo hacia antes que siempre
                 #    anadia todas las imagenes otra vez
                 aux = params.split('&')
-                filename = aux[len(aux)-1]
+                filename = aux[len(aux) - 1]
                 match = self.unicodeRe.search(filename)
                 while match:
                     start, end = match.span()
                     if match.groups()[0]:
-                        numStart = start + 2 # '%u'
+                        numStart = start + 2  # '%u'
                     else:
-                        numStart = start + 1 # '%'
+                        numStart = start + 1  # '%'
                     code = chr(int(filename[numStart:end], 16))
                     filename = filename[:start] + code + filename[end:]
                     match = self.unicodeRe.search(filename)
@@ -175,7 +186,7 @@ class GalleryBlock(Block):
                 img = imgs[params]
                 index = imgs.index(img)
                 if index > 0:
-                    imgs[index-1], imgs[index] = imgs[index], imgs[index-1]
+                    imgs[index - 1], imgs[index] = imgs[index], imgs[index - 1]
                 # disable Undo following such an action:
                 self.idevice.undo = False
             # Move image one right
@@ -184,7 +195,7 @@ class GalleryBlock(Block):
                 img = imgs[params]
                 index = imgs.index(img)
                 if index < len(imgs):
-                    imgs[index+1], imgs[index] = imgs[index], imgs[index+1]
+                    imgs[index + 1], imgs[index] = imgs[index], imgs[index + 1]
                 # disable Undo following such an action:
                 self.idevice.undo = False
             # Delete an image?
@@ -193,14 +204,14 @@ class GalleryBlock(Block):
                 # disable Undo following such an action:
                 self.idevice.undo = False
 
-    def processCaptions(self, request): 
+    def processCaptions(self, request):
         """
         Processes changes to all the image captions
         """
         # Check all the image captions for changes
         for image in self.idevice.images:
             # See if the caption has changed
-            newCaption = request.args.get('caption'+image.id, [None])[0]
+            newCaption = request.args.get('caption' + image.id, [None])[0]
             if newCaption is not None:
                 image.caption = newCaption
 
@@ -214,7 +225,7 @@ class GalleryBlock(Block):
             this_package = self.idevice.parentNode.package
         html = ['<div class="iDevice">',
                 common.formField('textInput', this_package, _('Title'),
-                                 "title"+self.id, '',
+                                 "title" + self.id, '',
                                  self.idevice.titleInstruc,
                                  self.idevice.title),
                 '<div class="block">',
@@ -227,8 +238,8 @@ class GalleryBlock(Block):
 
         if len(self.idevice.images) == 0:
             html += ['<p class="exeImageGallery no-images">',
-                    _('No Images Loaded'),
-                    '</p>']
+                     _('No Images Loaded'),
+                     '</p>']
         else:
             def genCell(image, i, id):
                 """Generates a single cell of our table"""
@@ -240,14 +251,15 @@ class GalleryBlock(Block):
 
                 def confirmThenSubmitLink(msg, method):
                     method = 'gallery.%s.%s' % (method, image.id)
-                    params = "'%s', '%s', %s, true" % (re.escape(msg), method, self.id)
+                    params = "'%s', '%s', %s, true" % (
+                        re.escape(msg), method, self.id)
                     return "javascript:confirmThenSubmitLink(%s)" % params
                 changeGalleryImage = '\n'.join([
-                        '<a title="%s"' % _('Change Image'),
-                        ' href="#" ',
-                        ' onclick="changeGalleryImage(' +
-                        "'%s', '%s')" % (self.id, image.id) +
-                        '">'])
+                    '<a title="%s"' % _('Change Image'),
+                    ' href="#" ',
+                    ' onclick="changeGalleryImage(' +
+                    "'%s', '%s')" % (self.id, image.id) +
+                    '">'])
                 result = [changeGalleryImage,
                           '<img class="exeImageGallery-thumbnail"',
                           ' alt="%s"' % image.caption,
@@ -266,42 +278,47 @@ class GalleryBlock(Block):
                 # Move left button
                 if image.index > 0:
                     result += [
-                          '<a title="%s"' % _('Move Image Left'),
-                          ' href="%s">' % submitLink('moveLeft'),
-                          '<img alt="%s"' % _('Go Back'),
-                          ' class="submit" width="16" height="16"'
-                          ' src="/images/stock-go-back.png"/>'
-                          '</a> ',
-                          ]
+                        '<a title="%s"' % _('Move Image Left'),
+                        ' href="%s">' % submitLink('moveLeft'),
+                        '<img alt="%s"' % _('Go Back'),
+                        ' class="submit" width="16" height="16"'
+                        ' src="/images/stock-go-back.png"/>'
+                        '</a> ',
+                    ]
                 else:
                     result += [
-                          '<img class="submit" width="16" height="16"'
-                          ' src="/images/stock-go-back-off.png"/>']
+                        '<img class="submit" width="16" height="16"'
+                        ' src="/images/stock-go-back-off.png"/>']
                 # Move right button
-                if image.index < len(image.parent.images)-1:
+                if image.index < len(image.parent.images) - 1:
                     result += [
-                          ' <a title="%s"' % _('Move Image Right'),
-                          ' href="%s">' % submitLink('moveRight'),
-                          '<img alt="%s"' % _('Go Forward'),
-                          ' class="submit" width="16" height="16"'
-                          ' src="/images/stock-go-forward.png" /></a>',
-                          ]
+                        ' <a title="%s"' % _('Move Image Right'),
+                        ' href="%s">' % submitLink('moveRight'),
+                        '<img alt="%s"' % _('Go Forward'),
+                        ' class="submit" width="16" height="16"'
+                        ' src="/images/stock-go-forward.png" /></a>',
+                    ]
                 else:
                     result += [
-                          '<img alt="%s" ' % _('Go Forward (Not Available)'),
-                          ' class="submit" width="16" height="16"'
-                          ' src="/images/stock-go-forward-off.png"/>']
+                        '<img alt="%s" ' % _('Go Forward (Not Available)'),
+                        ' class="submit" width="16" height="16"'
+                        ' src="/images/stock-go-forward-off.png"/>']
                 result += [
-                          # Delete button
-                          ' <a title="%s"' % _('Delete Image'),
-                          ' href="%s">' % (confirmThenSubmitLink(_('Delete this image?'), 'delete')),
-                          '<img class="submit" width="16" height="16" alt="%s" ' \
-                                                        % _('Delete'),
-                          ' src="/images/stock-delete.png" /></a>',
-                          ' <a href="javascript:addGalleryImage(%s)"' % id,
-                          ' title="%s"><img src="/images/stock-add.png"' % _("Add images"),
-                          ' class="submit" width="16" height="16" alt="%s" /></a>' % _("Add images"),
-                          '      </span>']
+                    # Delete button
+                    ' <a title="%s"' % _('Delete Image'),
+                    ' href="%s">' % (
+                        confirmThenSubmitLink(
+                            _('Delete this image?'),
+                            'delete')),
+                    '<img class="submit" width="16" height="16" alt="%s" ' \
+                    % _('Delete'),
+                    ' src="/images/stock-delete.png" /></a>',
+                    ' <a href="javascript:addGalleryImage(%s)"' % id,
+                    ' title="%s"><img src="/images/stock-add.png"' % _(
+                        "Add images"),
+                    ' class="submit" width="16" height="16" alt="%s" /></a>' % _(
+                        "Add images"),
+                    '      </span>']
                 return result
             html += self._generateTable(genCell)
         html += [self.renderEditButtons(undo=self.idevice.undo),
@@ -316,7 +333,7 @@ class GalleryBlock(Block):
         for image in self.idevice.images[::-1]:
             image.delete()
         Block.processDelete(self, request)
-        
+
     def renderViewContent(self):
         """
         HTML shared by view and preview
@@ -333,14 +350,22 @@ class GalleryBlock(Block):
                 """
                 width, height = image.size
                 title = image.caption
-                return ['<a title="%s"' % title,
-                        ' href="%s">' % urllib.parse.quote(image.imageSrc),
-                        '<img alt="%s"' % title,
-                        ' width="128"'
-                        ' height="128"'
-                        ' src="%s" />' % urllib.parse.quote(image.thumbnailSrc),
-						'<span class="tit">%s</span>' % title,
-                        '</a>']			
+                return [
+                    '<a title="%s"' %
+                    title,
+                    ' href="%s">' %
+                    urllib.parse.quote(
+                        image.imageSrc),
+                    '<img alt="%s"' %
+                    title,
+                    ' width="128"'
+                    ' height="128"'
+                    ' src="%s" />' %
+                    urllib.parse.quote(
+                        image.thumbnailSrc),
+                    '<span class="tit">%s</span>' %
+                    title,
+                    '</a>']
             html = self._generateTable(genCell)
         return ''.join(html)
 
@@ -351,7 +376,7 @@ class GalleryBlock(Block):
         cls = self.idevice.__class__
         cls.preview()
         return Block.renderPreview(self, style)
-        
+
     def renderView(self, style):
         """
         Renders the html for export
@@ -360,14 +385,13 @@ class GalleryBlock(Block):
         cls = self.idevice.__class__
         cls.export()
         try:
-            html  = [Block.renderView(self, style)]
+            html = [Block.renderView(self, style)]
             return '\n    '.join(html)
         finally:
             # Put everything back into the default preview mode
             cls.preview()
 
-from exe.engine.galleryidevice  import GalleryIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(GalleryBlock, GalleryIdevice)    
+
+g_blockFactory.registerBlockType(GalleryBlock, GalleryIdevice)
 
 # ===========================================================================

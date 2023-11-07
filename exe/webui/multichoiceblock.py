@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2007 eXe Project, http://eXeLearning.org/
 #
@@ -21,13 +21,14 @@
 MultichoiceBlock can render and process MultichoiceIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.multichoiceidevice import MultichoiceIdevice
 import logging
-from exe.webui.block               import Block
-from exe.webui.element             import QuizQuestionElement
-from exe.webui                     import common
+from exe.webui.block import Block
+from exe.webui.element import QuizQuestionElement
+from exe.webui import common
 
 log = logging.getLogger(__name__)
-
 
 
 # ===========================================================================
@@ -35,26 +36,26 @@ class MultichoiceBlock(Block):
     """
     MultichoiceBlock can render and process MultichoiceIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize a new Block object
         """
         Block.__init__(self, parent, idevice)
-        self.idevice         = idevice
-        self.questionElements  = []
+        self.idevice = idevice
+        self.questionElements = []
         self.questionInstruc = idevice.questionInstruc
-        self.keyInstruc      = idevice.keyInstruc
-        self.answerInstruc   = idevice.answerInstruc
+        self.keyInstruc = idevice.keyInstruc
+        self.answerInstruc = idevice.answerInstruc
         self.feedbackInstruc = idevice.feedbackInstruc
       #  self.hint            = idevice.hint
-        self.hintInstruc     = idevice.hintInstruc
+        self.hintInstruc = idevice.hintInstruc
 
-        if not hasattr(self.idevice,'undo'):
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
 
         for question in idevice.questions:
             self.questionElements.append(QuizQuestionElement(question))
-
 
     def process(self, request):
         """
@@ -64,24 +65,24 @@ class MultichoiceBlock(Block):
         self.idevice.message = ""
 
         is_cancel = common.requestHasCancel(request)
-    
-        if ("addQuestion"+str(self.id)) in request.args: 
+
+        if ("addQuestion" + str(self.id)) in request.args:
             self.idevice.addQuestion()
             self.idevice.edit = True
             # disable Undo once a question has been added:
             self.idevice.undo = False
-        
-        if "title"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args["title"+self.id][0]
+
+        if "title" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args["title" + self.id][0]
 
         for element in self.questionElements:
             element.process(request)
-        
+
         if ("action" in request.args and request.args["action"][0] == "done"
-            or not self.idevice.edit):
+                or not self.idevice.edit):
             # remove the undo flag in order to reenable it next time:
-            if hasattr(self.idevice,'undo'): 
+            if hasattr(self.idevice, 'undo'):
                 del self.idevice.undo
             for question in self.idevice.questions:
                 isAnswered = False
@@ -89,49 +90,48 @@ class MultichoiceBlock(Block):
                     if option.isCorrect:
                         isAnswered = True
                         break
-                if not isAnswered: 
+                if not isAnswered:
                     self.idevice.edit = True
                     self.idevice.message = \
                         _("Please select a correct answer for each question.")
                     break
- 
-        
+
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = "<div class=\"iDevice\"><br/>\n"
-        if self.idevice.message!="":
+        html = "<div class=\"iDevice\"><br/>\n"
+        if self.idevice.message != "":
             html += common.editModeHeading(self.idevice.message)
-        html += common.textInput("title"+self.id, self.idevice.title) + '<br/>'
-            
+        html += common.textInput("title" + self.id,
+                                 self.idevice.title) + '<br/>'
+
         for element in self.questionElements:
-            html += element.renderEdit() 
+            html += element.renderEdit()
             html += "<br/>"
-            
+
         html += "<br/>"
-        value = _("Add another question")    
-        html += common.submitButton("addQuestion"+str(self.id), value)
-        html += "<br /><br />" 
+        value = _("Add another question")
+        html += common.submitButton("addQuestion" + str(self.id), value)
+        html += "<br /><br />"
         html += self.renderEditButtons(undo=self.idevice.undo)
         html += "</div>\n"
 
         return html
 
-    
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
         """
         html = common.ideviceHeader(self, style, "view")
-        
+
         for element in self.questionElements:
-            html += element.renderView("panel-amusements.png","stock-stop.png")  
-            
+            html += element.renderView("panel-amusements.png",
+                                       "stock-stop.png")
+
         html += common.ideviceFooter(self, style, "view")
 
         return html
-
 
     def renderXML(self, style):
         """
@@ -140,11 +140,10 @@ class MultichoiceBlock(Block):
         xml = "<idevice type='multichoice' id='%s'>\n" % self.id
         for element in self.questionElements:
             xml += element.renderXML()
-            
+
         xml += "</idevice>\n"
-        
+
         return xml
-    
 
     def renderPreview(self, style):
         """
@@ -153,16 +152,15 @@ class MultichoiceBlock(Block):
         html = common.ideviceHeader(self, style, "preview")
 
         for element in self.questionElements:
-            html += element.renderPreview("/images/panel-amusements.png","/images/stock-stop.png") 
-            
+            html += element.renderPreview(
+                "/images/panel-amusements.png",
+                "/images/stock-stop.png")
+
         html += common.ideviceFooter(self, style, "preview")
 
         return html
 
 
-
-from exe.engine.multichoiceidevice import MultichoiceIdevice
-from exe.webui.blockfactory        import g_blockFactory
-g_blockFactory.registerBlockType(MultichoiceBlock, MultichoiceIdevice)    
+g_blockFactory.registerBlockType(MultichoiceBlock, MultichoiceIdevice)
 
 # ===========================================================================

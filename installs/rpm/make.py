@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from exe.engine import version
 import sys
 import os
 import subprocess
@@ -11,7 +12,6 @@ os.chdir('../..')
 sys.path.insert(0, '.')
 
 # Import eXe modules
-from exe.engine     import version
 
 # Current release
 clrelease = 1
@@ -31,8 +31,8 @@ tarballCommand = 'tar -czf %s -h --wildcards-match-slash --exclude=".git" --excl
 
 try:
     # Make the tarball
-    ret = subprocess.call(tarballCommand, shell = True)
-    
+    ret = subprocess.call(tarballCommand, shell=True)
+
     # If there was an error
     if ret < 0:
         # Write it to "stderr" and exit
@@ -43,8 +43,10 @@ except OSError as e:
 
 try:
     # Make the RPM
-    ret = subprocess.call('rpmbuild -tb --define="clversion %s" --define="clrelease %s" %s' % (version.release, clrelease, tarballName), shell = True)
-    
+    ret = subprocess.call(
+        'rpmbuild -tb --define="clversion %s" --define="clrelease %s" %s' %
+        (version.release, clrelease, tarballName), shell=True)
+
     # If there was an error
     if ret < 0:
         # Write it to "stderr" and exit
@@ -52,6 +54,8 @@ try:
         sys.exit(ret)
 except OSError as e:
     print("Execution of rpmbuild failed: ", e, file=sys.stderr)
-    
+
 # Move the created RPM to this folder
-subprocess.check_call('mv %s $HOME/rpmbuild/RPMS/i686/intef-exe-%s-%s.*.rpm exe/installs/rpm' % (tarballName, version.release, clrelease), shell = True)
+subprocess.check_call(
+    'mv %s $HOME/rpmbuild/RPMS/i686/intef-exe-%s-%s.*.rpm exe/installs/rpm' %
+    (tarballName, version.release, clrelease), shell=True)

@@ -38,7 +38,9 @@ class Inconsistency:
     def fix(self):
         fn = getattr(self, 'fix_' + self.itype, None)
         if fn:
-            log.info('Fixing inconsistency of type %s: %s' % (self.itype, self.msg))
+            log.info(
+                'Fixing inconsistency of type %s: %s' %
+                (self.itype, self.msg))
             fn(*self.params)
             return True
         return False
@@ -57,7 +59,8 @@ class Inconsistency:
                     if not package.resources[r.checksum]:
                         package.resources.pop(r.checksum)
 
-    def fix_nodeResourceNotInResources(self, package, idevice, checksum, resource):
+    def fix_nodeResourceNotInResources(
+            self, package, idevice, checksum, resource):
         self.fix_nodeResourceNonExistant(idevice, resource)
         if resource.checksum in package.resources:
             package.resources[resource.checksum].remove(resource)
@@ -109,7 +112,8 @@ class Checker:
         from exe.engine.package import Package
         self.tmppackage = Package('temp')
         self.inconsistencies = []
-        self.nodes = [self.package.root] + list(self.package.root.walkDescendants())
+        self.nodes = [self.package.root] + \
+            list(self.package.root.walkDescendants())
         self.clear = clear
         self.idevices = {}
         idevice_ids = []
@@ -121,10 +125,14 @@ class Checker:
                     duplicated_idevice_ids.append((idevice, node))
                 idevice_ids.append(idevice.id)
                 if not idevice.parentNode:
-                    log.error('No parent node for idevice %s in node %s! Fixing...' % (idevice.klass, node.title))
+                    log.error(
+                        'No parent node for idevice %s in node %s! Fixing...' %
+                        (idevice.klass, node.title))
                     idevice.parentNode = node
                 if idevice.parentNode != node:
-                    log.error('Parent node of idevice %s in node %s not match! Fixing...' % (idevice.klass, node.title))
+                    log.error(
+                        'Parent node of idevice %s in node %s not match! Fixing...' %
+                        (idevice.klass, node.title))
                     idevice.parentNode = node
                 if idevice.klass != 'ImageMagnifierIdevice':
                     fields = idevice.getRichTextFields()
@@ -132,63 +140,81 @@ class Checker:
                         for field in fields:
                             if hasattr(field, 'parentNode'):
                                 if not field.parentNode:
-                                    log.error('No parent node for field in idevice %s in node %s! Fixing...' % (idevice.klass, node.title))
+                                    log.error(
+                                        'No parent node for field in idevice %s in node %s! Fixing...' %
+                                        (idevice.klass, node.title))
                                     field.parentNode = node
                                 if field.parentNode != node:
-                                    log.error('Parent node of field in idevice %s in node %s not match! Fixing...' % (idevice.klass, node.title))
+                                    log.error(
+                                        'Parent node of field in idevice %s in node %s not match! Fixing...' %
+                                        (idevice.klass, node.title))
                                     field.parentNode = node
-                            ListActiveResources = field.ListActiveResources(field.content_w_resourcePaths)
+                            ListActiveResources = field.ListActiveResources(
+                                field.content_w_resourcePaths)
                             if ListActiveResources:
-                                for resource in field.ListActiveResources(field.content_w_resourcePaths):
+                                for resource in field.ListActiveResources(
+                                        field.content_w_resourcePaths):
                                     path = self.package.resourceDir / resource
                                     if not path.exists():
-                                        msg = "%s referenced in idevice %s of node %s not exists" % (resource, idevice.klass, node.title)
-                                        self.appendInconsistency(msg, 'contentResourceNonExistant', self.package, path)
+                                        msg = "%s referenced in idevice %s of node %s not exists" % (
+                                            resource, idevice.klass, node.title)
+                                        self.appendInconsistency(
+                                            msg, 'contentResourceNonExistant', self.package, path)
                                     else:
                                         if path in self.idevices and idevice.klass != 'interactive-videoIdevice':
                                             self.idevices[path].append(field)
                                         else:
                                             self.idevices[path] = [field]
-                        if idevice.klass == 'FileAttachIdeviceInc' and hasattr(idevice, 'fileAttachmentFields'):
-                                self.add_fileAttachmentFields(idevice)
+                        if idevice.klass == 'FileAttachIdeviceInc' and hasattr(
+                                idevice, 'fileAttachmentFields'):
+                            self.add_fileAttachmentFields(idevice)
                     elif hasattr(idevice, 'userResources'):
                         self.add_userResources(idevice)
                 else:
                     if hasattr(idevice, 'userResources'):
                         self.add_userResources(idevice)
-                    
+
         for idevice, node in duplicated_idevice_ids:
-            log.error('Duplicated idevice id %s in node %s of type %s. Fixing...' % (idevice.id, node.title, idevice.klass))
+            log.error(
+                'Duplicated idevice id %s in node %s of type %s. Fixing...' %
+                (idevice.id, node.title, idevice.klass))
             while idevice.id in idevice_ids:
                 idevice.id = str(int(idevice.id) + 1)
             idevice_ids.append(idevice.id)
 
-        max_idevice_id = 0 if not idevice_ids else max([int(x) for x in idevice_ids])
+        max_idevice_id = 0 if not idevice_ids else max(
+            [int(x) for x in idevice_ids])
         if Idevice.nextId <= max_idevice_id:
             log.error('Wrong idevice next id. Fixing...')
             Idevice.nextId = max_idevice_id + 1
-    
-    def add_fileAttachmentFields(self,idevice):
+
+    def add_fileAttachmentFields(self, idevice):
         for fileattachment in idevice.fileAttachmentFields:
-            if hasattr(fileattachment, "fileResource") and  fileattachment.fileResource:
+            if hasattr(
+                    fileattachment,
+                    "fileResource") and fileattachment.fileResource:
                 resource_name = fileattachment.fileResource.storageName
                 path = self.package.resourceDir / resource_name
                 if not path.exists():
-                    msg = "%s referenced in idevice %s not exists" % (resource_name, idevice.klass)
-                    self.appendInconsistency(msg, 'contentResourceNonExistant', self.package, path)
+                    msg = "%s referenced in idevice %s not exists" % (
+                        resource_name, idevice.klass)
+                    self.appendInconsistency(
+                        msg, 'contentResourceNonExistant', self.package, path)
                 else:
                     if path in self.idevices:
                         self.idevices[path].append(idevice)
                     else:
                         self.idevices[path] = [idevice]
 
-    def add_userResources(self,idevice):
+    def add_userResources(self, idevice):
         for resource in idevice.userResources:
             resource_name = resource.storageName
             path = self.package.resourceDir / resource_name
             if not path.exists():
-                msg = "%s referenced in idevice %s not exists" % (resource_name, idevice.klass)
-                self.appendInconsistency(msg, 'contentResourceNonExistant', self.package, path)
+                msg = "%s referenced in idevice %s not exists" % (
+                    resource_name, idevice.klass)
+                self.appendInconsistency(
+                    msg, 'contentResourceNonExistant', self.package, path)
             else:
                 if path in self.idevices:
                     self.idevices[path].append(idevice)
@@ -212,21 +238,30 @@ class Checker:
                     for idevice in self.idevices[path]:
                         try:
                             resource = Resource(idevice, path)
-                        except:
-                            msg = "%s referenced in idevice %s of node %s not exists" % (path, idevice.idevice.klass, idevice.parentNode.title)
-                            log.error('New inconsistency of type packageResourceNonExistant: %s' % (msg))
+                        except BaseException:
+                            msg = "%s referenced in idevice %s of node %s not exists" % (
+                                path, idevice.idevice.klass, idevice.parentNode.title)
+                            log.error(
+                                'New inconsistency of type packageResourceNonExistant: %s' %
+                                (msg))
                             continue
                         if isinstance(idevice, FieldWithResources):
-                            galleryimage = GalleryImage(idevice, '', None, mkThumbnail=False)
+                            galleryimage = GalleryImage(
+                                idevice, '', None, mkThumbnail=False)
                             galleryimage._imageResource = resource
-                        if isinstance(idevice, Idevice) and idevice.klass == 'ImageMagnifierIdevice':
+                        if isinstance(
+                                idevice,
+                                Idevice) and idevice.klass == 'ImageMagnifierIdevice':
                             idevice.imageMagnifier.imageResource = resource
-                        if isinstance(idevice, Idevice) and idevice.klass == 'FileAttachIdeviceInc':
+                        if isinstance(
+                                idevice,
+                                Idevice) and idevice.klass == 'FileAttachIdeviceInc':
                             for attachmentField in idevice.fileAttachmentFields:
                                 if attachmentField.fileResource:
                                     if attachmentField.fileResource.checksum == resource.checksum:
                                         attachmentField.fileResource = resource
-                        if isinstance(idevice, Idevice) and idevice.klass == 'GalleryIdevice':
+                        if isinstance(
+                                idevice, Idevice) and idevice.klass == 'GalleryIdevice':
                             for image in idevice.images:
                                 if image._imageResource.storageName == resource.storageName:
                                     image._imageResource = resource
@@ -253,19 +288,22 @@ class Checker:
                 for resource in resources:
                     try:
                         nresource = Resource(self.tmppackage, resource.path)
-                    except:
+                    except BaseException:
                         msg = '%s not exists in elp' % resource.storageName
-                        self.appendInconsistency(msg, itype, self.package, checksum, resource)
+                        self.appendInconsistency(
+                            msg, itype, self.package, checksum, resource)
                         continue
                     if nresource.checksum == checksum:
                         if nresource.checksum == resource.checksum:
                             continue
                         else:
                             msg = '%s checksum not consistent' % resource.storageName
-                            self.appendInconsistency(msg, itype, self.package, checksum, resource)
+                            self.appendInconsistency(
+                                msg, itype, self.package, checksum, resource)
                     else:
                         msg = '%s checksum not consistent' % resource.storageName
-                        self.appendInconsistency(msg, itype, self.package, checksum, resource)
+                        self.appendInconsistency(
+                            msg, itype, self.package, checksum, resource)
             else:
                 self.package.resources.pop(checksum)
 
@@ -274,7 +312,8 @@ class Checker:
             resource = Resource(self.tmppackage, path)
             if resource.checksum not in self.package.resources:
                 msg = '%s not in package resources' % resource.storageName
-                self.appendInconsistency(msg, 'packageResourceNonReferenced', self.package, path)
+                self.appendInconsistency(
+                    msg, 'packageResourceNonReferenced', self.package, path)
 
     def check_nodeResourcesChecksums(self):
         for node in self.nodes:
@@ -282,24 +321,40 @@ class Checker:
                 for resource in idevice.userResources:
                     try:
                         nresource = Resource(self.tmppackage, resource.path)
-                    except:
+                    except BaseException:
                         msg = '%s not exists in elp' % resource.storageName
-                        self.appendInconsistency(msg, 'nodeResourceNonExistant', idevice, resource)
+                        self.appendInconsistency(
+                            msg, 'nodeResourceNonExistant', idevice, resource)
                         continue
-                    if nresource.checksum in list(self.package.resources.keys()):
+                    if nresource.checksum in list(
+                            self.package.resources.keys()):
                         if nresource.checksum == resource.checksum:
                             continue
                         else:
                             msg = '%s checksum not consistent' % resource.storageName
-                            self.appendInconsistency(msg, 'nodeResourceNotInResources', self.package, idevice, nresource.checksum, resource)
+                            self.appendInconsistency(
+                                msg,
+                                'nodeResourceNotInResources',
+                                self.package,
+                                idevice,
+                                nresource.checksum,
+                                resource)
                     else:
                         msg = '%s checksum not in package resources' % resource.storageName
-                        self.appendInconsistency(msg, 'nodeResourceNotInResources', self.package, idevice, nresource.checksum, resource)
+                        self.appendInconsistency(
+                            msg,
+                            'nodeResourceNotInResources',
+                            self.package,
+                            idevice,
+                            nresource.checksum,
+                            resource)
 
     def check_packageResourcesZombies(self):
         for resources in list(self.package.resources.values()):
             for resource in resources:
                 if resource._idevice:
                     if not isinstance(resource._idevice.parentNode, Node):
-                        msg = '%s (checksum: %s) resource in idevice with no parent node' % (resource.storageName, resource.checksum)
-                        self.appendInconsistency(msg, 'packageResourceZombie', self.package, resource)
+                        msg = '%s (checksum: %s) resource in idevice with no parent node' % (
+                            resource.storageName, resource.checksum)
+                        self.appendInconsistency(
+                            msg, 'packageResourceZombie', self.package, resource)

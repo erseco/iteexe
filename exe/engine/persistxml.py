@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2011-2012, Pedro Pena Perez
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@ from twisted.web.microdom import Document, Element, escape, genprefix, parseStri
 import logging
 
 log = logging.getLogger(__name__)
+
 
 class PriorizedDOMJellier(DOMJellier):
     def __init__(self):
@@ -77,9 +78,11 @@ class PriorizedDOMJellier(DOMJellier):
             return node
         else:
             return DOMJellier.jellyToNode(self, obj)
+
     def setExtendedAttributes(self, nk, nv):
         if nk.getAttribute('value') == "content_w_resourcePaths":
             nv.setAttribute("content", "true")
+
 
 class UTF8DOMUnjellier(DOMUnjellier):
     def unjellyNode(self, node):
@@ -88,16 +91,34 @@ class UTF8DOMUnjellier(DOMUnjellier):
         else:
             return DOMUnjellier.unjellyNode(self, node)
 
+
 class ContentXMLElement(Element):
     version = "0.3"
-    def writexml(self, stream, indent='', addindent='', newl='', strip=0, nsprefixes={}, namespace='', first=False):
+
+    def writexml(
+            self,
+            stream,
+            indent='',
+            addindent='',
+            newl='',
+            strip=0,
+            nsprefixes={},
+            namespace='',
+            first=False):
         # this should never be necessary unless people start
         # changing .tagName on the fly(?)
         if first:
             self.setAttribute('version', self.version)
-            self.setAttribute('xmlns', "http://www.exelearning.org/content/v%s" % (self.version))
-            self.setAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance")
-            self.setAttribute('xsi:schemaLocation', "http://www.exelearning.org/content/v%s content.xsd" % (self.version))
+            self.setAttribute(
+                'xmlns',
+                "http://www.exelearning.org/content/v%s" %
+                (self.version))
+            self.setAttribute('xmlns:xsi',
+                              "http://www.w3.org/2001/XMLSchema-instance")
+            self.setAttribute(
+                'xsi:schemaLocation',
+                "http://www.exelearning.org/content/v%s content.xsd" %
+                (self.version))
         if not self.preserveCase:
             self.endTagName = self.tagName
         w = stream.write
@@ -111,11 +132,14 @@ class ContentXMLElement(Element):
         begin = ['<']
         begin = [newl, indent] + begin
         bext = begin.extend
-        writeattr = lambda _atr, _val: bext((' ', _atr, '="', escape(_val), '"'))
+
+        def writeattr(
+            _atr, _val): return bext(
+            (' ', _atr, '="', escape(_val), '"'))
         if namespace != self.namespace and self.namespace:
             if self.namespace in nsprefixes:
                 prefix = nsprefixes[self.namespace]
-                bext(prefix+':'+self.tagName)
+                bext(prefix + ':' + self.tagName)
             else:
                 bext(self.tagName)
                 writeattr("xmlns", self.namespace)
@@ -131,14 +155,14 @@ class ContentXMLElement(Element):
                     prefix = genprefix()
                     newprefixes[ns] = prefix
                 assert val is not None
-                writeattr(prefix+':'+key,val)
+                writeattr(prefix + ':' + key, val)
             else:
                 assert val is not None
                 writeattr(attr, val)
         if newprefixes:
             for ns, prefix in newprefixes.items():
                 if prefix:
-                    writeattr('xmlns:'+prefix, ns)
+                    writeattr('xmlns:' + prefix, ns)
             newprefixes.update(nsprefixes)
             downprefixes = newprefixes
         else:
@@ -148,24 +172,50 @@ class ContentXMLElement(Element):
             w(">")
             newindent = indent + addindent
             for child in self.childNodes:
-                child.writexml(stream, newindent, addindent, newl, strip, downprefixes, self.namespace)
+                child.writexml(
+                    stream,
+                    newindent,
+                    addindent,
+                    newl,
+                    strip,
+                    downprefixes,
+                    self.namespace)
             w(j((newl, indent)))
             w(j(("</", self.endTagName, '>')))
         else:
             w(j(('></', self.endTagName, '>')))
-    
+
+
 class XMLDocument(Document):
-    def writexml(self, stream, indent='', addindent='', newl='', strip=0, nsprefixes={}, namespace=''):
+    def writexml(
+            self,
+            stream,
+            indent='',
+            addindent='',
+            newl='',
+            strip=0,
+            nsprefixes={},
+            namespace=''):
         stream.write('<?xml version="1.0" encoding="utf-8"?>' + newl)
-        self.documentElement.writexml(stream, indent, addindent, newl, strip, nsprefixes, namespace, True)
-    
+        self.documentElement.writexml(
+            stream,
+            indent,
+            addindent,
+            newl,
+            strip,
+            nsprefixes,
+            namespace,
+            True)
+
     def createElement(self, name, **kw):
         return ContentXMLElement(name, **kw)
-    
+
+
 def encodeObjectToXML(toEncode):
     pdj = PriorizedDOMJellier()
     document = pdj.jelly(toEncode)
     return document.toprettyxml()
+
 
 def decodeObjectFromXML(toDecode):
     document = parseString(toDecode, escapeAttributes=0)
@@ -174,8 +224,9 @@ def decodeObjectFromXML(toDecode):
         log.warn("Invalid content.xml version: 0.1")
         return None, False
     if float(xmlversion) > float(ContentXMLElement.version):
-        log.warn("Version of content.xml is greater than the maximum supported: %s > %s" 
-                 % (xmlversion, ContentXMLElement.version))
+        log.warn(
+            "Version of content.xml is greater than the maximum supported: %s > %s" %
+            (xmlversion, ContentXMLElement.version))
         return None, False
     log.debug("decodeObjectFromXML starting decode")
     du = UTF8DOMUnjellier()

@@ -2,7 +2,6 @@
 # See LICENSE for details.
 
 
-
 from nevow import compy
 from nevow import inevow
 from nevow.tags import *
@@ -15,18 +14,19 @@ import os.path
 
 try:
     enumerate = enumerate
-except:
+except BaseException:
     def enumerate(collection):
         i = 0
         it = iter(collection)
-        while 1:
+        while True:
             yield (i, next(it))
             i += 1
 
 
 class PrefixerDict(dict):
     def __init__(self, prefix, errors):
-        if prefix is None: prefix = ''
+        if prefix is None:
+            prefix = ''
         self.prefix = prefix
         self.errors = errors
         dict.__init__(self)
@@ -60,7 +60,7 @@ class FormDefaults(compy.Adapter):
         self.defaults[key] = value
 
     def getDefault(self, key, context=None):
-        #print "getting default for key", key, self.defaults
+        # print "getting default for key", key, self.defaults
         # 1) Check on the request
         current = self.defaults.get(key, None)
         if current is None:
@@ -89,7 +89,8 @@ class FormDefaults(compy.Adapter):
 class FormErrors(compy.Adapter):
     """An object which keeps track of which forms have which errors
     """
-    __implements__ =iformless.IFormErrors,
+    __implements__ = iformless.IFormErrors,
+
     def __init__(self):
         self.errors = {}
 
@@ -97,7 +98,7 @@ class FormErrors(compy.Adapter):
         self.errors[errorKey] = error
 
     def getError(self, errorKey):
-        #print "get error", errorKey, self.__dict__
+        # print "get error", errorKey, self.__dict__
         return self.errors.get(errorKey)
 
     def getAllErrors(self, formName):
@@ -122,16 +123,18 @@ def calculatePostURL(context, data):
     try:
         configurableKey = context.locate(iformless.IConfigurableKey)
     except KeyError:
-        #print "IConfigurableKey was not remembered when calculating full binding name for %s in node %s" % (configurable, context.key)
+        # print "IConfigurableKey was not remembered when calculating full
+        # binding name for %s in node %s" % (configurable, context.key)
         configurableKey = ''
     bindingName = context.key
-    return "%s/freeform_post!%s!%s" % (postLocation, configurableKey, bindingName)
+    return "%s/freeform_post!%s!%s" % (postLocation,
+                                       configurableKey, bindingName)
 
 
 def keyToXMLID(key):
     """Convert a key into an XML-styleinevow.ID """
     if not key:
-        #print 'keyToXMLID: no key, but why?'
+        # print 'keyToXMLID: no key, but why?'
         return '***Error: Unset***'
     return '-'.join(key.split('.'))
 

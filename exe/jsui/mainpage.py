@@ -23,6 +23,7 @@
 This is the main Javascript page.
 """
 
+import ssl
 import copy
 import os
 import json
@@ -33,47 +34,47 @@ import shutil
 import tempfile
 import base64
 import certifi
-from sys                         import platform
-from exe.engine.version          import release, revision
-from twisted.internet            import threads, reactor, defer
-from exe.webui.livepage          import RenderableLivePage,\
+from sys import platform
+from exe.engine.version import release, revision
+from twisted.internet import threads, reactor, defer
+from exe.webui.livepage import RenderableLivePage, \
     otherSessionPackageClients, allSessionClients, allSessionPackageClients
-from nevow                       import loaders, inevow, tags
-from nevow.athena               import LivePage, handler
+from nevow import loaders, inevow, tags
+from nevow.athena import LivePage, handler
 
-from exe.webui.livepage         import IClientHandle, js
-from exe.jsui.idevicepane        import IdevicePane
-from exe.jsui.outlinepane        import OutlinePane
-from exe.jsui.recentmenu         import RecentMenu
-from exe.jsui.stylemenu          import StyleMenu
-from exe.jsui.propertiespage     import PropertiesPage
-from exe.jsui.templatemenu       import TemplateMenu
-from exe.webui.authoringpage     import AuthoringPage
-from exe.webui.stylemanagerpage  import StyleManagerPage
-from exe.webui.renderable        import File
-from exe.export.websiteexport    import WebsiteExport
-from exe.export.textexport       import TextExport
+from exe.webui.livepage import IClientHandle, js
+from exe.jsui.idevicepane import IdevicePane
+from exe.jsui.outlinepane import OutlinePane
+from exe.jsui.recentmenu import RecentMenu
+from exe.jsui.stylemenu import StyleMenu
+from exe.jsui.propertiespage import PropertiesPage
+from exe.jsui.templatemenu import TemplateMenu
+from exe.webui.authoringpage import AuthoringPage
+from exe.webui.stylemanagerpage import StyleManagerPage
+from exe.webui.renderable import File
+from exe.export.websiteexport import WebsiteExport
+from exe.export.textexport import TextExport
 from exe.export.singlepageexport import SinglePageExport
-from exe.export.scormexport      import ScormExport
-from exe.export.imsexport        import IMSExport
-from exe.export.xliffexport      import XliffExport
-from exe.importers.xliffimport   import XliffImport
+from exe.export.scormexport import ScormExport
+from exe.export.imsexport import IMSExport
+from exe.export.xliffexport import XliffExport
+from exe.importers.xliffimport import XliffImport
 from exe.importers.scanresources import Resources
-from exe.engine.path             import Path, toUnicode, TempDirPath
-from exe.engine.package          import Package
-from exe.engine.template         import Template
-from exe                         import globals as G
-from tempfile                    import mkdtemp, mkstemp
-from exe.engine.mimetex          import compile
+from exe.engine.path import Path, toUnicode, TempDirPath
+from exe.engine.package import Package
+from exe.engine.template import Template
+from exe import globals as G
+from tempfile import mkdtemp, mkstemp
+from exe.engine.mimetex import compile
 from urllib.parse import unquote
 from urllib.request import urlretrieve
-from exe.engine.locationbuttons  import LocationButtons
-from exe.export.epub3export      import Epub3Export
-from exe.export.xmlexport        import XMLExport
-from requests_oauthlib           import OAuth2Session
-from exe.webui.oauthpage         import ProcomunOauth
-from suds.client                 import Client
-from exe.export.pages            import forbiddenPageNames
+from exe.engine.locationbuttons import LocationButtons
+from exe.export.epub3export import Epub3Export
+from exe.export.xmlexport import XMLExport
+from requests_oauthlib import OAuth2Session
+from exe.webui.oauthpage import ProcomunOauth
+from suds.client import Client
+from exe.export.pages import forbiddenPageNames
 
 from exe.engine.lom import lomsubs
 from exe.engine.lom.lomclassification import Classification
@@ -81,8 +82,8 @@ import zipfile
 log = logging.getLogger(__name__)
 PROCOMUN_WSDL = ProcomunOauth.BASE_URL + '/oauth_services?wsdl'
 
-import ssl
-#ssl._create_default_https_context = ssl._create_unverified_context
+# ssl._create_default_https_context = ssl._create_unverified_context
+
 
 class MainPage(RenderableLivePage):
     """
@@ -135,8 +136,13 @@ class MainPage(RenderableLivePage):
         # If we are realoading a template, try to translate it in
         # case its language has changed
         if self.package.isTemplate and not self.package.isChanged:
-            # We have to reload the template in case it has been already translated before
-            template = Package.load(self.config.templatesDir / self.package.get_templateFile() + '.elt', isTemplate=True)
+            # We have to reload the template in case it has been already
+            # translated before
+            template = Package.load(
+                self.config.templatesDir /
+                self.package.get_templateFile() +
+                '.elt',
+                isTemplate=True)
             template.set_lang(self.package.lang)
 
             # Copy level names and iDevices
@@ -152,9 +158,12 @@ class MainPage(RenderableLivePage):
             self.package.author = copy.copy(template.author)
 
             # Copy the nodes and update the root and current ones
-            # Be carefull not to use copy.copy when assigning root and currentNode as this will create entirely new nodes
+            # Be carefull not to use copy.copy when assigning root and
+            # currentNode as this will create entirely new nodes
             self.package._nodeIdDict = copy.copy(template._nodeIdDict)
-            rootkey = [k for k,v in list(self.package._nodeIdDict.items()) if not v.parent][0]
+            rootkey = [
+                k for k, v in list(
+                    self.package._nodeIdDict.items()) if not v.parent][0]
             self.package.root = self.package._nodeIdDict[rootkey]
             self.package.currentNode = self.package._nodeIdDict[rootkey]
 
@@ -188,8 +197,9 @@ class MainPage(RenderableLivePage):
             return self.authoringPages[clientid]
         else:
             try:
-                self.idevicePane.client.sendScript('top.window.location.reload()')
-            except:
+                self.idevicePane.client.sendScript(
+                    'top.window.location.reload()')
+            except BaseException:
                 raise Exception('No clientHandleId in request')
 
     def child_preview(self, ctx):
@@ -197,7 +207,9 @@ class MainPage(RenderableLivePage):
             stylesDir = self.config.stylesDir / self.package.style
             self.package.previewDir = TempDirPath()
             self.exportWebSite(None, self.package.previewDir, stylesDir)
-            self.previewPage = File(self.package.previewDir / self.package.name)
+            self.previewPage = File(
+                self.package.previewDir /
+                self.package.name)
         return self.previewPage
 
     def child_taxon(self, ctx):
@@ -214,8 +226,9 @@ class MainPage(RenderableLivePage):
 
                         self.classificationSources[source] = Classification()
                         try:
-                            self.classificationSources[source].setSource(source, self.config.configDir)
-                        except:
+                            self.classificationSources[source].setSource(
+                                source, self.config.configDir)
+                        except BaseException:
                             pass
                     identifier = request.args['identifier'][0]
                     if identifier == 'false':
@@ -225,8 +238,9 @@ class MainPage(RenderableLivePage):
                     else:
                         stype = 1
                     try:
-                        data = self.classificationSources[source].getDataByIdentifier(identifier, stype=stype)
-                    except:
+                        data = self.classificationSources[source].getDataByIdentifier(
+                            identifier, stype=stype)
+                    except BaseException:
                         pass
 
         return json.dumps({'success': True, 'data': data})
@@ -244,8 +258,8 @@ class MainPage(RenderableLivePage):
             hndlr = handler(func, *args, **kwargs)
             hndlr(ctx, client)     # Stores it
 
-        setUpHandler(self.handleSaveEXeUIversion,'saveEXeUIversion')
-        setUpHandler(self.handleIsExeUIAdvanced,'eXeUIVersionCheck')
+        setUpHandler(self.handleSaveEXeUIversion, 'saveEXeUIversion')
+        setUpHandler(self.handleIsExeUIAdvanced, 'eXeUIVersionCheck')
 
         setUpHandler(self.handleIsPackageDirty, 'isPackageDirty')
         setUpHandler(self.handleIsPackageTemplate, 'isPackageTemplate')
@@ -266,18 +280,22 @@ class MainPage(RenderableLivePage):
         setUpHandler(self.handleMergeXliffPackage, 'mergeXliffPackage')
         setUpHandler(self.handleInsertPackage, 'insertPackage')
         setUpHandler(self.handleExtractPackage, 'extractPackage')
-        setUpHandler(self.handleExtractSCORM, 'extractSCORM')        
-        setUpHandler(self.outlinePane.handleSetTreeSelection, 'setTreeSelection')
+        setUpHandler(self.handleExtractSCORM, 'extractSCORM')
+        setUpHandler(
+            self.outlinePane.handleSetTreeSelection,
+            'setTreeSelection')
         setUpHandler(self.handleClearAndMakeTempPrintDir, 'makeTempPrintDir')
         setUpHandler(self.handleRemoveTempDir, 'removeTempDir')
         setUpHandler(self.handleTinyMCEimageChoice, 'previewTinyMCEimage')
-        setUpHandler(self.handleTinyMCEimageDragDrop, 'previewTinyMCEimageDragDrop')
+        setUpHandler(
+            self.handleTinyMCEimageDragDrop,
+            'previewTinyMCEimageDragDrop')
         setUpHandler(self.handleTinyMCEmath, 'generateTinyMCEmath')
         setUpHandler(self.handleTinyMCEmathML, 'generateTinyMCEmathML')
         setUpHandler(self.handleTestPrintMsg, 'testPrintMessage')
         setUpHandler(self.handleReload, 'reload')
         setUpHandler(self.handleSourcesDownload, 'sourcesDownload')
-        setUpHandler(self.handleUploadFileToResources, 'uploadFileToResources')        
+        setUpHandler(self.handleUploadFileToResources, 'uploadFileToResources')
 
         # For the new ExtJS 4.0 interface
         setUpHandler(self.outlinePane.handleAddChild, 'AddChild')
@@ -294,8 +312,12 @@ class MainPage(RenderableLivePage):
         setUpHandler(self.handleLoadTemplate, 'loadTemplate')
 
         setUpHandler(self.handleMetadataWarning, 'showMetadataWarning')
-        setUpHandler(self.hideMetadataWarningForever, 'hideMetadataWarningForever')
-        setUpHandler(self.handlePackagePropertiesValidation, 'validatePackageProperties')
+        setUpHandler(
+            self.hideMetadataWarningForever,
+            'hideMetadataWarningForever')
+        setUpHandler(
+            self.handlePackagePropertiesValidation,
+            'validatePackageProperties')
 
         self.idevicePane.client = client
         self.styleMenu.client = client
@@ -314,7 +336,7 @@ class MainPage(RenderableLivePage):
             'lang': G.application.config.locale.split('_')[0],
             'showPreferences': G.application.config.showPreferencesOnStart == '1' and not G.application.preferencesShowed,
             'showNewVersionWarning': G.application.config.showNewVersionWarningOnStart == '1' and not G.application.newVersionWarningShowed,
-            'release' : release,
+            'release': release,
             'loadErrors': G.application.loadErrors,
             'showIdevicesGrouped': G.application.config.showIdevicesGrouped == '1',
             'authoringIFrameSrc': '%s/authoring?clientHandleId=%s' % (self.package.name, IClientHandle(ctx).handleId),
@@ -331,17 +353,23 @@ class MainPage(RenderableLivePage):
         G.application.preferencesShowed = True
         G.application.newVersionWarningShowed = True
         G.application.loadErrors = []
-        return tags.script(type="text/javascript")["var config = %s" % json.dumps(config)]
+        return tags.script(
+            type="text/javascript")["var config = %s" % json.dumps(config)]
 
     def render_jsuilang(self, ctx, data):
-        return ctx.tag(src="../jsui/i18n/" + str(G.application.config.locale) + ".js")
+        return ctx.tag(src="../jsui/i18n/" +
+                       str(G.application.config.locale) + ".js")
 
     def render_extjslang(self, ctx, data):
-        return ctx.tag(src="../jsui/extjs/locale/ext-lang-" + str(G.application.config.locale) + ".js")
+        return ctx.tag(src="../jsui/extjs/locale/ext-lang-" +
+                       str(G.application.config.locale) + ".js")
 
     def render_htmllang(self, ctx, data):
         lang = G.application.config.locale.replace('_', '-').split('@')[0]
-        attribs = {'lang': str(lang), 'xml:lang': str(lang), 'xmlns': 'http://www.w3.org/1999/xhtml'}
+        attribs = {
+            'lang': str(lang),
+            'xml:lang': str(lang),
+            'xmlns': 'http://www.w3.org/1999/xhtml'}
         return ctx.tag(**attribs)
 
     def render_version(self, ctx, data):
@@ -383,7 +411,12 @@ class MainPage(RenderableLivePage):
         else:
             client.sendScript(ifNotTemplate)
 
-    def handlePackageFileName(self, client, onDone, onDoneParam,export_type_name):
+    def handlePackageFileName(
+            self,
+            client,
+            onDone,
+            onDoneParam,
+            export_type_name):
         """
         Calls the javascript func named by 'onDone' passing as the
         only parameter the filename of our package. If the package
@@ -391,7 +424,8 @@ class MainPage(RenderableLivePage):
         'onDoneParam' will be passed to onDone as a param after the
         filename
         """
-        client.call(onDone, str(self.package.filename), onDoneParam,export_type_name)
+        client.call(onDone, str(self.package.filename),
+                    onDoneParam, export_type_name)
 
     def b4save(self, client, inputFilename, ext, msg):
         """
@@ -406,7 +440,8 @@ class MainPage(RenderableLivePage):
             # If after adding the extension there is a file
             # with the same name, fail and show an error
             if Path(inputFilename).exists():
-                explanation = _('"%s" already exists.\nPlease try again with a different filename') % inputFilename
+                explanation = _(
+                    '"%s" already exists.\nPlease try again with a different filename') % inputFilename
                 msg = '%s\n%s' % (msg, explanation)
                 client.alert(msg)
                 raise Exception(msg)
@@ -415,14 +450,20 @@ class MainPage(RenderableLivePage):
         # before this state, so we have to check for duplicates
         # here
         if ext.lower() == '.elt' and Path(inputFilename).exists():
-            explanation = _('"%s" already exists.\nPlease try again with a different filename') % inputFilename
+            explanation = _(
+                '"%s" already exists.\nPlease try again with a different filename') % inputFilename
             msg = '%s\n%s' % (msg, explanation)
             client.alert(msg)
             raise Exception(msg)
 
         return inputFilename
 
-    def handleSavePackage(self, client, filename=None, onDone=None,export_type_name=None):
+    def handleSavePackage(
+            self,
+            client,
+            filename=None,
+            onDone=None,
+            export_type_name=None):
         """
         Save the current package
         'filename' is the filename to save the package to
@@ -431,10 +472,10 @@ class MainPage(RenderableLivePage):
         (This is used where the user goes file|open when their
         package is changed and needs saving)
         """
-        
+
         try:
             filename = Path(filename, 'utf-8')
-        except:
+        except BaseException:
             filename = None
 
         # If the script is not passing a filename to us,
@@ -445,19 +486,26 @@ class MainPage(RenderableLivePage):
 
         saveDir = filename.dirname()
         if saveDir and not saveDir.isdir():
-            client.alert(_('Cannot access directory named ') + str(saveDir) + _('. Please use ASCII names.'))
+            client.alert(
+                _('Cannot access directory named ') +
+                str(saveDir) +
+                _('. Please use ASCII names.'))
             return
         oldName = self.package.name
 
         extension = filename.splitext()[1]
         if extension == '.elt':
-            return self.handleSaveTemplate(client, filename.basename(), onDone, edit=True)
-        # Add the extension if its not already there and give message if not saved
+            return self.handleSaveTemplate(
+                client, filename.basename(), onDone, edit=True)
+        # Add the extension if its not already there and give message if not
+        # saved
         filename = self.b4save(client, filename, '.elp', _('SAVE FAILED!'))
 
         name = str(filename.basename().splitext()[0])
         if name.upper() in forbiddenPageNames:
-            client.alert(_('SAVE FAILED!\n"%s" is not a valid name for a package') % str(name))
+            client.alert(
+                _('SAVE FAILED!\n"%s" is not a valid name for a package') %
+                str(name))
             return
 
         try:
@@ -466,10 +514,10 @@ class MainPage(RenderableLivePage):
             client.alert(_('SAVE FAILED!\n%s') % str(e))
             raise
 
-        # Take into account that some names are not allowed, so we have to take care of that before reloading
+        # Take into account that some names are not allowed, so we have to take
+        # care of that before reloading
         if G.application.webServer is not None and self.package.name in G.application.webServer.invalidPackageName:
             self.package._name = self.package._name + '_1'
-
 
         if not export_type_name:
             # Tell the user and continue
@@ -478,42 +526,65 @@ class MainPage(RenderableLivePage):
             elif self.package.name != oldName:
                 # Redirect the client if the package name has changed
                 self.webServer.root.putChild(self.package.name, self)
-                log.info('Package saved, redirecting client to /%s' % self.package.name)
-                client.alert(_('Package saved to: %s') % filename, 'eXe.app.gotoUrl("/%s")' % self.package.name.encode('utf8'), \
-                            filter_func=otherSessionPackageClients)
+                log.info(
+                    'Package saved, redirecting client to /%s' %
+                    self.package.name)
+                client.alert(
+                    _('Package saved to: %s') %
+                    filename,
+                    'eXe.app.gotoUrl("/%s")' %
+                    self.package.name.encode('utf8'),
+                    filter_func=otherSessionPackageClients)
             else:
                 # client.alert(_(u'Package saved to: %s') % filename, filter_func=otherSessionPackageClients)
                 # A nice notification instead of an alert
-                filename = _('Package saved to: %s') % filename.replace("\\","\\/")
-                client.sendScript('eXe.app.notifications.savedPackage("%s")' % filename)
+                filename = _('Package saved to: %s') % filename.replace(
+                    "\\", "\\/")
+                client.sendScript(
+                    'eXe.app.notifications.savedPackage("%s")' %
+                    filename)
 
-    def handleSaveTemplate(self, client, templatename=None, onDone=None, edit=False):
+    def handleSaveTemplate(
+            self,
+            client,
+            templatename=None,
+            onDone=None,
+            edit=False):
         '''Save template'''
         if not templatename.endswith(".elt"):
-            filename = Path(self.config.templatesDir/templatename +'.elt', 'utf-8')
+            filename = Path(
+                self.config.templatesDir /
+                templatename +
+                '.elt',
+                'utf-8')
         else:
-            filename = Path(self.config.templatesDir/templatename, 'utf-8')
+            filename = Path(self.config.templatesDir / templatename, 'utf-8')
             templatename = str(filename.basename().splitext()[0])
 
-        if edit == False:
+        if not edit:
             filename = self.b4save(client, filename, '.elt', _('SAVE FAILED!'))
 
         name = str(filename.basename().splitext()[0])
         if name.upper() in forbiddenPageNames:
-            client.alert(_('SAVE FAILED!\n"%s" is not a valid name for a template') % str(templatename))
+            client.alert(
+                _('SAVE FAILED!\n"%s" is not a valid name for a template') %
+                str(templatename))
             return
 
         try:
             configxmlData = '<?xml version="1.0"?>\n'
             configxmlData += '<template>\n'
-            configxmlData += '<name>'+templatename+'</name>\n'
+            configxmlData += '<name>' + templatename + '</name>\n'
             configxmlData += '</template>'
 
             # Make the root node the current one
             self.package.currentNode = self.package.root
 
             # Save the template
-            self.package.save(filename, isTemplate=True, configxml=configxmlData)
+            self.package.save(
+                filename,
+                isTemplate=True,
+                configxml=configxmlData)
         except Exception as e:
             client.alert(_('SAVE FAILED!\n%s') % str(e))
             raise
@@ -529,18 +600,32 @@ class MainPage(RenderableLivePage):
         self.session.packageStore.addPackage(package)
         self.webServer.root.bindNewPackage(package, self.session)
         if package.load_message:
-            client.alert(package.load_message,
-                         onDone=('eXe.app.gotoUrl("/%s")' % package.name).encode('utf8'),
-                         filter_func=filter_func)
+            client.alert(
+                package.load_message,
+                onDone=(
+                    'eXe.app.gotoUrl("/%s")' %
+                    package.name).encode('utf8'),
+                filter_func=filter_func)
         else:
-            client.sendScript(('eXe.app.gotoUrl("/%s")' % package.name).encode('utf8'), filter_func=filter_func)
+            client.sendScript(
+                ('eXe.app.gotoUrl("/%s")' %
+                 package.name).encode('utf8'),
+                filter_func=filter_func)
 
     def handleLoadTemplate(self, client, filename):
         """Load the template named 'filename'"""
-        # By transforming it into a Path, we ensure that it is using the correct directory separator
-        template = self._loadPackage(client, Path(filename), newLoad=True, isTemplate=True)
+        # By transforming it into a Path, we ensure that it is using the
+        # correct directory separator
+        template = self._loadPackage(
+            client,
+            Path(filename),
+            newLoad=True,
+            isTemplate=True)
         self.webServer.root.bindNewPackage(template, self.session)
-        client.sendScript(('eXe.app.gotoUrl("/%s")' % template.name).encode('utf8'), filter_func=allSessionPackageClients)
+        client.sendScript(
+            ('eXe.app.gotoUrl("/%s")' %
+             template.name).encode('utf8'),
+            filter_func=allSessionPackageClients)
 
     def handleMetadataWarning(self, client, export_type):
         """
@@ -548,9 +633,15 @@ class MainPage(RenderableLivePage):
         a warning to the user.
         """
         if self.config.metadataWarning == "1" and self.package.has_custom_metadata():
-            client.call('eXe.app.getController("Toolbar").showMetadataWarning', export_type, '')
+            client.call(
+                'eXe.app.getController("Toolbar").showMetadataWarning',
+                export_type,
+                '')
         else:
-            client.call('eXe.app.getController("Toolbar").processExportEventValidationStep', export_type, '')
+            client.call(
+                'eXe.app.getController("Toolbar").processExportEventValidationStep',
+                export_type,
+                '')
 
     def hideMetadataWarningForever(self, client):
         """
@@ -562,16 +653,20 @@ class MainPage(RenderableLivePage):
     def handlePackagePropertiesValidation(self, client, export_type):
         invalid_properties = self.package.valid_properties(export_type)
         if len(invalid_properties) == 0:
-            client.call('eXe.app.getController("Toolbar").exportPackage', export_type, '')
+            client.call(
+                'eXe.app.getController("Toolbar").exportPackage',
+                export_type,
+                '')
         else:
             invalid_properties_str = ''
             for prop in invalid_properties:
-                invalid_properties_str += prop.get('name') + '|' + prop.get('reason')
+                invalid_properties_str += prop.get('name') + \
+                    '|' + prop.get('reason')
 
                 if 'allowed_values' in prop:
                     invalid_properties_str += '|' + prop.get('allowed_values')
 
-                invalid_properties_str +=  ','
+                invalid_properties_str += ','
             invalid_properties_str = invalid_properties_str[:-1]
 
             # Get file system encoding
@@ -579,8 +674,10 @@ class MainPage(RenderableLivePage):
             if encoding is None:
                 encoding = 'utf-8'
 
-            # Turns package filename passed it to unicode when call javascript function
-            client.call('eXe.app.getController("Toolbar").packagePropertiesCompletion', export_type, str(str(self.package.filename), encoding), invalid_properties_str)
+            # Turns package filename passed it to unicode when call javascript
+            # function
+            client.call('eXe.app.getController("Toolbar").packagePropertiesCompletion', export_type, str(
+                str(self.package.filename), encoding), invalid_properties_str)
 
     # No longer used - Task 1080, jrf
     # def handleLoadTutorial(self, client):
@@ -596,27 +693,33 @@ class MainPage(RenderableLivePage):
             percent = min((numblocks * blocksize * 100) / filesize, 100)
             if percent < 0:
                 percent = 0
-        except:
+        except BaseException:
             percent = 100
-        client.sendScript('Ext.MessageBox.updateProgress(%f, "%d%%", "%s")' % (float(percent) / 100, percent, _("Downloading...")))
+        client.sendScript(
+            'Ext.MessageBox.updateProgress(%f, "%d%%", "%s")' %
+            (float(percent) / 100, percent, _("Downloading...")))
         log.info('%3d' % (percent))
 
     def isConnected(self, hostname):
         try:
-            if platform=='darwin' and hasattr(sys, 'frozen'):
+            if platform == 'darwin' and hasattr(sys, 'frozen'):
                 verify = 'cacert.pem'
-                urlretrieve(hostname, context=ssl.create_default_context(cafile='cacert.pem'))
-            elif platform=='darwin':
+                urlretrieve(
+                    hostname, context=ssl.create_default_context(
+                        cafile='cacert.pem'))
+            elif platform == 'darwin':
                 verify = 'cacert.pem'
-                urlretrieve(hostname, context=ssl.create_default_context(cafile='cacert.pem'))
-                #urlretrieve(hostname, context=ssl.create_default_context(cafile=certifi.where()))
-                #urlretrieve(hostname)
+                urlretrieve(
+                    hostname, context=ssl.create_default_context(
+                        cafile='cacert.pem'))
+                # urlretrieve(hostname, context=ssl.create_default_context(cafile=certifi.where()))
+                # urlretrieve(hostname)
             else:
                 urlretrieve(hostname)
-            log.debug('eXe can reach host %s without problems'%(hostname))
+            log.debug('eXe can reach host %s without problems' % (hostname))
             return True
         except Exception as e:
-            log.error('Error checking host %s is %s'%(hostname, e.strerror))
+            log.error('Error checking host %s is %s' % (hostname, e.strerror))
         return False
 
     def handleSourcesDownload(self, client):
@@ -624,50 +727,89 @@ class MainPage(RenderableLivePage):
         Download taxon sources from url and deploy in $HOME/.exe/classification_sources
         """
         if not self.isConnected("https://github.com/"):
-            client.sendScript('Ext.MessageBox.alert("%s", "%s" )' % (_("Sources Download"), _("Could not retrieve data (Core error)")))
+            client.sendScript(
+                'Ext.MessageBox.alert("%s", "%s" )' %
+                (_("Sources Download"), _("Could not retrieve data (Core error)")))
             return None
 
         url = 'https://github.com/exelearning/classification_sources/raw/master/classification_sources.zip'
-        client.sendScript('Ext.MessageBox.progress("%s", "%s")' %(_("Sources Download"), _("Connecting to classification sources repository...")))
-        
+        client.sendScript(
+            'Ext.MessageBox.progress("%s", "%s")' %
+            (_("Sources Download"),
+             _("Connecting to classification sources repository...")))
+
         def successDownload(result):
             filename = result[0]
-            log.debug("successDownload filename: %s"%(filename))    
+            log.debug("successDownload filename: %s" % (filename))
             if not zipfile.is_zipfile(filename):
-                log.error("filename not is zip file: %s"%(filename)) 
-                log.error("Filename exists: %s"%(os.path.exists(filename)))
-                client.sendScript('Ext.MessageBox.alert("%s", "%s" )' % (_("Sources Download"), _("There has been an error while trying to download classification sources. Please try again later.")))
+                log.error("filename not is zip file: %s" % (filename))
+                log.error("Filename exists: %s" % (os.path.exists(filename)))
+                client.sendScript('Ext.MessageBox.alert("%s", "%s" )' % (_("Sources Download"), _(
+                    "There has been an error while trying to download classification sources. Please try again later.")))
                 return None
 
             zipFile = zipfile.ZipFile(filename, "r")
             try:
                 zipFile.extractall(G.application.config.configDir)
-                log.debug("Extracted in %s"%(G.application.config.configDir))    
+                log.debug("Extracted in %s" % (G.application.config.configDir))
                 client.sendScript('Ext.MessageBox.hide()')
             except Exception as e:
-                log.error('Error extracting file %s in %s is: %s'%(filename, G.application.config.configDir, e.strerror))
+                log.error(
+                    'Error extracting file %s in %s is: %s' %
+                    (filename, G.application.config.configDir, e.strerror))
             finally:
                 Path(filename).remove()
-                log.debug("Deleted %s"%(filename))    
+                log.debug("Deleted %s" % (filename))
 
-        if (platform=='darwin'  and hasattr(sys, 'frozen')):
+        if (platform == 'darwin' and hasattr(sys, 'frozen')):
             cafile = "cacert.pem"
             try:
-                d = threads.deferToThread(urlretrieve, url, "/tmp/classification_sources.zip", lambda n, b, f: self.progressDownload(n, b, f, client), context=ssl.create_default_context(cafile='cacert.pem')) #, context=ssl._create_unverified_context())
+                d = threads.deferToThread(
+                    urlretrieve,
+                    url,
+                    "/tmp/classification_sources.zip",
+                    lambda n,
+                    b,
+                    f: self.progressDownload(
+                        n,
+                        b,
+                        f,
+                        client),
+                    context=ssl.create_default_context(
+                        cafile='cacert.pem'))  # , context=ssl._create_unverified_context())
                 d.addCallback(successDownload)
             except Exception as e:
-                log.error('Error downloading url %s is %s'%(url, e.strerror))
-        elif (platform=='darwin'):
-            d = threads.deferToThread(urlretrieve, url, "/tmp/classification_sources.zip",
-                                      lambda n, b, f: self.progressDownload(n, b, f, client),
-                                      context=ssl.create_default_context(
-                                          cafile='cacert.pem'))  # , context=ssl._create_unverified_context())
-            #d = threads.deferToThread(urlretrieve, url, "/tmp/classification_sources.zip", lambda n, b, f: self.progressDownload(n, b, f, client), context=ssl.create_default_context(cafile=certifi.where()))
+                log.error('Error downloading url %s is %s' % (url, e.strerror))
+        elif (platform == 'darwin'):
+            d = threads.deferToThread(
+                urlretrieve,
+                url,
+                "/tmp/classification_sources.zip",
+                lambda n,
+                b,
+                f: self.progressDownload(
+                    n,
+                    b,
+                    f,
+                    client),
+                context=ssl.create_default_context(
+                    cafile='cacert.pem'))  # , context=ssl._create_unverified_context())
+            # d = threads.deferToThread(urlretrieve, url, "/tmp/classification_sources.zip", lambda n, b, f: self.progressDownload(n, b, f, client), context=ssl.create_default_context(cafile=certifi.where()))
             d.addCallback(successDownload)
         else:
-            d = threads.deferToThread(urlretrieve, url, None, lambda n, b, f: self.progressDownload(n, b, f, client))
+            d = threads.deferToThread(
+                urlretrieve,
+                url,
+                None,
+                lambda n,
+                b,
+                f: self.progressDownload(
+                    n,
+                    b,
+                    f,
+                    client))
             d.addCallback(successDownload)
-    
+
     def handleOverwriteLocalStyle(self, client, style_dir, downloaded_file):
         """
         Delete locally installed style and import new version from URL
@@ -715,8 +857,10 @@ class MainPage(RenderableLivePage):
             rel_name = rel_name.replace('\\', '/')
         if rel_name.startswith('/'):
             rel_name = rel_name[1:]
-        http_relative_pathname = '%s/%s'%(G.application.exeAppUri, rel_name)
-        log.debug('printdir http_relative_pathname=%s'%(http_relative_pathname))
+        http_relative_pathname = '%s/%s' % (G.application.exeAppUri, rel_name)
+        log.debug(
+            'printdir http_relative_pathname=%s' %
+            (http_relative_pathname))
         return http_relative_pathname
 
     def ClearParentTempPrintDirs(self, client, log_dir_warnings):
@@ -748,13 +892,13 @@ class MainPage(RenderableLivePage):
                     clear_tempdir = 1
                 else:
                     dir_warnings = "WARNING: The desired Temporary Print " \
-                            + "Directory, \"" + under_dirname \
-                            + "\", already exists, but as a file!\n"
+                        + "Directory, \"" + under_dirname \
+                        + "\", already exists, but as a file!\n"
                     if log_dir_warnings:
-                        log.warn("ClearParentTempPrintDirs(): The desired " \
-                                + "Temporary Print Directory, \"%s\", " \
-                                + "already exists, but as a file!", \
-                                under_dirname)
+                        log.warn("ClearParentTempPrintDirs(): The desired "
+                                 + "Temporary Print Directory, \"%s\", "
+                                 + "already exists, but as a file!",
+                                 under_dirname)
                     under_dirname = web_dirname
                     # but, we can't just put the tempdirs directly underneath
                     # the webDir, since no server object exists for it.
@@ -763,21 +907,22 @@ class MainPage(RenderableLivePage):
                     under_dirname = os.path.join(under_dirname, "images")
 
                     dir_warnings += "    RECOMMENDATION: please " \
-                            + "remove/rename this file to allow eXe easier "\
-                            + "management of its temporary print files.\n"
+                        + "remove/rename this file to allow eXe easier "\
+                        + "management of its temporary print files.\n"
                     dir_warnings += "     eXe will create the temporary " \
-                           + "printing directory directly under \"" \
-                           + under_dirname + "\" instead, but this might "\
-                           + "leave some files around after eXe terminates..."
+                        + "printing directory directly under \"" \
+                        + under_dirname + "\" instead, but this might "\
+                        + "leave some files around after eXe terminates..."
                     if log_dir_warnings:
-                        log.warn("    RECOMMENDATION: please remove/rename "\
-                            + "this file to allow eXe easier management of "\
-                            + "its temporary print files.")
-                        log.warn("     eXe will create the temporary " \
-                            + "printing directory directly under \"%s\" " \
-                            + "instead, but this might leave some files " \
-                            + "around after eXe terminates...", \
-                            under_dirname)
+                        log.warn(
+                            "    RECOMMENDATION: please remove/rename " +
+                            "this file to allow eXe easier management of " +
+                            "its temporary print files.")
+                        log.warn("     eXe will create the temporary "
+                                 + "printing directory directly under \"%s\" "
+                                 + "instead, but this might leave some files "
+                                 + "around after eXe terminates...",
+                                 under_dirname)
                     # and note that we do NOT want to clear_tempdir
                     # on the config dir itself!!!!!
             else:
@@ -797,8 +942,8 @@ class MainPage(RenderableLivePage):
 
         return under_dirname, dir_warnings
 
-    def handleClearAndMakeTempPrintDir(self, client, suffix, prefix, \
-                                        callback):
+    def handleClearAndMakeTempPrintDir(self, client, suffix, prefix,
+                                       callback):
         """
         Makes a temporary printing directory, and yup, that's pretty much it!
         """
@@ -806,8 +951,8 @@ class MainPage(RenderableLivePage):
         # First get the name of the parent temp directory, after making it
         # (if necessary) and clearing (if applicable):
         log_dir_warnings = 1
-        (under_dirname, dir_warnings) = self.ClearParentTempPrintDirs( \
-                                             client, log_dir_warnings)
+        (under_dirname, dir_warnings) = self.ClearParentTempPrintDirs(
+            client, log_dir_warnings)
 
         # Next, go ahead and create this particular print job's temporary
         # directory under the parent temp directory:
@@ -816,8 +961,14 @@ class MainPage(RenderableLivePage):
         # Finally, pass the created temp_dir back to the expecting callback:
         client.call(callback, temp_dir, dir_warnings)
 
-    def handleTinyMCEimageChoice(self, client, tinyMCEwin, tinyMCEwin_name, \
-                             tinyMCEfield, local_filename, preview_filename):
+    def handleTinyMCEimageChoice(
+            self,
+            client,
+            tinyMCEwin,
+            tinyMCEwin_name,
+            tinyMCEfield,
+            local_filename,
+            preview_filename):
         """
         Once an image is selected in the file browser that is spawned by the
         TinyMCE image dialog, copy this file (which is local to the user's
@@ -831,54 +982,54 @@ class MainPage(RenderableLivePage):
         errors = 0
 
         log.debug('handleTinyMCEimageChoice: image local = ' + local_filename
-                + ', base=' + os.path.basename(local_filename))
+                  + ', base=' + os.path.basename(local_filename))
 
         webDir = Path(G.application.tempWebDir)
         previewDir = webDir.joinpath('previews')
 
         if not previewDir.exists():
-            log.debug("image previews directory does not yet exist; " \
-                    + "creating as %s " % previewDir)
+            log.debug("image previews directory does not yet exist; "
+                      + "creating as %s " % previewDir)
             previewDir.makedirs()
         elif not previewDir.isdir():
-            client.alert( \
-                _('Preview directory %s is a file, cannot replace it') \
+            client.alert(
+                _('Preview directory %s is a file, cannot replace it')
                 % previewDir)
             log.error("Couldn't preview tinyMCE-chosen image: " +
-                      "Preview dir %s is a file, cannot replace it" \
+                      "Preview dir %s is a file, cannot replace it"
                       % previewDir)
             errors += 1
 
         if errors == 0:
             log.debug('handleTinyMCEimageChoice: originally, local_filename='
-                    + local_filename)
+                      + local_filename)
             local_filename = str(local_filename, 'utf-8')
             log.debug('handleTinyMCEimageChoice: in unicode, local_filename='
-                    + local_filename)
+                      + local_filename)
 
             localImagePath = Path(local_filename)
             log.debug('handleTinyMCEimageChoice: after Path, localImagePath= '
-                    + localImagePath)
+                      + localImagePath)
             if not localImagePath.exists() or not localImagePath.isfile():
-                client.alert( \
-                     _('Local file %s is not found, cannot preview it') \
-                     % localImagePath)
-                log.error("Couldn't find tinyMCE-chosen image: %s" \
-                        % localImagePath)
+                client.alert(
+                    _('Local file %s is not found, cannot preview it')
+                    % localImagePath)
+                log.error("Couldn't find tinyMCE-chosen image: %s"
+                          % localImagePath)
                 errors += 1
 
         try:
             # joinpath needs its join arguments to already be in Unicode:
-            #preview_filename = toUnicode(preview_filename);
+            # preview_filename = toUnicode(preview_filename);
             # but that's okay, cuz preview_filename is now URI safe, right?
             log.debug('URIencoded preview filename=' + preview_filename)
 
             server_filename = previewDir.joinpath(preview_filename)
-            log.debug("handleTinyMCEimageChoice copying image from \'"\
-                    + local_filename + "\' to \'" \
-                    + server_filename.abspath() + "\'.")
-            shutil.copyfile(local_filename, \
-                    server_filename.abspath())
+            log.debug("handleTinyMCEimageChoice copying image from \'"
+                      + local_filename + "\' to \'"
+                      + server_filename.abspath() + "\'.")
+            shutil.copyfile(local_filename,
+                            server_filename.abspath())
 
             # new optional description file to provide the
             # actual base filename, such that once it is later processed
@@ -897,9 +1048,9 @@ class MainPage(RenderableLivePage):
             # own unique-ification mechanisms already in place.
 
             descrip_file_path = Path(server_filename + ".exe_info")
-            log.debug("handleTinyMCEimageChoice creating preview " \
-                    + "description file \'" \
-                    + descrip_file_path.abspath() + "\'.")
+            log.debug("handleTinyMCEimageChoice creating preview "
+                      + "description file \'"
+                      + descrip_file_path.abspath() + "\'.")
             descrip_file = open(descrip_file_path, 'wb')
 
             # safety measures against TinyMCE, otherwise it will
@@ -909,7 +1060,7 @@ class MainPage(RenderableLivePage):
             unhashed_filename = unspaced_filename.replace('#', '_num_')
             unamped_local_filename = unhashed_filename.replace('&', '_and_')
             log.debug("and setting new file basename as: "
-                    + unamped_local_filename)
+                      + unamped_local_filename)
             my_basename = os.path.basename(unamped_local_filename)
 
             descrip_file.write(("basename=" + my_basename).encode('utf-8'))
@@ -921,10 +1072,11 @@ class MainPage(RenderableLivePage):
         except Exception as e:
             client.alert(_('SAVE FAILED!\n%s') % str(e))
             log.error("handleTinyMCEimageChoice unable to copy local image "
-                    + "file to server prevew, error = " + str(e))
+                      + "file to server prevew, error = " + str(e))
             raise
 
-    def handleUploadFileToResources(self, client, local_file, preview_filename):
+    def handleUploadFileToResources(
+            self, client, local_file, preview_filename):
 
         server_filename = ""
         errors = 0
@@ -933,15 +1085,15 @@ class MainPage(RenderableLivePage):
         previewDir = webDir.joinpath('previews')
 
         if not previewDir.exists():
-            log.debug("files previews directory does not yet exist; " \
-                    + "creating as %s " % previewDir)
+            log.debug("files previews directory does not yet exist; "
+                      + "creating as %s " % previewDir)
             previewDir.makedirs()
         elif not previewDir.isdir():
-            client.alert(\
-                _('Preview directory %s is a file, cannot replace it') \
+            client.alert(
+                _('Preview directory %s is a file, cannot replace it')
                 % previewDir)
             log.error("Couldn't preview file: " +
-                      "Preview dir %s is a file, cannot replace it" \
+                      "Preview dir %s is a file, cannot replace it"
                       % previewDir)
             errors += 1
         # else:
@@ -951,13 +1103,13 @@ class MainPage(RenderableLivePage):
 
         if errors == 0:
             log.debug('originally, local_file='
-                    + local_file)
+                      + local_file)
             log.debug('in unicode, local_file='
-                    + local_file)
+                      + local_file)
 
             localFilePath = Path(local_file)
             log.debug('after Path, localImagePath= '
-                    + localFilePath)
+                      + localFilePath)
 
         try:
             log.debug('URIencoded preview filename=' + preview_filename)
@@ -966,7 +1118,7 @@ class MainPage(RenderableLivePage):
 
             server_file = open(server_filename, 'wb')
 
-            local_file = local_file.split(";base64,",1)
+            local_file = local_file.split(";base64,", 1)
             local_file = local_file[1]
             server_file.write(base64.b64decode(local_file))
             server_file.flush()
@@ -983,42 +1135,42 @@ class MainPage(RenderableLivePage):
         except Exception as e:
             client.alert(_('SAVE FAILED!\n%s') % str(e))
             log.error("Unable to save file "
-                    + "file to server prevew, error = " + str(e))
+                      + "file to server prevew, error = " + str(e))
             raise
-    
-    def handleTinyMCEimageDragDrop(self, client, tinyMCEwin, tinyMCEwin_name, \
-                              local_filename, preview_filename):
+
+    def handleTinyMCEimageDragDrop(self, client, tinyMCEwin, tinyMCEwin_name,
+                                   local_filename, preview_filename):
         server_filename = ""
         errors = 0
 
         log.debug('handleTinyMCEimageChoice: image local = ' + local_filename
-                + ', base=' + os.path.basename(local_filename))
+                  + ', base=' + os.path.basename(local_filename))
 
         webDir = Path(G.application.tempWebDir)
         previewDir = webDir.joinpath('previews')
 
         if not previewDir.exists():
-            log.debug("image previews directory does not yet exist; " \
-                    + "creating as %s " % previewDir)
+            log.debug("image previews directory does not yet exist; "
+                      + "creating as %s " % previewDir)
             previewDir.makedirs()
         elif not previewDir.isdir():
-            client.alert(\
-                _('Preview directory %s is a file, cannot replace it') \
+            client.alert(
+                _('Preview directory %s is a file, cannot replace it')
                 % previewDir)
             log.error("Couldn't preview tinyMCE-chosen image: " +
-                      "Preview dir %s is a file, cannot replace it" \
+                      "Preview dir %s is a file, cannot replace it"
                       % previewDir)
             errors += 1
 
         if errors == 0:
             log.debug('handleTinyMCEimageChoice: originally, local_filename='
-                    + local_filename)
+                      + local_filename)
             log.debug('handleTinyMCEimageChoice: in unicode, local_filename='
-                    + local_filename)
+                      + local_filename)
 
             localImagePath = Path(local_filename)
             log.debug('handleTinyMCEimageChoice: after Path, localImagePath= '
-                    + localImagePath)
+                      + localImagePath)
 
         try:
             log.debug('URIencoded preview filename=' + preview_filename)
@@ -1026,27 +1178,31 @@ class MainPage(RenderableLivePage):
             server_filename = previewDir.joinpath(preview_filename)
 
             descrip_file_path = Path(server_filename + ".exe_info")
-            log.debug("handleTinyMCEimageDragDrop creating preview " \
-                    + "description file \'" \
-                    + descrip_file_path.abspath() + "\'.")
+            log.debug("handleTinyMCEimageDragDrop creating preview "
+                      + "description file \'"
+                      + descrip_file_path.abspath() + "\'.")
             descrip_file = open(server_filename, 'wb')
 
-            local_filename = local_filename.replace('data:image/jpeg;base64,', '')
+            local_filename = local_filename.replace(
+                'data:image/jpeg;base64,', '')
             descrip_file.write(base64.b64decode(local_filename))
             descrip_file.flush()
             descrip_file.close()
 
-            client.sendScript('eXe.app.fireEvent("previewTinyMCEDragDropImageDone","'+preview_filename+'")')
+            client.sendScript(
+                'eXe.app.fireEvent("previewTinyMCEDragDropImageDone","' +
+                preview_filename +
+                '")')
 
         except Exception as e:
             client.alert(_('SAVE FAILED!\n%s') % str(e))
             log.error("handleTinyMCEimageDragDrop unable to copy local image "
-                    + "file to server prevew, error = " + str(e))
+                      + "file to server prevew, error = " + str(e))
             raise
 
-    def handleTinyMCEmath(self, client, tinyMCEwin, tinyMCEwin_name, \
-                             tinyMCEfield, latex_source, math_fontsize, \
-                             preview_image_filename, preview_math_srcfile):
+    def handleTinyMCEmath(self, client, tinyMCEwin, tinyMCEwin_name,
+                          tinyMCEfield, latex_source, math_fontsize,
+                          preview_image_filename, preview_math_srcfile):
         """
         Based off of handleTinyMCEimageChoice(),
         handleTinyMCEmath() is similar in that it places a .gif math image
@@ -1061,19 +1217,19 @@ class MainPage(RenderableLivePage):
         previewDir = webDir.joinpath('previews')
 
         if not previewDir.exists():
-            log.debug("image previews directory does not yet exist; " \
-                    + "creating as %s " % previewDir)
+            log.debug("image previews directory does not yet exist; "
+                      + "creating as %s " % previewDir)
             previewDir.makedirs()
         elif not previewDir.isdir():
-            client.alert( \
-                _('Preview directory %s is a file, cannot replace it') \
+            client.alert(
+                _('Preview directory %s is a file, cannot replace it')
                 % previewDir)
             log.error("Couldn't preview tinyMCE-chosen image: " +
-                      "Preview dir %s is a file, cannot replace it" \
+                      "Preview dir %s is a file, cannot replace it"
                       % previewDir)
             errors += 1
 
-        #if errors == 0:
+        # if errors == 0:
         #    localImagePath = Path(local_filename)
         #    if not localImagePath.exists() or not localImagePath.isfile():
         #        client.alert( \
@@ -1093,8 +1249,8 @@ class MainPage(RenderableLivePage):
             math_filename = previewDir.joinpath(preview_math_srcfile)
             math_filename_str = math_filename.abspath().encode('utf-8')
             log.info("handleTinyMCEmath: using LaTeX source: " + latex_source)
-            log.debug("writing LaTeX source into \'" \
-                    + math_filename_str + "\'.")
+            log.debug("writing LaTeX source into \'"
+                      + math_filename_str + "\'.")
             math_file = open(math_filename, 'wb')
             # do we need to append a \n here?:
             math_file.write(latex_source)
@@ -1103,36 +1259,39 @@ class MainPage(RenderableLivePage):
 
             try:
                 use_latex_sourcefile = math_filename_str
-                tempFileName = compile(use_latex_sourcefile, math_fontsize, \
-                        latex_is_file=True)
+                tempFileName = compile(use_latex_sourcefile, math_fontsize,
+                                       latex_is_file=True)
             except Exception as e:
-                client.alert(_('Could not create the image') + " (LaTeX)","$exeAuthoring.errorHandler('handleTinyMCEmath')")
+                client.alert(
+                    _('Could not create the image') + " (LaTeX)",
+                    "$exeAuthoring.errorHandler('handleTinyMCEmath')")
                 log.error("handleTinyMCEmath unable to compile LaTeX using "
-                        + "mimetex, error = " + str(e))
+                          + "mimetex, error = " + str(e))
                 raise
 
             # copy the file into previews
             server_filename = previewDir.joinpath(preview_image_filename)
-            log.debug("handleTinyMCEmath copying math image from \'"\
-                    + tempFileName + "\' to \'" \
-                    + server_filename.abspath().encode('utf-8') + "\'.")
-            shutil.copyfile(tempFileName, \
-                    server_filename.abspath().encode('utf-8'))
+            log.debug("handleTinyMCEmath copying math image from \'"
+                      + tempFileName + "\' to \'"
+                      + server_filename.abspath().encode('utf-8') + "\'.")
+            shutil.copyfile(tempFileName,
+                            server_filename.abspath().encode('utf-8'))
 
             # Delete the temp file made by compile
             Path(tempFileName).remove()
         return
 
-    def handleTinyMCEmathML(self, client, tinyMCEwin, tinyMCEwin_name, \
-                             tinyMCEfield, mathml_source, math_fontsize, \
-                             preview_image_filename, preview_math_srcfile):
+    def handleTinyMCEmathML(self, client, tinyMCEwin, tinyMCEwin_name,
+                            tinyMCEfield, mathml_source, math_fontsize,
+                            preview_image_filename, preview_math_srcfile):
         """
         See self.handleTinyMCEmath
         To do: This should generate an image from MathML code, not from LaTeX code.
         """
 
         # Provisional (just an alert message)
-        client.alert(_('Could not create the image') + " (MathML)","$exeAuthoring.errorHandler('handleTinyMCEmathML')")
+        client.alert(_('Could not create the image') + " (MathML)",
+                     "$exeAuthoring.errorHandler('handleTinyMCEmathML')")
         return
 
         server_filename = ""
@@ -1142,15 +1301,15 @@ class MainPage(RenderableLivePage):
         previewDir = webDir.joinpath('previews')
 
         if not previewDir.exists():
-            log.debug("image previews directory does not yet exist; " \
-                    + "creating as %s " % previewDir)
+            log.debug("image previews directory does not yet exist; "
+                      + "creating as %s " % previewDir)
             previewDir.makedirs()
         elif not previewDir.isdir():
-            client.alert( \
-                _('Preview directory %s is a file, cannot replace it') \
+            client.alert(
+                _('Preview directory %s is a file, cannot replace it')
                 % previewDir)
             log.error("Couldn't preview tinyMCE-chosen image: " +
-                      "Preview dir %s is a file, cannot replace it" \
+                      "Preview dir %s is a file, cannot replace it"
                       % previewDir)
             errors += 1
 
@@ -1162,8 +1321,8 @@ class MainPage(RenderableLivePage):
             math_filename = previewDir.joinpath(preview_math_srcfile)
             math_filename_str = math_filename.abspath().encode('utf-8')
             log.info("handleTinyMCEmath: using LaTeX source: " + mathml_source)
-            log.debug("writing LaTeX source into \'" \
-                    + math_filename_str + "\'.")
+            log.debug("writing LaTeX source into \'"
+                      + math_filename_str + "\'.")
             math_file = open(math_filename, 'wb')
             # do we need to append a \n here?:
             math_file.write(mathml_source)
@@ -1172,21 +1331,23 @@ class MainPage(RenderableLivePage):
 
             try:
                 use_mathml_sourcefile = math_filename_str
-                tempFileName = compile(use_mathml_sourcefile, math_fontsize, \
-                        latex_is_file=True)
+                tempFileName = compile(use_mathml_sourcefile, math_fontsize,
+                                       latex_is_file=True)
             except Exception as e:
-                client.alert(_('Could not create the image') + " (MathML)","$exeAuthoring.errorHandler('handleTinyMCEmathML')")
+                client.alert(
+                    _('Could not create the image') + " (MathML)",
+                    "$exeAuthoring.errorHandler('handleTinyMCEmathML')")
                 log.error("handleTinyMCEmathML unable to compile MathML using "
-                        + "mimetex, error = " + str(e))
+                          + "mimetex, error = " + str(e))
                 raise
 
             # copy the file into previews
             server_filename = previewDir.joinpath(preview_image_filename)
-            log.debug("handleTinyMCEmath copying math image from \'"\
-                    + tempFileName + "\' to \'" \
-                    + server_filename.abspath().encode('utf-8') + "\'.")
-            shutil.copyfile(tempFileName, \
-                    server_filename.abspath().encode('utf-8'))
+            log.debug("handleTinyMCEmath copying math image from \'"
+                      + tempFileName + "\' to \'"
+                      + server_filename.abspath().encode('utf-8') + "\'.")
+            shutil.copyfile(tempFileName,
+                            server_filename.abspath().encode('utf-8'))
 
             # Delete the temp file made by compile
             Path(tempFileName).remove()
@@ -1194,7 +1355,9 @@ class MainPage(RenderableLivePage):
 
     def getResources(self, dirname, html, client):
         Resources.cancel = False
-        self.importresources = Resources(dirname, self.package.findNode(client.currentNodeId), client)
+        self.importresources = Resources(
+            dirname, self.package.findNode(
+                client.currentNodeId), client)
 #        import cProfile
 #        import lsprofcalltree
 #        p = cProfile.Profile()
@@ -1208,46 +1371,63 @@ class MainPage(RenderableLivePage):
     def handleImport(self, client, importType, path, html=None):
         if importType == 'html':
             if (not html):
-                client.call('eXe.app.getController("Toolbar").importHtml2', path)
+                client.call(
+                    'eXe.app.getController("Toolbar").importHtml2', path)
             else:
-                d = threads.deferToThread(self.getResources, path, html, client)
+                d = threads.deferToThread(
+                    self.getResources, path, html, client)
                 d.addCallback(self.handleImportCallback, client)
                 d.addErrback(self.handleImportErrback, client)
-                client.call('eXe.app.getController("Toolbar").initImportProgressWindow', _('Importing HTML...'))
+                client.call(
+                    'eXe.app.getController("Toolbar").initImportProgressWindow',
+                    _('Importing HTML...'))
         if importType.startswith('lom'):
             try:
                 setattr(self.package, importType, lomsubs.parse(path))
-                client.call('eXe.app.getController("MainTab").lomImportSuccess', importType)
+                client.call(
+                    'eXe.app.getController("MainTab").lomImportSuccess',
+                    importType)
             except Exception as e:
                 client.alert(_('LOM Metadata import FAILED!\n%s') % str(e))
 
     def handleImportErrback(self, failure, client):
-        client.alert(_('Error importing HTML:\n') + str(failure.getBriefTraceback()), \
-                     ('eXe.app.gotoUrl("/%s")' % self.package.name).encode('utf8'), filter_func=otherSessionPackageClients)
+        client.alert(_('Error importing HTML:\n') +
+                     str(failure.getBriefTraceback()), ('eXe.app.gotoUrl("/%s")' %
+                                                        self.package.name).encode('utf8'), filter_func=otherSessionPackageClients)
 
     def handleImportCallback(self, resources, client):
-        client.call('eXe.app.getController("Toolbar").closeImportProgressWindow')
-        client.sendScript(('eXe.app.gotoUrl("/%s")' % \
-                      self.package.name).encode('utf8'), filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Toolbar").closeImportProgressWindow')
+        client.sendScript(
+            ('eXe.app.gotoUrl("/%s")' %
+             self.package.name).encode('utf8'),
+            filter_func=allSessionPackageClients)
 
     def handleCancelImport(self, client):
         log.info('Cancel import')
         Resources.cancelImport()
 
     def handleExportProcomun(self, client):
-        # If the user hasn't done the OAuth authentication yet, start this process
+        # If the user hasn't done the OAuth authentication yet, start this
+        # process
         if not client.session.oauthToken.get('procomun'):
             verify = True
             if hasattr(sys, 'frozen'):
                 verify = 'cacert.pem'
-            oauth2Session = OAuth2Session(ProcomunOauth.CLIENT_ID, redirect_uri=ProcomunOauth.REDIRECT_URI)
+            oauth2Session = OAuth2Session(
+                ProcomunOauth.CLIENT_ID,
+                redirect_uri=ProcomunOauth.REDIRECT_URI)
             oauth2Session.verify = verify
 
-            authorization_url, state = oauth2Session.authorization_url(ProcomunOauth.AUTHORIZATION_BASE_URL)
-            self.webServer.oauth.procomun.saveState(state, oauth2Session, client)
+            authorization_url, state = oauth2Session.authorization_url(
+                ProcomunOauth.AUTHORIZATION_BASE_URL)
+            self.webServer.oauth.procomun.saveState(
+                state, oauth2Session, client)
 
             # Call the script to start the Procomún authentication process
-            client.call('eXe.app.getController("Toolbar").getProcomunAuthToken', authorization_url)
+            client.call(
+                'eXe.app.getController("Toolbar").getProcomunAuthToken',
+                authorization_url)
 
             return
 
@@ -1258,7 +1438,8 @@ class MainPage(RenderableLivePage):
             :returns: Full path to the exported ZIP.
             """
             # Update progress for the user
-            client.call('Ext.MessageBox.updateProgress', 0.3, '30%', _('Exporting package as SCORM 1.2...'))
+            client.call('Ext.MessageBox.updateProgress', 0.3,
+                        '30%', _('Exporting package as SCORM 1.2...'))
 
             stylesDir = self.config.stylesDir / self.package.style
 
@@ -1277,7 +1458,8 @@ class MainPage(RenderableLivePage):
             :param filename: Full path to the exported ZIP.
             """
             # Update progress for the user
-            client.call('Ext.MessageBox.updateProgress', 0.7, '70%', _('Uploading package to Procomún...'))
+            client.call('Ext.MessageBox.updateProgress', 0.7,
+                        '70%', _('Uploading package to Procomún...'))
 
             # Get OAuth Acess Token and add it to the request headers
             token = client.session.oauthToken['procomun']
@@ -1298,10 +1480,15 @@ class MainPage(RenderableLivePage):
             try:
                 result = procomun.service.odes_soap_create(ode)
             except Exception as e:
-                # If there is an exception, log it and show a generic error message to the user
-                log.error('An error has ocurred while trying to publish a package to Procomún. The error message is: %s', str(e))
+                # If there is an exception, log it and show a generic error
+                # message to the user
+                log.error(
+                    'An error has ocurred while trying to publish a package to Procomún. The error message is: %s',
+                    str(e))
                 client.call('Ext.MessageBox.hide')
-                client.alert(_('Unknown error when trying to upload package to Procomún.'), title=_('Publishing document to Procomún'))
+                client.alert(
+                    _('Unknown error when trying to upload package to Procomún.'),
+                    title=_('Publishing document to Procomún'))
                 return
 
             # Parse the result received from Procomún
@@ -1316,40 +1503,46 @@ class MainPage(RenderableLivePage):
             # Show a message to the user based on the result
             client.call('Ext.MessageBox.hide')
             if parsedResult['status'] == 'true':
-                link_url = ProcomunOauth.BASE_URL + '/ode/view/%s' % parsedResult['data']['documentId']
+                link_url = ProcomunOauth.BASE_URL + \
+                    '/ode/view/%s' % parsedResult['data']['documentId']
                 client.alert(
                     js(
-                        '\''
-                        + _('Package exported to <a href="%s" target="_blank" title="Click to view the exported package">%s</a>.') % (link_url, self.package.title)
-                        + '<br />'
-                        + '<br />'
-                        + _('<small>You can view and manage the uploaded package using <a href="%s" target="_blank" title="Procomún Home">Procomún</a>\\\'s web page.</small>').replace('>',' style="font-size:1em">') % ProcomunOauth.BASE_URL
-                        + '\''
-                    ),
-                    title=_('Publishing document to Procomún')
-                )
+                        '\'' +
+                        _('Package exported to <a href="%s" target="_blank" title="Click to view the exported package">%s</a>.') %
+                        (link_url,
+                         self.package.title) +
+                        '<br />' +
+                        '<br />' +
+                        _('<small>You can view and manage the uploaded package using <a href="%s" target="_blank" title="Procomún Home">Procomún</a>\\\'s web page.</small>').replace(
+                            '>',
+                            ' style="font-size:1em">') %
+                        ProcomunOauth.BASE_URL +
+                        '\''),
+                    title=_('Publishing document to Procomún'))
             else:
                 client.alert(
                     js(
-                        '\'<h3>'
-                        + _('Error exporting package "%s" to Procomún.') % self.package.name
-                        + '</h3><br />'
-                        + _('The most common reasons for this are:')
-                        + '<br />'
-                        + _('1. Package metadata is not properly filled.')
-                        + '<br />'
-                        + _('2. There is a problem with you connection (or with Procomún servers), so you should just try again later.')
-                        + '<br /><br />'
-                        + _('If you have problems publishing you can close this dialogue, export as SCORM 2004 and upload the generated zip file manually to Procomún.')
-                        + '<br /><br />'
-                        + _('The reported error we got from Procomún was: <pre>%s</pre>') % parsedResult['message']
-                        + '\''
-                    ),
-                    title=_('Publishing document to Procomún')
-                )
+                        '\'<h3>' +
+                        _('Error exporting package "%s" to Procomún.') %
+                        self.package.name +
+                        '</h3><br />' +
+                        _('The most common reasons for this are:') +
+                        '<br />' +
+                        _('1. Package metadata is not properly filled.') +
+                        '<br />' +
+                        _('2. There is a problem with you connection (or with Procomún servers), so you should just try again later.') +
+                        '<br /><br />' +
+                        _('If you have problems publishing you can close this dialogue, export as SCORM 2004 and upload the generated zip file manually to Procomún.') +
+                        '<br /><br />' +
+                        _('The reported error we got from Procomún was: <pre>%s</pre>') %
+                        parsedResult['message'] +
+                        '\''),
+                    title=_('Publishing document to Procomún'))
 
         d = threads.deferToThread(exportScorm)
-        d.addCallback(lambda filename: threads.deferToThread(publish, filename))
+        d.addCallback(
+            lambda filename: threads.deferToThread(
+                publish, filename))
 
     def handleExport(self, client, exportType, filename):
         """
@@ -1360,7 +1553,7 @@ class MainPage(RenderableLivePage):
         'filename' is a file for scorm pages, and a directory for websites
         """
         webDir = Path(self.config.webDir)
-        #stylesDir  = webDir.joinpath('style', self.package.style)
+        # stylesDir  = webDir.joinpath('style', self.package.style)
         stylesDir = self.config.stylesDir / self.package.style
         filename = Path(filename, 'utf-8')
         exportDir = Path(filename).dirname()
@@ -1372,7 +1565,9 @@ class MainPage(RenderableLivePage):
 
         name = str(filename.basename().splitext()[0])
         if name.upper() in forbiddenPageNames:
-            client.alert(_('SAVE FAILED!\n"%s" is not a valid name for the file') % str(name))
+            client.alert(
+                _('SAVE FAILED!\n"%s" is not a valid name for the file') %
+                str(name))
             return
 
         """
@@ -1382,7 +1577,7 @@ class MainPage(RenderableLivePage):
             printit = 0
             if exportType == 'printSinglePage':
                 printit = 1
-            exported_dir = self.exportSinglePage(client, filename, webDir, \
+            exported_dir = self.exportSinglePage(client, filename, webDir,
                                                  stylesDir, printit)
             if printit == 1 and exported_dir is not None:
                 web_printdir = self.get_printdir_relative2web(exported_dir)
@@ -1393,29 +1588,36 @@ class MainPage(RenderableLivePage):
         elif exportType == 'csvReport':
             self.exportReport(client, filename, stylesDir)
         elif exportType == 'zipFile':
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportWebZip(client, filename, stylesDir)
         elif exportType == 'textFile':
             self.exportText(client, filename)
         elif exportType == 'scorm1.2':
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportScorm(client, filename, stylesDir, "scorm1.2")
         elif exportType == "scorm2004":
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportScorm(client, filename, stylesDir, "scorm2004")
         elif exportType == "agrega":
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportScorm(client, filename, stylesDir, "agrega")
         elif exportType == 'epub3':
-            filename = self.b4save(client, filename, '.epub', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.epub', _('EXPORT FAILED!'))
             self.exportEpub3(client, filename, stylesDir)
         elif exportType == "commoncartridge":
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportScorm(client, filename, stylesDir, "commoncartridge")
         elif exportType == 'mxml':
             self.exportXML(client, filename, stylesDir)
         else:
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             self.exportIMS(client, filename, stylesDir)
 
     def handleQuit(self, client):
@@ -1428,32 +1630,38 @@ class MainPage(RenderableLivePage):
         # don't warn of any issues with the directories at quit,
         # since already warned at initial directory creation
         (parent_temp_print_dir, dir_warnings) = \
-                self.ClearParentTempPrintDirs(client, log_dir_warnings)
+            self.ClearParentTempPrintDirs(client, log_dir_warnings)
 
         client.close("window.location = \"quit\";")
 
         if len(self.clientHandleFactory.clientHandles) <= 1:
             self.webServer.monitoring = False
-            G.application.config.configParser.set('user', 'lastDir', G.application.config.lastDir)
+            G.application.config.configParser.set(
+                'user', 'lastDir', G.application.config.lastDir)
             try:
                 shutil.rmtree(G.application.tempWebDir, True)
                 shutil.rmtree(G.application.resourceDir, True)
-            except:
+            except BaseException:
                 log.debug('Don\'t delete temp directorys. ')
             reactor.callLater(2, reactor.stop)
         else:
-            log.debug("Not quiting. %d clients alive." % len(self.clientHandleFactory.clientHandles))
+            log.debug("Not quiting. %d clients alive." %
+                      len(self.clientHandleFactory.clientHandles))
 
-    def handleSaveEXeUIversion(self,client,status):
-        initial=G.application.config.configParser.get('user', 'eXeUIversion')
+    def handleSaveEXeUIversion(self, client, status):
+        initial = G.application.config.configParser.get('user', 'eXeUIversion')
         if initial == '2':
             client.call('eXe.app.getController("Toolbar").exeUIalert')
         G.application.config.configParser.set('user', 'eXeUIversion', status)
-        client.call('eXe.app.getController("Toolbar").eXeUIversionSetStatus', status)
+        client.call(
+            'eXe.app.getController("Toolbar").eXeUIversionSetStatus',
+            status)
 
-    def handleIsExeUIAdvanced(self,client):
-        status=G.application.config.configParser.get('user', 'eXeUIversion')
-        client.call('eXe.app.getController("Toolbar").exeUIsetInitialStatus', status)
+    def handleIsExeUIAdvanced(self, client):
+        status = G.application.config.configParser.get('user', 'eXeUIversion')
+        client.call(
+            'eXe.app.getController("Toolbar").exeUIsetInitialStatus',
+            status)
 
     def handleBrowseURL(self, client, url):
         """
@@ -1479,13 +1687,21 @@ class MainPage(RenderableLivePage):
 
         from_source = True if from_source == "true" else False
         try:
-            importer = XliffImport(self.package, unquote(filename).encode(encoding))
+            importer = XliffImport(
+                self.package, unquote(filename).encode(encoding))
             importer.parseAndImport(from_source)
-            client.alert(_('Correct XLIFF import'), ('eXe.app.gotoUrl("/%s")' % \
-                           self.package.name).encode('utf8'), filter_func=otherSessionPackageClients)
+            client.alert(
+                _('Correct XLIFF import'),
+                ('eXe.app.gotoUrl("/%s")' %
+                 self.package.name).encode('utf8'),
+                filter_func=otherSessionPackageClients)
         except Exception as e:
-            client.alert(_('Error importing XLIFF: %s') % e, ('eXe.app.gotoUrl("/%s")' % \
-                           self.package.name).encode('utf8'), filter_func=otherSessionPackageClients)
+            client.alert(
+                _('Error importing XLIFF: %s') %
+                e,
+                ('eXe.app.gotoUrl("/%s")' %
+                 self.package.name).encode('utf8'),
+                filter_func=otherSessionPackageClients)
 
     def handleInsertPackage(self, client, filename):
         """
@@ -1496,10 +1712,19 @@ class MainPage(RenderableLivePage):
         if not self.package.isChanged and self.package.isTemplate:
             self.package.isChanged = True
 
-        package = self._loadPackage(client, filename, newLoad=True, preventUpdateRecent=True)
+        package = self._loadPackage(
+            client,
+            filename,
+            newLoad=True,
+            preventUpdateRecent=True)
         tmpfile = Path(tempfile.mktemp())
         package.save(tmpfile, preventUpdateRecent=True)
-        loadedPackage = self._loadPackage(client, tmpfile, newLoad=False, destinationPackage=self.package, preventUpdateRecent=True)
+        loadedPackage = self._loadPackage(
+            client,
+            tmpfile,
+            newLoad=False,
+            destinationPackage=self.package,
+            preventUpdateRecent=True)
         newNode = loadedPackage.root.copyToPackage(self.package,
                                                    self.package.currentNode)
         # trigger a rename of all of the internal nodes and links,
@@ -1507,10 +1732,12 @@ class MainPage(RenderableLivePage):
         newNode.RenamedNodePath(isMerge=True)
         try:
             tmpfile.remove()
-        except:
+        except BaseException:
             pass
-        client.sendScript(('eXe.app.gotoUrl("/%s")' % \
-                          self.package.name).encode('utf8'), filter_func=allSessionPackageClients)
+        client.sendScript(
+            ('eXe.app.gotoUrl("/%s")' %
+             self.package.name).encode('utf8'),
+            filter_func=allSessionPackageClients)
 
     def handleExtractPackage(self, client, filename, existOk):
         """
@@ -1520,7 +1747,10 @@ class MainPage(RenderableLivePage):
         filename = Path(filename, 'utf-8')
         saveDir = filename.dirname()
         if saveDir and not saveDir.exists():
-            client.alert(_('Cannot access directory named ') + str(saveDir) + _('. Please use ASCII names.'))
+            client.alert(
+                _('Cannot access directory named ') +
+                str(saveDir) +
+                _('. Please use ASCII names.'))
             return
 
         # Add the extension if its not already there
@@ -1528,7 +1758,8 @@ class MainPage(RenderableLivePage):
             filename += '.elp'
 
         if Path(filename).exists() and existOk != 'true':
-            msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+            msg = _(
+                '"%s" already exists.\nPlease try again with a different filename') % filename
             client.alert(_('EXTRACT FAILED!\n%s') % msg)
             return
 
@@ -1561,7 +1792,10 @@ class MainPage(RenderableLivePage):
         filename = Path(filename, 'utf-8')
         saveDir = filename.dirname()
         if saveDir and not saveDir.exists():
-            client.alert(_('Cannot access directory named ') + str(saveDir) + _('. Please use ASCII names.'))
+            client.alert(
+                _('Cannot access directory named ') +
+                str(saveDir) +
+                _('. Please use ASCII names.'))
             return
 
         # Add the extension if its not already there
@@ -1569,7 +1803,8 @@ class MainPage(RenderableLivePage):
             filename += '.zip'
 
         if Path(filename).exists() and existOk != 'true':
-            msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+            msg = _(
+                '"%s" already exists.\nPlease try again with a different filename') % filename
             client.alert(_('EXTRACT FAILED!\n%s') % msg)
             return
 
@@ -1603,7 +1838,7 @@ class MainPage(RenderableLivePage):
             })""" % json.dumps(d))
         except OSError:
             client.alert(_("Directory exists"))
-        except:
+        except BaseException:
             log.exception("")
 
     # Public Methods
@@ -1611,6 +1846,7 @@ class MainPage(RenderableLivePage):
     """
     Exports to Ustad Mobile XML
     """
+
     def exportXML(self, client, filename, stylesDir):
         try:
             xmlExport = XMLExport(self.config, stylesDir, filename)
@@ -1619,7 +1855,7 @@ class MainPage(RenderableLivePage):
             client.alert(_('EXPORT FAILED!\n%s') % str(e))
             raise
 
-    def exportSinglePage(self, client, filename, webDir, stylesDir, \
+    def exportSinglePage(self, client, filename, webDir, stylesDir,
                          printFlag):
         """
         Export 'client' to a single web page,
@@ -1646,16 +1882,21 @@ class MainPage(RenderableLivePage):
             elif not filename.isdir():
                 client.alert(_('Filename %s is a file, cannot replace it') %
                              filename)
-                log.error("Couldn't export web page: " +
-                          "Filename %s is a file, cannot replace it" % filename)
+                log.error(
+                    "Couldn't export web page: " +
+                    "Filename %s is a file, cannot replace it" %
+                    filename)
                 return
             else:
-                client.alert(_('Folder name %s already exists. '
-                                'Please choose another one or delete existing one then try again.') % filename)
+                client.alert(
+                    _(
+                        'Folder name %s already exists. '
+                        'Please choose another one or delete existing one then try again.') %
+                    filename)
                 return
             # Now do the export
-            singlePageExport = SinglePageExport(stylesDir, filename, \
-                                         imagesDir, scriptsDir, cssDir, templatesDir)
+            singlePageExport = SinglePageExport(
+                stylesDir, filename, imagesDir, scriptsDir, cssDir, templatesDir)
             singlePageExport.export(self.package, printFlag)
 
             has_uncut_resources = False
@@ -1671,7 +1912,9 @@ class MainPage(RenderableLivePage):
                 if not has_uncut_resources:
                     client.alert(_('Exported to %s') % filename)
                 else:
-                    client.alert(_('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') % filename)
+                    client.alert(
+                        _('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') %
+                        filename)
 
         # and return a string of the actual directory name,
         # in case the package name was added, etc.:
@@ -1698,15 +1941,21 @@ class MainPage(RenderableLivePage):
                 filename.makedirs()
             elif not filename.isdir():
                 if client:
-                    client.alert(_('Filename %s is a file, cannot replace it') %
-                             filename)
-                log.error("Couldn't export web page: " +
-                          "Filename %s is a file, cannot replace it" % filename)
+                    client.alert(
+                        _('Filename %s is a file, cannot replace it') %
+                        filename)
+                log.error(
+                    "Couldn't export web page: " +
+                    "Filename %s is a file, cannot replace it" %
+                    filename)
                 return
             else:
                 if client:
-                    client.alert(_('Folder name %s already exists. '
-                                'Please choose another one or delete existing one then try again.') % filename)
+                    client.alert(
+                        _(
+                            'Folder name %s already exists. '
+                            'Please choose another one or delete existing one then try again.') %
+                        filename)
                 return
             # Now do the export
             websiteExport = WebsiteExport(self.config, stylesDir, filename)
@@ -1723,7 +1972,9 @@ class MainPage(RenderableLivePage):
             if not has_uncut_resources:
                 client.alert(_('Exported to %s') % filename)
             else:
-                client.alert(_('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') % filename)
+                client.alert(
+                    _('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') %
+                    filename)
             # Show the newly exported web site in a new window
             self._startFile(filename)
 
@@ -1732,7 +1983,8 @@ class MainPage(RenderableLivePage):
             log.debug("exportWebsite, filename=%s" % filename)
             filename = Path(filename)
             # Do the export
-            filename = self.b4save(client, filename, '.zip', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.zip', _('EXPORT FAILED!'))
             websiteExport = WebsiteExport(self.config, stylesDir, filename)
             websiteExport.exportZip(self.package)
 
@@ -1746,8 +1998,9 @@ class MainPage(RenderableLivePage):
         if not has_uncut_resources:
             client.alert(_('Exported to %s') % filename)
         else:
-            client.alert(_('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') % filename)
-
+            client.alert(
+                _('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') %
+                filename)
 
     def exportText(self, client, filename):
         try:
@@ -1757,7 +2010,8 @@ class MainPage(RenderableLivePage):
             if not filename.lower().endswith('.txt'):
                 filename += '.txt'
                 if Path(filename).exists():
-                    msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+                    msg = _(
+                        '"%s" already exists.\nPlease try again with a different filename') % filename
                     client.alert(_('EXPORT FAILED!\n%s') % msg)
                     return
             # Do the export
@@ -1782,10 +2036,13 @@ class MainPage(RenderableLivePage):
 
             name = str(filename.basename().splitext()[0])
             if name.upper() in forbiddenPageNames:
-                client.alert(_('SAVE FAILED!\n"%s" is not a valid name for the file') % str(name))
+                client.alert(
+                    _('SAVE FAILED!\n"%s" is not a valid name for the file') %
+                    str(name))
                 return
 
-            xliffExport = XliffExport(self.config, filename, source, target, copy, cdata)
+            xliffExport = XliffExport(
+                self.config, filename, source, target, copy, cdata)
             xliffExport.export(self.package)
         except Exception as e:
             client.alert(_('EXPORT FAILED!\n%s') % str(e))
@@ -1803,11 +2060,13 @@ class MainPage(RenderableLivePage):
             if not filename.lower().endswith('.zip'):
                 filename += '.zip'
                 if Path(filename).exists():
-                    msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+                    msg = _(
+                        '"%s" already exists.\nPlease try again with a different filename') % filename
                     client.alert(_('EXPORT FAILED!\n%s') % msg)
                     return
             # Do the export
-            scormExport = ScormExport(self.config, stylesDir, filename, scormType)
+            scormExport = ScormExport(
+                self.config, stylesDir, filename, scormType)
             modifiedMetaData = scormExport.export(self.package)
 
             has_uncut_resources = False
@@ -1816,20 +2075,26 @@ class MainPage(RenderableLivePage):
         except Exception as e:
             client.alert(_('EXPORT FAILED!\n%s') % str(e))
             raise
-        if modifiedMetaData != False and modifiedMetaData['modifiedMetaData']:
-            client.alert(_('The following fields have been cut to meet the SCORM 1.2 standard: %s') % ', '.join(modifiedMetaData['fieldsModified']))
+        if modifiedMetaData and modifiedMetaData['modifiedMetaData']:
+            client.alert(
+                _('The following fields have been cut to meet the SCORM 1.2 standard: %s') %
+                ', '.join(
+                    modifiedMetaData['fieldsModified']))
         else:
             if not has_uncut_resources:
                 client.alert(_('Exported to %s') % filename)
             else:
-                client.alert(_('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') % filename)
+                client.alert(
+                    _('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') %
+                    filename)
 
     def exportEpub3(self, client, filename, stylesDir):
         try:
             log.debug("exportEpub3, filename=%s" % filename)
             filename = Path(filename)
             # Do the export
-            filename = self.b4save(client, filename, '.epub', _('EXPORT FAILED!'))
+            filename = self.b4save(
+                client, filename, '.epub', _('EXPORT FAILED!'))
             epub3Export = Epub3Export(self.config, stylesDir, filename)
             epub3Export.export(self.package)
             # epub3Export.exportZip(self.package)
@@ -1848,11 +2113,13 @@ class MainPage(RenderableLivePage):
             if not filename.lower().endswith('.csv'):
                 filename += '.csv'
                 if Path(filename).exists():
-                    msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+                    msg = _(
+                        '"%s" already exists.\nPlease try again with a different filename') % filename
                     client.alert(_('EXPORT FAILED!\n%s' % msg))
                     return
             # Do the export
-            websiteExport = WebsiteExport(self.config, stylesDir, filename, report=True)
+            websiteExport = WebsiteExport(
+                self.config, stylesDir, filename, report=True)
             websiteExport.export(self.package)
         except Exception as e:
             client.alert(_('EXPORT FAILED!\n%s' % str(e)))
@@ -1869,7 +2136,8 @@ class MainPage(RenderableLivePage):
             if not filename.lower().endswith('.zip'):
                 filename += '.zip'
                 if Path(filename).exists():
-                    msg = _('"%s" already exists.\nPlease try again with a different filename') % filename
+                    msg = _(
+                        '"%s" already exists.\nPlease try again with a different filename') % filename
                     client.alert(_('EXPORT FAILED!\n%s') % msg)
                     return
             # Do the export
@@ -1886,7 +2154,9 @@ class MainPage(RenderableLivePage):
         if not has_uncut_resources:
             client.alert(_('Exported to %s') % filename)
         else:
-            client.alert(_('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') % filename)
+            client.alert(
+                _('Exported to %s.\nThere were some resources that couldn\'t be renamed to be compatible with ISO9660.') %
+                filename)
 
     # Utility methods
     def _startFile(self, filename):
@@ -1905,8 +2175,14 @@ class MainPage(RenderableLivePage):
                 filename /= 'index.htm'
             G.application.config.browser.open('file://' + filename)
 
-    def _loadPackage(self, client, filename, newLoad=True,
-                     destinationPackage=None, isTemplate=False, preventUpdateRecent=False):
+    def _loadPackage(
+            self,
+            client,
+            filename,
+            newLoad=True,
+            destinationPackage=None,
+            isTemplate=False,
+            preventUpdateRecent=False):
         """Load the package named 'filename'"""
         try:
             encoding = sys.getfilesystemencoding()
@@ -1922,14 +2198,22 @@ class MainPage(RenderableLivePage):
                 try:
                     open(filename2, 'rb').close()
                 except IOError:
-                    client.alert(_('File %s does not exist or is not readable.') % filename2)
+                    client.alert(
+                        _('File %s does not exist or is not readable.') %
+                        filename2)
                     return None
-            if isTemplate == False:
-                package = Package.load(filename2, newLoad, destinationPackage, preventUpdateRecent=preventUpdateRecent)
+            if not isTemplate:
+                package = Package.load(
+                    filename2,
+                    newLoad,
+                    destinationPackage,
+                    preventUpdateRecent=preventUpdateRecent)
             else:
-                package = self.session.packageStore.createPackageFromTemplate(filename)
+                package = self.session.packageStore.createPackageFromTemplate(
+                    filename)
             if package is None:
-                raise Exception(_("Couldn't load file, please email file to bugs@exelearning.org"))
+                raise Exception(
+                    _("Couldn't load file, please email file to bugs@exelearning.org"))
         except Exception as exc:
             if log.getEffectiveLevel() == logging.DEBUG:
                 client.alert(_('Sorry, wrong file format:\n%s') % str(exc))

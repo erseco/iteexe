@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2005, University of Auckland
 # Copyright 2004-2007 eXe Project  http://eXeLearning.org/
 #
@@ -22,11 +22,13 @@
 AppletBlock can render and process AppletIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.appletidevice import AppletIdevice
 import os.path
-from exe.webui.block   import Block
-from exe.webui         import common
-from exe               import globals as G
-#from string            import Template
+from exe.webui.block import Block
+from exe.webui import common
+from exe import globals as G
+# from string            import Template
 
 import logging
 log = logging.getLogger(__name__)
@@ -37,15 +39,15 @@ class AppletBlock(Block):
     """
     AttachmentBlock can render and process AttachmentIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize
         """
         Block.__init__(self, parent, idevice)
 
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-                                        
 
     def process(self, request):
         """
@@ -56,116 +58,123 @@ class AppletBlock(Block):
         Block.process(self, request)
 
         is_cancel = common.requestHasCancel(request)
-      
+
         if "code" + self.id in request.args \
-        and not is_cancel:
+                and not is_cancel:
             self.idevice.appletCode = request.args["code" + self.id][0]
-                    
+
         if "action" in request.args and request.args["action"][0] == self.id:
             self.idevice.deleteFile(request.args["object"][0])
             self.idevice.edit = True
             self.idevice.undo = False
-            
+
         if "action" in request.args and request.args["action"][0] == "changeType" + self.id:
             self.idevice.type = request.args["object"][0]
             self.idevice.copyFiles()
             self.idevice.edit = True
             self.idevice.undo = False
-            
+
         if "action" in request.args and request.args["action"][0] == "done":
             # remove the undo flag in order to reenable it next time:
-            if hasattr(self.idevice,'undo'): 
+            if hasattr(self.idevice, 'undo'):
                 del self.idevice.undo
-            
+
         if "upload" + self.id in request.args:
             if "path" + self.id in request.args:
-                filePath = request.args["path"+self.id][0]
+                filePath = request.args["path" + self.id][0]
                 if filePath:
-                    if self.idevice.type == "geogebra" and not filePath.endswith(".ggb"):
+                    if self.idevice.type == "geogebra" and not filePath.endswith(
+                            ".ggb"):
                         self.idevice.message = _("Please upload a .ggb file.")
                     elif self.idevice.type == "jclic" and not filePath.endswith(".jclic.zip"):
-                        self.idevice.message = _("Please upload a .jclic.zip file.")
+                        self.idevice.message = _(
+                            "Please upload a .jclic.zip file.")
                     elif self.idevice.type == "scratch" and not filePath.endswith(".sb") or filePath.endswith(".scratch"):
-                        self.idevice.message = _("Please upload a .sb or .scratch file.")
+                        self.idevice.message = _(
+                            "Please upload a .sb or .scratch file.")
                     elif self.idevice.type == "descartes" and not (filePath.endswith(".htm") or filePath.endswith(".html")):
-                        self.idevice.message = _("Please type or paste a valid URL.")
+                        self.idevice.message = _(
+                            "Please type or paste a valid URL.")
                     else:
-                        if self.idevice.type == "descartes" and filePath.find(","):
+                        if self.idevice.type == "descartes" and filePath.find(
+                                ","):
                             self.idevice.uploadFile(filePath)
-                            if self.idevice.uploadFile(filePath) == None:
+                            if self.idevice.uploadFile(filePath) is None:
                                 if self.idevice.appletCode == '':
-                                    self.idevice.message = _("eXe cannot access any scene inside the indicated website. "
-                                                            "Anyway you can access the desired scene in your regular browser, "
-                                                            "click with right mouse button on it and in config > codigo is its "
-                                                            "associated code. Copy and paste it directly into an Applet "
-                                                            "iDevice such as Other.")
-                                    self.idevice.edit = True    
+                                    self.idevice.message = _(
+                                        "eXe cannot access any scene inside the indicated website. "
+                                        "Anyway you can access the desired scene in your regular browser, "
+                                        "click with right mouse button on it and in config > codigo is its "
+                                        "associated code. Copy and paste it directly into an Applet "
+                                        "iDevice such as Other.")
+                                    self.idevice.edit = True
                                     self.idevice.undo = False
                                     return
-                        else:                     
-                            self.idevice.uploadFile(filePath)       
-                            
+                        else:
+                            self.idevice.uploadFile(filePath)
+
         # Descartes applet requires two functionalities: read html files (like above
         # and upload user indicated files, this is the second one:
         if "uploadother" + self.id in request.args:
             if "path" + self.id in request.args:
-                filePath = request.args["path"+self.id][0]
+                filePath = request.args["path" + self.id][0]
                 if filePath:
-                    if self.idevice.type == "descartes" and not (filePath.endswith(".htm") or filePath.endswith(".html")):
-                        self.idevice.uploadFile(filePath)       
-            self.idevice.edit = True    
+                    if self.idevice.type == "descartes" and not (
+                            filePath.endswith(".htm") or filePath.endswith(".html")):
+                        self.idevice.uploadFile(filePath)
+            self.idevice.edit = True
             self.idevice.undo = False
-                         
-                    
+
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form elements for editing this block
         """
         log.debug("renderEdit")
 
-        html  = "<div class=\"iDevice\"><br/>\n"
-        html += common.textInput("title"+self.id, self.idevice.title)
+        html = "<div class=\"iDevice\"><br/>\n"
+        html += common.textInput("title" + self.id, self.idevice.title)
         html += "<br/><br/>\n"
-       
+
         types = [(_("Descartes"), "descartes"),
                  (_("Geogebra"), "geogebra"),
                  (_("JClic"), "jclic"),
                  (_("Scratch"), "scratch"),
                  (_("Other"), "other")]
         html += "<b>%s</b>" % _("Applet Type")
-        
-        html += '<select onchange="submitChange(\'changeType%s\', \'type%s\')";' % (self.id, self.id)
+
+        html += '<select onchange="submitChange(\'changeType%s\', \'type%s\')";' % (
+            self.id, self.id)
         html += 'name="type%s" id="type%s">\n' % (self.id, self.id)
-        
+
         for type, value in types:
-            html += "<option value=\""+value+"\" "
+            html += "<option value=\"" + value + "\" "
             if self.idevice.type == value:
                 html += "selected "
             html += ">" + type + "</option>\n"
         html += "</select> \n"
         html += common.elementInstruc(self.idevice.typeInstruc) + "<br/><br/>"
-        
+
         if self.idevice.message != "":
             html += '<p style="color:red"><b>' + self.idevice.message + '</b></p>'
-        
-        html += common.textInput("path"+self.id, "", 50)
-               
+
+        html += common.textInput("path" + self.id, "", 50)
+
         # Descartes requires an specific button more near the textInput:
         if self.idevice.type != "descartes":
             html += '<input type="button" onclick="addFile(\'%s\')"' % self.id
             html += 'value="%s" />\n' % _("Add files")
-            html += '<input type="submit" name="%s" value="%s" />\n' % ("upload"+self.id, 
-                                                                _("Upload"))
+            html += '<input type="submit" name="%s" value="%s" />\n' % (
+                "upload" + self.id, _("Upload"))
         else:
             # Read URL user indicated:
-            html += '<input type="submit" name="%s" value="%s" />\n' % ("upload"+self.id,
-                                                                _("Accept URL"))   
+            html += '<input type="submit" name="%s" value="%s" />\n' % (
+                "upload" + self.id, _("Accept URL"))
             html += '<br/>\n'
-            # Upload some kind of file, like the rest of applets: 
+            # Upload some kind of file, like the rest of applets:
             html += '<input type="button" onclick="addFile(\'%s\')"' % self.id
             html += 'value="%s" />\n' % _("Add files")
-            html += '<input type="submit" name="%s" value="%s" />\n' % ("uploadother"+self.id,
-                                                               _("Upload"))
+            html += '<input type="submit" name="%s" value="%s" />\n' % (
+                "uploadother" + self.id, _("Upload"))
         html += common.elementInstruc(self.idevice.fileInstruc)
         html += '<br/>\n'
 
@@ -173,8 +182,8 @@ class AppletBlock(Block):
         html += common.elementInstruc(self.idevice.codeInstruc)
         html += '<br/>\n'
 
-        html += common.textArea('code'+self.id,
-                                    self.idevice.appletCode,rows="12")
+        html += common.textArea('code' + self.id,
+                                self.idevice.appletCode, rows="12")
 
         if self.idevice.userResources:
             html += '<table>'
@@ -185,72 +194,81 @@ class AppletBlock(Block):
                                            _("Delete File"))
                 html += '</td></tr>\n'
             html += '</table>'
-           
+
         html += '<br/>\n'
         html += self.renderEditButtons(undo=self.idevice.undo)
         html += '\n</div>\n'
 
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
         log.debug("renderPreview")
-        resources = "%s/%s/resources" % (G.application.exeAppUri, self.package.name)
+        resources = "%s/%s/resources" % (G.application.exeAppUri,
+                                         self.package.name)
         appletcode = self.idevice.appletCode
         appletcode = appletcode.replace('&gt;', '>')
         appletcode = appletcode.replace('&lt;', '<')
         appletcode = appletcode.replace('&quot;', '"')
-        appletcode = appletcode.replace('\xC2\x82','&#130')
-        appletcode = appletcode.replace('<applet','<applet codebase="%s"' % resources)
-        appletcode = appletcode.replace('<APPLET','<applet codebase="%s"' % resources)
+        appletcode = appletcode.replace('\xC2\x82', '&#130')
+        appletcode = appletcode.replace(
+            '<applet',
+            '<applet codebase="%s"' %
+            resources)
+        appletcode = appletcode.replace(
+            '<APPLET',
+            '<applet codebase="%s"' %
+            resources)
 
         if self.idevice.type == "jclic":
-            appletcode = appletcode.replace('activitypack" value="', 'activitypack" value="%s/' % resources)
+            appletcode = appletcode.replace(
+                'activitypack" value="',
+                'activitypack" value="%s/' %
+                resources)
 
         if self.idevice.type == "geogebra":
             # according to self.port (config.py)
-            appletcode = appletcode.replace('filename" value="', 'filename" value="%s/' % resources)
+            appletcode = appletcode.replace(
+                'filename" value="',
+                'filename" value="%s/' %
+                resources)
 
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         html = common.ideviceHeader(self, style, "preview")
-        html += '<div class="iDevice_content">'+lb
-        html += appletcode+lb
-        html += '</div>'+lb
+        html += '<div class="iDevice_content">' + lb
+        html += appletcode + lb
+        html += '</div>' + lb
         html += common.ideviceFooter(self, style, "preview")
 
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """        
+        """
         log.debug("renderView")
         appletcode = self.idevice.appletCode
         appletcode = appletcode.replace('&gt;', '>')
         appletcode = appletcode.replace('&lt;', '<')
         appletcode = appletcode.replace('&quot;', '"')
         appletcode = appletcode.replace('&nbsp;', '')
-        appletcode = appletcode.replace('\xC2\x82','&#130')
-        
-        lb = "\n" #Line breaks
+        appletcode = appletcode.replace('\xC2\x82', '&#130')
+
+        lb = "\n"  # Line breaks
         html = common.ideviceHeader(self, style, "view")
-        html += '<div class="iDevice_content">'+lb
-        html += appletcode+lb
-        html += '</div>'+lb
+        html += '<div class="iDevice_content">' + lb
+        html += appletcode + lb
+        html += '</div>' + lb
         html += common.ideviceFooter(self, style, "view")
 
         return html
-    
+
 
 # ===========================================================================
 """Register this block with the BlockFactory"""
-from exe.engine.appletidevice   import AppletIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(AppletBlock, AppletIdevice)    
+g_blockFactory.registerBlockType(AppletBlock, AppletIdevice)
 
 
 # ===========================================================================

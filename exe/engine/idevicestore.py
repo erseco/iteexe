@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,12 +23,12 @@
 The collection of iDevices available
 """
 
-from exe.engine                                     import persist
-from exe.engine.idevice                             import Idevice
-from exe.engine.jsidevice                           import JsIdevice
-from exe.engine.exceptions.invalidconfigjsidevice   import InvalidConfigJsIdevice
-from exe.engine.field                               import TextAreaField, FeedbackField,Feedback2Field
-from nevow.flat                                     import flatten
+from exe.engine import persist
+from exe.engine.idevice import Idevice
+from exe.engine.jsidevice import JsIdevice
+from exe.engine.exceptions.invalidconfigjsidevice import InvalidConfigJsIdevice
+from exe.engine.field import TextAreaField, FeedbackField, Feedback2Field
+from nevow.flat import flatten
 
 import imp
 import sys
@@ -39,24 +39,26 @@ import os
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class IdeviceStore:
     """
     The collection of iDevices available
     """
+
     def __init__(self, config):
         """
         Initialize
         """
         self._nextIdeviceId = 0
-        self.config         = config
-        self.extended       = []
-        self.generic        = []
-        self.jsIdevices     = []
-        self.listeners      = []
+        self.config = config
+        self.extended = []
+        self.generic = []
+        self.jsIdevices = []
+        self.listeners = []
         # JRJ: Añado una lista que contendrá todos los iDevices disponibles
         # (addition of a list that will contain all the idevices available)
         self.factoryiDevices = []
-
 
     def getNewIdeviceId(self):
         """
@@ -102,7 +104,6 @@ class IdeviceStore:
         """
         return self.factoryiDevices
 
-
     def __delGenericIdevice(self, idevice):
         """
         Delete a generic idevice from idevicestore.
@@ -120,7 +121,6 @@ class IdeviceStore:
             # (we tell the listeners that this iDevice is no longer available)
             for listener in self.listeners:
                 listener.delIdevice(idevice_remove)
-
 
     def __delExtendedIdevice(self, idevice):
         """
@@ -194,7 +194,6 @@ class IdeviceStore:
             if exist:
                 self.__delExtendedIdevice(idevice_remove)
 
-
     def register(self, listener):
         """
         Register a listener who is interested in changes to the
@@ -202,7 +201,6 @@ class IdeviceStore:
         Created for IdevicePanes, but could be used by other objects
         """
         self.listeners.append(listener)
-
 
     def addIdevice(self, idevice):
         """
@@ -233,7 +231,7 @@ class IdeviceStore:
                 for listener in self.listeners:
                     listener.addIdevice(idevice)
         elif self.isJs(idevice):
-#             Compare the id of the idevice with the magic method
+            #             Compare the id of the idevice with the magic method
             if (idevice not in self.jsIdevices):
                 self.jsIdevices.append(idevice)
                 idevice.edit = True
@@ -286,7 +284,7 @@ class IdeviceStore:
                     idevice.id = factoryiDevice.id
                     break
 
-        #JRJ: comunicamos a los listeners los iDevices extendidos
+        # JRJ: comunicamos a los listeners los iDevices extendidos
         # (we inform the listeners of the extended iDevices)
         for listener in self.listeners:
             for idevice in self.getIdevices():
@@ -315,7 +313,6 @@ class IdeviceStore:
         from exe.engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
         from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
 
-
         idevices_FPD = []
         idevices_FPD.append(ReflectionfpdIdevice())
         idevices_FPD.append(ReflectionfpdmodifIdevice())
@@ -331,13 +328,12 @@ class IdeviceStore:
         idevices_FPD.append(CasopracticofpdIdevice())
         idevices_FPD.append(EjercicioresueltofpdIdevice())
         idevices_FPD.append(DestacadofpdIdevice())
-        #idevices_FPD.append(CorreccionfpdIdevice())
+        # idevices_FPD.append(CorreccionfpdIdevice())
         idevices_FPD.append(OrientacionesalumnadofpdIdevice())
         idevices_FPD.append(OrientacionestutoriafpdIdevice())
         idevices_FPD.append(FreeTextfpdIdevice())
 
         return idevices_FPD
-
 
     def __getFactoryExtendediDevices(self):
         """
@@ -350,18 +346,18 @@ class IdeviceStore:
         from exe.engine.casestudyidevice import CasestudyIdevice
         from exe.engine.truefalseidevice import TrueFalseIdevice
         # converting ImageWithTextIdevice -> FreeTextIdevice:
-        #from exe.engine.imagewithtextidevice  import ImageWithTextIdevice
+        # from exe.engine.imagewithtextidevice  import ImageWithTextIdevice
         from exe.engine.wikipediaidevice import WikipediaIdevice
         from exe.engine.attachmentidevice import AttachmentIdevice
         from exe.engine.titleidevice import TitleIdevice
         from exe.engine.galleryidevice import GalleryIdevice
         from exe.engine.clozeidevice import ClozeIdevice
-        #from exe.engine.clozelangidevice          import ClozelangIdevice
+        # from exe.engine.clozelangidevice          import ClozelangIdevice
         from exe.engine.flashwithtextidevice import FlashWithTextIdevice
         from exe.engine.externalurlidevice import ExternalUrlIdevice
         from exe.engine.imagemagnifieridevice import ImageMagnifierIdevice
         # converting Maths Idevice -> FreeTextIdevice:
-        #from exe.engine.mathidevice           import MathIdevice
+        # from exe.engine.mathidevice           import MathIdevice
         from exe.engine.multichoiceidevice import MultichoiceIdevice
         from exe.engine.rssidevice import RssIdevice
         from exe.engine.multiselectidevice import MultiSelectIdevice
@@ -394,11 +390,10 @@ class IdeviceStore:
         from exe.engine.casopracticofpdidevice import CasopracticofpdIdevice
         from exe.engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
         from exe.engine.destacadofpdidevice import DestacadofpdIdevice
-        #from exe.engine.correccionfpdidevice		import CorreccionfpdIdevice
+        # from exe.engine.correccionfpdidevice		import CorreccionfpdIdevice
         from exe.engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
         from exe.engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
         from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
-
 
         factoryExtendedIdevices = []
 
@@ -406,7 +401,7 @@ class IdeviceStore:
         factoryExtendedIdevices.append(HangmanIdeviceInc())
         factoryExtendedIdevices.append(ClickInOrderIdeviceInc())
         factoryExtendedIdevices.append(MemoryMatchIdeviceInc())
-        #factoryExtendedIdevices.append(PlaceTheObjectsIdeviceInc())
+        # factoryExtendedIdevices.append(PlaceTheObjectsIdeviceInc())
         factoryExtendedIdevices.append(FileAttachIdeviceInc())
 
         factoryExtendedIdevices.append(FreeTextIdevice())
@@ -416,32 +411,32 @@ class IdeviceStore:
         factoryExtendedIdevices.append(TrueFalseIdevice())
         defaultImage = str(self.config.webDir / "images" / "sunflowers.jpg")
         # converting ImageWithTextIdevice -> FreeTextIdevice:
-        #factoryExtendedIdevices.append(ImageWithTextIdevice(defaultImage))
+        # factoryExtendedIdevices.append(ImageWithTextIdevice(defaultImage))
         factoryExtendedIdevices.append(ImageMagnifierIdevice(defaultImage))
         defaultImage = str(self.config.webDir / "images" / "sunflowers.jpg")
         defaultSite = 'http://%s.wikipedia.org/' % self.config.locale
         factoryExtendedIdevices.append(WikipediaIdevice(defaultSite))
-        #JRJ: Eliminamos este iDevice de los extendidos
+        # JRJ: Eliminamos este iDevice de los extendidos
         # (we eliminate this iDevice from the extended ones)
-        #factoryExtendedIdevices.append(AttachmentIdevice())
+        # factoryExtendedIdevices.append(AttachmentIdevice())
         factoryExtendedIdevices.append(GalleryIdevice())
         factoryExtendedIdevices.append(ClozeIdevice())
-        #factoryExtendedIdevices.append(ClozelangIdevice())
-        #JRJ: Eliminamos este iDevices de los extendidos
+        # factoryExtendedIdevices.append(ClozelangIdevice())
+        # JRJ: Eliminamos este iDevices de los extendidos
         # (we eliminate this iDevice from the extended ones)
-        #factoryExtendedIdevices.append(FlashWithTextIdevice())
+        # factoryExtendedIdevices.append(FlashWithTextIdevice())
         factoryExtendedIdevices.append(ExternalUrlIdevice())
         # converting Maths Idevice -> FreeTextIdevice:
-        #factoryExtendedIdevices.append(MathIdevice())
-        #JRJ: Eliminamos este iDevices de los extendidos
+        # factoryExtendedIdevices.append(MathIdevice())
+        # JRJ: Eliminamos este iDevices de los extendidos
         # (we eliminate this iDevice from the extended ones)
-        #factoryExtendedIdevices.append(MultimediaIdevice())
+        # factoryExtendedIdevices.append(MultimediaIdevice())
         factoryExtendedIdevices.append(RssIdevice())
         factoryExtendedIdevices.append(MultiSelectIdevice())
         factoryExtendedIdevices.append(AppletIdevice())
-        #JRJ: Eliminamos este iDevices de los extendidos
+        # JRJ: Eliminamos este iDevices de los extendidos
         # (we eliminate this iDevice from the extended ones)
-        #factoryExtendedIdevices.append(FlashMovieIdevice())
+        # factoryExtendedIdevices.append(FlashMovieIdevice())
         factoryExtendedIdevices.append(QuizTestIdevice())
         factoryExtendedIdevices.append(ListaIdevice())
         factoryExtendedIdevices.append(NotaIdevice())
@@ -463,7 +458,7 @@ class IdeviceStore:
         factoryExtendedIdevices.append(EjercicioresueltofpdIdevice())
         factoryExtendedIdevices.append(DestacadofpdIdevice())
 
-        #factoryExtendedIdevices.append(CorreccionfpdIdevice())
+        # factoryExtendedIdevices.append(CorreccionfpdIdevice())
         factoryExtendedIdevices.append(OrientacionesalumnadofpdIdevice())
         factoryExtendedIdevices.append(OrientacionestutoriafpdIdevice())
         factoryExtendedIdevices.append(FreeTextfpdIdevice())
@@ -478,14 +473,15 @@ class IdeviceStore:
         """
         self.__loadUserExtended()
 
-        #JRJ: Si existe el archivo extended.data cargamos de ahi los iDevices extendidos
+        # JRJ: Si existe el archivo extended.data cargamos de ahi los iDevices extendidos
         # (if the file extended.data exists, we load there the extended iDevices)
-        extendedPath = self.config.configDir/'idevices'/'extended.data'
-        log.debug("load extended iDevices from "+extendedPath)
+        extendedPath = self.config.configDir / 'idevices' / 'extended.data'
+        log.debug("load extended iDevices from " + extendedPath)
 
         self.factoryiDevices = self.__getFactoryExtendediDevices()
 
-        # Temporarily (or not) we will make extended.data be rebuilt every time the application starts
+        # Temporarily (or not) we will make extended.data be rebuilt every time
+        # the application starts
         rebuilt_extended = True
 
         # Check if path exist and and if necessary delete config/extended.data
@@ -501,7 +497,7 @@ class IdeviceStore:
         from exe.engine.galleryidevice import GalleryIdevice
 
         for idevice in self.extended:
-            if type(idevice) == GalleryIdevice:
+            if isinstance(idevice, GalleryIdevice):
                 if hasattr(idevice, 'systemResources'):
                     idevice.systemResources = []
                     break
@@ -515,8 +511,8 @@ class IdeviceStore:
         Load the user-created extended iDevices which are in the idevices
         directory
         """
-        idevicePath = self.config.configDir/'idevices'
-        log.debug("load extended iDevices from "+idevicePath)
+        idevicePath = self.config.configDir / 'idevices'
+        log.debug("load extended iDevices from " + idevicePath)
 
         if not idevicePath.exists():
             idevicePath.makedirs()
@@ -524,33 +520,33 @@ class IdeviceStore:
 
         # Add to the list of extended idevices
         for path in idevicePath.listdir("*idevice.py"):
-            log.debug("loading "+path)
+            log.debug("loading " + path)
             moduleName = path.basename().splitext()[0]
             module = __import__(moduleName, globals(), locals(), [])
             module.register(self)
 
         # Register the blocks for rendering the idevices
         for path in idevicePath.listdir("*block.py"):
-            log.debug("loading "+path)
+            log.debug("loading " + path)
             moduleName = path.basename().splitext()[0]
             module = __import__(moduleName, globals(), locals(), [])
             module.register()
-
 
     def __loadGeneric(self):
         """
         Load the Generic iDevices from the appdata directory
         """
-        #JRJ: Modificamos la lectura para contemplar los genéricos que se muestran y todos los genéricos
+        # JRJ: Modificamos la lectura para contemplar los genéricos que se muestran y todos los genéricos
         # (Modidy the reading to apply also to the generic shown and all the generic iDevices)
-        showgenericPath = self.config.configDir/'idevices'/'showgeneric.data'
-        log.debug("load generic iDevices from "+showgenericPath)
+        showgenericPath = self.config.configDir / 'idevices' / 'showgeneric.data'
+        log.debug("load generic iDevices from " + showgenericPath)
         if showgenericPath.exists():
             self.generic = persist.decodeObject(showgenericPath.bytes())
             self.__upgradeGeneric()
-            allgenericPath = self.config.configDir/'idevices'/'allgeneric.data'
+            allgenericPath = self.config.configDir / 'idevices' / 'allgeneric.data'
             if allgenericPath.exists():
-                self.factoryiDevices = self.factoryiDevices + persist.decodeObject(allgenericPath.bytes())
+                self.factoryiDevices = self.factoryiDevices + \
+                    persist.decodeObject(allgenericPath.bytes())
             else:
                 self.factoryiDevices = self.factoryiDevices + self.generic
         else:
@@ -571,16 +567,19 @@ class IdeviceStore:
         if iDevicesDir.exists():
             # We get the list of all subfolders
             for ideviceDir in os.listdir(iDevicesDir):
-                if os.path.isdir(iDevicesDir/ideviceDir):
+                if os.path.isdir(iDevicesDir / ideviceDir):
                     try:
                         idevice = JsIdevice(ideviceDir)
-                        if (idevice.title!='Example iDevice' and idevice.isValid()):
+                        if (idevice.title != 'Example iDevice' and idevice.isValid()):
                             self.jsIdevices.append(idevice)
                     except InvalidConfigJsIdevice as invalidconfigexception:
-                        log.warn("The load of the JsIdevice " + invalidconfigexception.name + " has failed with this message: " + invalidconfigexception.message)
+                        log.warn(
+                            "The load of the JsIdevice " +
+                            invalidconfigexception.name +
+                            " has failed with this message: " +
+                            invalidconfigexception.message)
 
             self.factoryiDevices = self.factoryiDevices + self.jsIdevices
-
 
     def __upgradeGeneric(self):
         """
@@ -608,7 +607,7 @@ class IdeviceStore:
                             # persistence versions not used here.
                             # (but note that the persistence versioning
                             #  will probably have ALREADY happened anyway!)
-                            if not hasattr(field,"content"):
+                            if not hasattr(field, "content"):
                                 # this FeedbackField has NOT been upgraded:
                                 field.content = field.feedback
                                 field.content_w_resourcePaths = field.content
@@ -619,7 +618,7 @@ class IdeviceStore:
                 readingActivitiesFound += 1
                 if readingActivitiesFound == 2:
                     break
-        #self.save()
+        # self.save()
 
     def __createGeneric(self):
         """
@@ -638,107 +637,112 @@ class IdeviceStore:
 
         from exe.engine.genericidevice import GenericIdevice
 
-        readingAct = GenericIdevice(x_("Reading Activity"),
-                                    "reading",
-                                    x_("University of Auckland"),
-                                    x_("""<p>The Reading Activity will primarily
+        readingAct = GenericIdevice(
+            x_("Reading Activity"),
+            "reading",
+            x_("University of Auckland"),
+            x_("""<p>The Reading Activity will primarily
 be used to check a learner's comprehension of a given text. This can be done
 by asking the learner to reflect on the reading and respond to questions about
 the reading, or by having them complete some other possibly more physical task
 based on the reading.</p>"""),
-                                    x_("<p>Teachers should keep the following "
-                                        "in mind when using this iDevice: </p>"
-                                        "<ol>"
-                                        "<li>"
-                                        "Think about the number of "
-                                        "different types of activity "
-                                        "planned for your resource that "
-                                        "will be visually signalled in the "
-                                        "content. Avoid using too many "
-                                        "different types or classification "
-                                        "of activities otherwise learner "
-                                        "may become confused. Usually three "
-                                        "or four different types are more "
-                                        "than adequate for a teaching "
-                                        "resource."
-                                        "</li>"
-                                        "<li>"
-                                        "From a visual design "
-                                        "perspective, avoid having two "
-                                        "iDevices immediately following "
-                                        "each other without any text in "
-                                        "between. If this is required, "
-                                        "rather collapse two questions or "
-                                        "events into one iDevice. "
-                                        "</li>"
-                                        "<li>"
-                                        "Think "
-                                        "about activities where the "
-                                        "perceived benefit of doing the "
-                                        "activity outweighs the time and "
-                                        "effort it will take to complete "
-                                        "the activity. "
-                                        "</li>"
-                                        "</ol>"))
+            x_(
+                "<p>Teachers should keep the following "
+                "in mind when using this iDevice: </p>"
+                "<ol>"
+                "<li>"
+                "Think about the number of "
+                "different types of activity "
+                "planned for your resource that "
+                "will be visually signalled in the "
+                "content. Avoid using too many "
+                "different types or classification "
+                "of activities otherwise learner "
+                "may become confused. Usually three "
+                "or four different types are more "
+                "than adequate for a teaching "
+                "resource."
+                "</li>"
+                "<li>"
+                "From a visual design "
+                "perspective, avoid having two "
+                "iDevices immediately following "
+                "each other without any text in "
+                "between. If this is required, "
+                "rather collapse two questions or "
+                "events into one iDevice. "
+                "</li>"
+                "<li>"
+                "Think "
+                "about activities where the "
+                "perceived benefit of doing the "
+                "activity outweighs the time and "
+                "effort it will take to complete "
+                "the activity. "
+                "</li>"
+                "</ol>"))
         readingAct.emphasis = Idevice.SomeEmphasis
-        readingAct.addField(TextAreaField(x_("What to read"),
-x_("""Enter the details of the reading including reference details. The
+        readingAct.addField(
+            TextAreaField(
+                x_("What to read"),
+                x_("""Enter the details of the reading including reference details. The
 referencing style used will depend on the preference of your faculty or
 department.""")))
-        readingAct.addField(TextAreaField(x_("Activity"),
-x_("""Describe the tasks related to the reading learners should undertake.
+        readingAct.addField(TextAreaField(x_("Activity"), x_(
+            """Describe the tasks related to the reading learners should undertake.
 This helps demonstrate relevance for learners.""")))
 
-        readingAct.addField(FeedbackField(x_("Feedback"),
-x_("""Use feedback to provide a summary of the points covered in the reading,
+        readingAct.addField(FeedbackField(x_("Feedback"), x_(
+            """Use feedback to provide a summary of the points covered in the reading,
 or as a starting point for further analysis of the reading by posing a question
 or providing a statement to begin a debate.""")))
 
         idevices.append(readingAct)
 
-        objectives = GenericIdevice(x_("Objectives"),
-                                    "objectives",
-                                    x_("University of Auckland"),
-x_("""Objectives describe the expected outcomes of the learning and should
+        objectives = GenericIdevice(
+            x_("Objectives"),
+            "objectives",
+            x_("University of Auckland"),
+            x_("""Objectives describe the expected outcomes of the learning and should
 define what the learners will be able to do when they have completed the
 learning tasks."""),
-                                    "")
+            "")
         objectives.emphasis = Idevice.SomeEmphasis
 
-        objectives.addField(TextAreaField(x_("Objectives"),
-x_("""Type the learning objectives for this resource.""")))
+        objectives.addField(
+            TextAreaField(
+                x_("Objectives"),
+                x_("""Type the learning objectives for this resource.""")))
         idevices.append(objectives)
 
-        preknowledge = GenericIdevice(x_("Preknowledge"),
-                                      "preknowledge",
-                                      "",
-x_("""Prerequisite knowledge refers to the knowledge learners should already
+        preknowledge = GenericIdevice(x_("Preknowledge"), "preknowledge", "", x_(
+            """Prerequisite knowledge refers to the knowledge learners should already
 have in order to be able to effectively complete the learning. Examples of
 pre-knowledge can be: <ul>
 <li>        Learners must have level 4 English </li>
 <li>        Learners must be able to assemble standard power tools </li></ul>
 """), "")
         preknowledge.emphasis = Idevice.SomeEmphasis
-        preknowledge.addField(TextAreaField(x_("Preknowledge"),
-x_("""Describe the prerequisite knowledge learners should have to effectively
+        preknowledge.addField(
+            TextAreaField(
+                x_("Preknowledge"),
+                x_("""Describe the prerequisite knowledge learners should have to effectively
 complete this learning.""")))
         idevices.append(preknowledge)
 
-        activity = GenericIdevice(x_("Activity"),
-                                  "activity",
-                                  x_("University of Auckland"),
-x_("""An activity can be defined as a task or set of tasks a learner must
+        activity = GenericIdevice(x_("Activity"), "activity", x_("University of Auckland"), x_(
+            """An activity can be defined as a task or set of tasks a learner must
 complete. Provide a clear statement of the task and consider any conditions
-that may help or hinder the learner in the performance of the task."""),
-"")
+that may help or hinder the learner in the performance of the task."""), "")
         activity.emphasis = Idevice.SomeEmphasis
-        activity.addField(TextAreaField(x_("Activity"),
-x_("""Describe the tasks the learners should complete.""")))
+        activity.addField(
+            TextAreaField(
+                x_("Activity"),
+                x_("""Describe the tasks the learners should complete.""")))
         idevices.append(activity)
 
-        #self.save()
+        # self.save()
         return idevices
-
 
     def __createReading011(self):
         """
@@ -790,70 +794,73 @@ reflective guidance.</p>"""),
                                         "</li>"
                                         "</ol>"))
         readingAct.emphasis = Idevice.SomeEmphasis
-        readingAct.addField(TextAreaField(_("What to read"),
-_("""Enter the details of the reading including reference details. The
+        readingAct.addField(
+            TextAreaField(
+                _("What to read"),
+                _("""Enter the details of the reading including reference details. The
 referencing style used will depend on the preference of your faculty or
 department.""")))
-        readingAct.addField(TextAreaField(_("Activity"),
-_("""Describe the tasks related to the reading learners should undertake.
+        readingAct.addField(TextAreaField(_("Activity"), _(
+            """Describe the tasks related to the reading learners should undertake.
 This helps demonstrate relevance for learners.""")))
 
-        readingAct.addField(FeedbackField(_("Feedback"),
-_("""Use feedback to provide a summary of the points covered in the reading,
+        readingAct.addField(FeedbackField(_("Feedback"), _(
+            """Use feedback to provide a summary of the points covered in the reading,
 or as a starting point for further analysis of the reading by posing a question
 or providing a statement to begin a debate.""")))
 
-        objectives = GenericIdevice(_("Objectives"),
-                                    "objectives",
-                                    _("University of Auckland"),
-_("""Objectives describe the expected outcomes of the learning and should
+        objectives = GenericIdevice(
+            _("Objectives"),
+            "objectives",
+            _("University of Auckland"),
+            _("""Objectives describe the expected outcomes of the learning and should
 define what the learners will be able to do when they have completed the
 learning tasks."""),
-                                    "")
+            "")
         objectives.emphasis = Idevice.SomeEmphasis
 
-        objectives.addField(TextAreaField(_("Objectives"),
-_("""Type the learning objectives for this resource.""")))
+        objectives.addField(
+            TextAreaField(
+                _("Objectives"),
+                _("""Type the learning objectives for this resource.""")))
         self.generic.append(objectives)
 
-        preknowledge = GenericIdevice(_("Preknowledge"),
-                                      "preknowledge",
-                                      "",
-_("""Prerequisite knowledge refers to the knowledge learners should already
+        preknowledge = GenericIdevice(_("Preknowledge"), "preknowledge", "", _(
+            """Prerequisite knowledge refers to the knowledge learners should already
 have in order to be able to effectively complete the learning. Examples of
 pre-knowledge can be: <ul>
 <li>        Learners must have level 4 English </li>
 <li>        Learners must be able to assemble standard power tools </li></ul>
 """), "")
         preknowledge.emphasis = Idevice.SomeEmphasis
-        preknowledge.addField(TextAreaField(_("Preknowledge"),
-_("""Describe the prerequisite knowledge learners should have to effectively
+        preknowledge.addField(
+            TextAreaField(
+                _("Preknowledge"),
+                _("""Describe the prerequisite knowledge learners should have to effectively
 complete this learning.""")))
         self.generic.append(preknowledge)
 
-        activity = GenericIdevice(_("Activity"),
-                                  "activity",
-                                  _("University of Auckland"),
-_("""An activity can be defined as a task or set of tasks a learner must
+        activity = GenericIdevice(_("Activity"), "activity", _("University of Auckland"), _(
+            """An activity can be defined as a task or set of tasks a learner must
 complete. Provide a clear statement of the task and consider any conditions
-that may help or hinder the learner in the performance of the task."""),
-"")
+that may help or hinder the learner in the performance of the task."""), "")
         activity.emphasis = Idevice.SomeEmphasis
-        activity.addField(TextAreaField(_("Activity"),
-_("""Describe the tasks the learners should complete.""")))
+        activity.addField(
+            TextAreaField(
+                _("Activity"),
+                _("""Describe the tasks the learners should complete.""")))
         self.generic.append(activity)
 
-        #self.save()
-
+        # self.save()
 
     def save(self):
         """
         Save the Generic iDevices to the appdata directory
         """
-        idevicesDir = self.config.configDir/'idevices'
+        idevicesDir = self.config.configDir / 'idevices'
         if not idevicesDir.exists():
             idevicesDir.mkdir()
-        #JRJ: Buscamos los génericos dentro de los de fábrica,
+        # JRJ: Buscamos los génericos dentro de los de fábrica,
         # ya que generic solo contiene aquellos genéricos que se muestran
         # (we search the generic inside the factory iDevices,
         # since generic only contains the generic iDevices which are shown)
@@ -861,12 +868,12 @@ _("""Describe the tasks the learners should complete.""")))
         for idevice in self.getFactoryIdevices():
             if self.isGeneric(idevice):
                 allgeneric.append(idevice)
-        fileOut = open(idevicesDir/'allgeneric.data', 'wb')
+        fileOut = open(idevicesDir / 'allgeneric.data', 'wb')
         fileOut.write(persist.encodeObject(allgeneric))
-        fileOut = open(idevicesDir/'showgeneric.data', 'wb')
+        fileOut = open(idevicesDir / 'showgeneric.data', 'wb')
         fileOut.write(persist.encodeObject(self.generic))
-        #JRJ: Guardamos también los iDevices extendidos
+        # JRJ: Guardamos también los iDevices extendidos
         # (we also save the extended iDevices)
-        fileOut = open(idevicesDir/'extended.data', 'wb')
+        fileOut = open(idevicesDir / 'extended.data', 'wb')
         fileOut.write(persist.encodeObject(self.extended))
 # ===========================================================================

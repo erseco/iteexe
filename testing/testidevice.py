@@ -18,22 +18,23 @@
 # ===========================================================================
 
 import unittest
-from exe.engine.node    import Node
+from exe.engine.node import Node
 from exe.engine.idevice import Idevice
 from exe.engine.packagestore import PackageStore
-from exe                      import globals as G
+from exe import globals as G
 import shutil
 from exe.application import Application
+
 
 class TestIdevice(unittest.TestCase):
     def setUp(self):
         G.application = Application()
-        
+
         G.application.loadConfiguration()
         G.application.preLaunch()
-        
+
         self.packageStore = PackageStore()
-        self.package      = self.packageStore.createPackage()
+        self.package = self.packageStore.createPackage()
 
     def testIdevice(self):
         myIdevice = Idevice("My Idevice", "UoA", "Testing", "Help tip", "icon")
@@ -41,13 +42,13 @@ class TestIdevice(unittest.TestCase):
         self.assertEqual(myIdevice.author, "UoA")
         self.assertEqual(myIdevice.purpose, "Testing")
         self.assertEqual(myIdevice.tip, "Help tip")
-        
+
     def testSetParentNode(self):
         parentNode = Node(self.package)
         idevice0 = Idevice("FirstIdevice", "", "", "", "")
         idevice0.setParentNode(parentNode)
         self.assertTrue(idevice0.parentNode is parentNode)
-        
+
     def testIsfirstAndIsLast(self):
         parentNode = Node(self.package)
         idevice0 = Idevice("FirstIdevice", "", "", "", "")
@@ -56,11 +57,10 @@ class TestIdevice(unittest.TestCase):
         idevice1.setParentNode(parentNode)
         idevice2 = Idevice("ThirdIdevice", "", "", "", "")
         idevice2.setParentNode(parentNode)
-        
+
         self.assertTrue(idevice0.isFirst)
         self.assertTrue(idevice2.isLast)
-        
-        
+
     def testCmp(self):
         idevice0 = Idevice("FirstIdevice", "", "", "", "")
         idevice1 = Idevice("SecondIdevice", "", "", "", "")
@@ -68,7 +68,7 @@ class TestIdevice(unittest.TestCase):
         self.assertEqual(idevice2.__cmp__(idevice1), 1)
         self.assertEqual(idevice1.__cmp__(idevice0), 1)
         self.assertEqual(idevice0.__cmp__(idevice2), -1)
-        
+
     def testDelete(self):
         parentNode = Node(self.package)
         idevice0 = Idevice("FirstIdevice", "", "", "", "")
@@ -80,7 +80,7 @@ class TestIdevice(unittest.TestCase):
         idevice1.delete()
         if idevice1 in parentNode.idevices:
             print("delete failed")
-    
+
     def testMove(self):
         parentNode = Node(self.package)
         idevice0 = Idevice("FirstIdevice", "", "", "", "")
@@ -89,19 +89,20 @@ class TestIdevice(unittest.TestCase):
         idevice1.setParentNode(parentNode)
         idevice2 = Idevice("ThirdIdevice", "", "", "", "")
         idevice2.setParentNode(parentNode)
-        
+
         idevice0.moveNext()
         self.assertEqual(parentNode.idevices[1], idevice0)
         self.assertEqual(parentNode.idevices[0], idevice1)
-        
+
         idevice2.movePrev()
         self.assertEqual(parentNode.idevices[1], idevice2)
         self.assertEqual(parentNode.idevices[2], idevice0)
-        
+
     def tearDown(self):
         from exe import globals
         globals.application = None
         shutil.rmtree('tmp')
-        
+
+
 if __name__ == "__main__":
     unittest.main()

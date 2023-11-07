@@ -24,9 +24,9 @@ The AboutPage is responsible for showing about information
 
 from twisted.web.resource import Resource
 from exe.webui.renderable import Renderable
-from nevow                import rend, tags
-from exe.engine           import version
-from exe                  import globals as G
+from nevow import rend, tags
+from exe.engine import version
+from exe import globals as G
 
 import logging
 
@@ -57,6 +57,6 @@ class AboutPage(Renderable, rend.Page):
             revstring = ' (standalone)'
         elif G.application.portable:
             revstring = ' (portable)'
-        return ctx.tag()[version.release+revstring]
+        return ctx.tag()[version.release + revstring]
 
 # ===========================================================================

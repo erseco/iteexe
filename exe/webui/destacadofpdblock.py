@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ===========================================================================
-# Bloque para el iDevice Destacado creado para la FPD por 
+# Bloque para el iDevice Destacado creado para la FPD por
 # José Ramón Jiménez Reyes
 # (Block for the iDevice Highlighted, created by
 # José Ramón Jiménez Reyes for the FPD project)
@@ -11,10 +11,12 @@ FPD - Highlighted
 Destacado bloque
 """
 
+from exe.engine.destacadofpdidevice import DestacadofpdIdevice
+from exe.webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block               import Block
-from exe.webui                     import common
-from exe.webui.element      import TextAreaElement
+from exe.webui.block import Block
+from exe.webui import common
+from exe.webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 
@@ -29,16 +31,16 @@ class DestacadofpdBlock(Block):
         Block.__init__(self, parent, idevice)
         self.activityInstruc = idevice.activityInstruc
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.activityTextArea.idevice is None: 
+        if idevice.activityTextArea.idevice is None:
             idevice.activityTextArea.idevice = idevice
 
-        self.activityElement  = TextAreaElement(idevice.activityTextArea)
+        self.activityElement = TextAreaElement(idevice.activityTextArea)
 
-        self.previewing        = False # In view or preview render
+        self.previewing = False  # In view or preview render
 
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
 
     def process(self, request):
@@ -51,15 +53,14 @@ class DestacadofpdBlock(Block):
 
         if not is_cancel:
             self.activityElement.process(request)
-            if "title"+self.id in request.args:
-                self.idevice.title = request.args["title"+self.id][0]
-        
+            if "title" + self.id in request.args:
+                self.idevice.title = request.args["title" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = "<div class=\"iDevice\"><br/>\n"
+        html = "<div class=\"iDevice\"><br/>\n"
 #        html += common.textInput("title"+self.id, "Highlighted")
         html += self.activityElement.renderEdit()
         html += "<br/>" + self.renderEditButtons()
@@ -67,19 +68,19 @@ class DestacadofpdBlock(Block):
         return html
 
     def renderPreview(self, style):
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = True 
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = True
         return Block.renderPreview(self, style)
 
-    def renderView(self, style): 
-        """ 
-        Remembers if we're previewing or not, 
-        then implicitly calls self.renderViewContent (via Block.renderPreview) 
-        """ 
-        self.previewing = False 
+    def renderView(self, style):
+        """
+        Remembers if we're previewing or not,
+        then implicitly calls self.renderViewContent (via Block.renderPreview)
+        """
+        self.previewing = False
         return Block.renderView(self, style)
 
     def renderViewContent(self):
@@ -88,9 +89,9 @@ class DestacadofpdBlock(Block):
         """
 #        html  = u'<script type="text/javascript" src="common.js"></script>\n'
 #        html += u'<div class="iDevice_destacadofpd">\n'
-	html = '<div class="iDevice_destacadofpd">\n'
-    
-        if self.previewing: 
+        html = '<div class="iDevice_destacadofpd">\n'
+
+        if self.previewing:
             html += self.activityElement.renderPreview()
         else:
             html += self.activityElement.renderView()
@@ -98,8 +99,7 @@ class DestacadofpdBlock(Block):
         html += "</div>\n"
         return html
 
-from exe.engine.destacadofpdidevice  import DestacadofpdIdevice
-from exe.webui.blockfactory        import g_blockFactory
-g_blockFactory.registerBlockType(DestacadofpdBlock, DestacadofpdIdevice)    
+
+g_blockFactory.registerBlockType(DestacadofpdBlock, DestacadofpdIdevice)
 
 # ===========================================================================

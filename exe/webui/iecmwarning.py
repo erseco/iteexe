@@ -43,11 +43,13 @@ class IECMWarningPage(Renderable, rend.Page):
 
     def render_msg1cm(self, ctx, data):
         ctx.tag.clear()
-        return ctx.tag()[_("The Compatibility View of your browser (Internet Explorer) is turned on.")]
+        return ctx.tag()[
+            _("The Compatibility View of your browser (Internet Explorer) is turned on.")]
 
     def render_msg2cm(self, ctx, data):
         ctx.tag.clear()
-        return ctx.tag()[_("Please click on the Compatibility View button to turn it off:")]
+        return ctx.tag()[
+            _("Please click on the Compatibility View button to turn it off:")]
 
     def render_msg3cm(self, ctx, data):
         ctx.tag.clear()

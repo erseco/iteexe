@@ -20,5 +20,5 @@
 # ===========================================================================
 
 """
-The idevices module holds iDevice and Block plugins 
+The idevices module holds iDevice and Block plugins
 """

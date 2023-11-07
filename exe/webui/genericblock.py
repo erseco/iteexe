@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 GenericBlock can render and process GenericIdevices as XHTML
 """
 
+from exe.engine.genericidevice import GenericIdevice
+from exe.webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block            import Block
-from exe.webui.elementfactory   import g_elementFactory
-from exe.webui                  import common
+from exe.webui.block import Block
+from exe.webui.elementfactory import g_elementFactory
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
@@ -33,14 +35,14 @@ class GenericBlock(Block):
     """
     GenericBlock can render and process GenericIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         Block.__init__(self, parent, idevice)
         self.elements = []
         for field in self.idevice:
             self.elements.append(g_elementFactory.createElement(field))
-        if not hasattr(self.idevice,'undo'): 
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-
 
     def process(self, request):
         """
@@ -50,27 +52,26 @@ class GenericBlock(Block):
 
         Block.process(self, request)
         if ("action" not in request.args or
-            request.args["action"][0] != "delete"):
+                request.args["action"][0] != "delete"):
             for element in self.elements:
                 element.process(request)
-                
-        if "title"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args["title"+self.id][0]
+
+        if "title" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args["title" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = '<div><div class="block">\n'
-        html += common.textInput("title"+self.id, self.idevice.title) 
+        html = '<div><div class="block">\n'
+        html += common.textInput("title" + self.id, self.idevice.title)
         html += "</div>\n"
         for element in self.elements:
             html += element.renderEdit() + "<br />"
         html += self.renderEditButtons()
         html += "</div>\n"
         return html
-
 
     def renderPreview(self, style):
         """
@@ -87,13 +88,13 @@ class GenericBlock(Block):
         aIcon = self.idevice.icon
         xml = ""
         if len(self.elements) > 0:
-            return self.elements[0].renderXML(None, "idevice", self.idevice.id, title=aTitle, icon=aIcon)
+            return self.elements[0].renderXML(
+                None, "idevice", self.idevice.id, title=aTitle, icon=aIcon)
         return xml
 
-    
     def renderView(self, style):
         """
-        Returns an XHTML string for viewing this block, 
+        Returns an XHTML string for viewing this block,
         i.e. when exported as a webpage or SCORM package
         """
         html = common.ideviceHeader(self, style, "view")
@@ -102,8 +103,7 @@ class GenericBlock(Block):
         html += common.ideviceFooter(self, style, "view")
         return html
 
-from exe.engine.genericidevice import GenericIdevice
-from exe.webui.blockfactory    import g_blockFactory
-g_blockFactory.registerBlockType(GenericBlock, GenericIdevice)    
+
+g_blockFactory.registerBlockType(GenericBlock, GenericIdevice)
 
 # ===========================================================================

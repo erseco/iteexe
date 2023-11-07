@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,8 @@ Functions that help with translation
 
 # Install x_ as the fake/late translate mechanism before doing any serious
 # importing
-__builtins__['x_'] = lambda x:x
+__builtins__['x_'] = lambda x: x
+
 
 def lateTranslate(propName, content=False):
     """
@@ -30,14 +31,21 @@ def lateTranslate(propName, content=False):
     every time it is read
     """
     propName = '_%s' % propName
+
     def set_prop(self, value):
         """
         Used to write the property
         """
-        #return lambda self, value: setattr(self, propName, value)
+        # return lambda self, value: setattr(self, propName, value)
         transFunc = c_ if content else _
-        if not hasattr(self, propName) or transFunc(getattr(self, propName)) != value:
+        if not hasattr(
+                self,
+                propName) or transFunc(
+                getattr(
+                self,
+                propName)) != value:
             setattr(self, propName, value)
+
     def get_prop(self):
         """
         Translates a property value on the fly
@@ -51,6 +59,7 @@ def lateTranslate(propName, content=False):
             return value
     return property(get_prop, set_prop)
 
+
 def installSafeTranslate():
     """
     Makes '_' do safe translating
@@ -58,10 +67,12 @@ def installSafeTranslate():
     """
     def checkInstall():
         return __builtins__['_'] is installSafeTranslate
-    if checkInstall(): return
+    if checkInstall():
+        return
     else:
         __builtins__['__old_translate__'] = __builtins__['_']
         __builtins__['_'] = safeTranslate
+
 
 def safeTranslate(message, encoding='utf-8'):
     """

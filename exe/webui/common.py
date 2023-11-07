@@ -24,20 +24,21 @@ This module is for the common HTML used in all webpages.
 
 import logging
 import os
-from nevow                     import tags as T
-from nevow.flat                import flatten
-from exe                       import globals as G
-from exe.engine.path           import Path
-from exe.webui.blockfactory    import g_blockFactory
-from exe.engine.error          import Error
-from html                      import escape
+from nevow import tags as T
+from nevow.flat import flatten
+from exe import globals as G
+from exe.engine.path import Path
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.error import Error
+from html import escape
 # jrf:sorry if this a terrible mistake, I need to fix this to be able to test the translations
 # from BeautifulSoup             import BeautifulSoup
-from bs4                       import BeautifulSoup
+from bs4 import BeautifulSoup
 import re
 
-htmlDocType=''
+htmlDocType = ''
 lastId = 0
+
 
 def newId():
     """
@@ -50,26 +51,33 @@ def newId():
 
 log = logging.getLogger(__name__)
 
+
 def copyFileIfNotInStyle(file, e, outputDir):
-    f = (e.imagesDir/file)
-    if not (outputDir/file).exists():
-        f.copyfile(outputDir/file)
+    f = (e.imagesDir / file)
+    if not (outputDir / file).exists():
+        f.copyfile(outputDir / file)
+
+
 def setExportDocType(value):
     global htmlDocType
-    htmlDocType=value
+    htmlDocType = value
+
 
 def getExportDocType():
-    # If HTML5 webui/scripts/exe_html5.js has to be in the package resources list
+    # If HTML5 webui/scripts/exe_html5.js has to be in the package resources
+    # list
     return htmlDocType
 
+
 def docType():
-    dT = htmlDocType #getExportDocType()
-    lb = "\n" #Line breaks
+    dT = htmlDocType  # getExportDocType()
+    lb = "\n"  # Line breaks
     """Generates the documentation type string"""
     if dT == "HTML5":
-        return '<!DOCTYPE html>'+lb
+        return '<!DOCTYPE html>' + lb
     else:
-        return ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'+lb)
+        return ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' + lb)
+
 
 def getExtraHeadContent(package):
     # Custom HEAD (see PackagePanel.js)
@@ -78,15 +86,19 @@ def getExtraHeadContent(package):
     else:
         return ''
 
+
 def exportJavaScriptIdevicesFiles(iDevices, outputDir):
     """ Copy all the JS iDevices export files in outputDir """
     from exe.engine.jsidevice import JsIdevice
     # TODO: Find a way to not copy already existing files
     for idevice in iDevices:
         # We only want to copy JS iDevices resources
-        if type(idevice) is JsIdevice and idevice.get_export_folder() is not None:
-            iDeviceFiles = G.application.config.jsIdevicesDir/idevice.get_export_folder()
+        if isinstance(
+                idevice,
+                JsIdevice) and idevice.get_export_folder() is not None:
+            iDeviceFiles = G.application.config.jsIdevicesDir / idevice.get_export_folder()
             iDeviceFiles.copyfiles(outputDir)
+
 
 def printJavaScriptIdevicesScripts(mode, page):
     """ Prints the required scripts for the JS iDevices of the page """
@@ -97,17 +109,17 @@ def printJavaScriptIdevicesScripts(mode, page):
 
     # If the page doesn't have blocks, it means we are exporting
     if not hasattr(page, 'blocks'):
-        if type(page) is Node:
+        if isinstance(page, Node):
             idevices = page.idevices
         else:
             idevices = page.node.idevices
         # Edition SCRIPTS:
         for idevice in idevices:
-             # We only want to add the scripts if the iDevice is a JavaScript iDevice
-             # TODO: Find a better way to do this
-            if(hasattr(idevice, '_iDeviceDir')):
+            # We only want to add the scripts if the iDevice is a JavaScript iDevice
+            # TODO: Find a better way to do this
+            if (hasattr(idevice, '_iDeviceDir')):
                 # We go through all the resources
-                for res in idevice.getResourcesList(appendPath = False):
+                for res in idevice.getResourcesList(appendPath=False):
                     if res not in resources:
                         resources.append(res)
 
@@ -121,9 +133,9 @@ def printJavaScriptIdevicesScripts(mode, page):
         if mode == 'edition':
             # Edition SCRIPTS:
             for block in page.blocks:
-                 # We only want to add the scripts if the iDevice is a JavaScript iDevice
-                 # TODO: Find a better way to do this
-                if(hasattr(block.idevice, '_iDeviceDir')):
+                # We only want to add the scripts if the iDevice is a JavaScript iDevice
+                # TODO: Find a better way to do this
+                if (hasattr(block.idevice, '_iDeviceDir')):
                     # We go through all the resources
                     for res in block.idevice.getResourcesList(block.mode == 0):
                         if res not in resources:
@@ -145,11 +157,12 @@ def printJavaScriptIdevicesScripts(mode, page):
         else:
             # Edition SCRIPTS:
             for block in page.blocks:
-                 # We only want to add the scripts if the iDevice is a JavaScript iDevice
-                 # TODO: Find a better way to do this
-                if(hasattr(block.idevice, '_iDeviceDir')):
+                # We only want to add the scripts if the iDevice is a JavaScript iDevice
+                # TODO: Find a better way to do this
+                if (hasattr(block.idevice, '_iDeviceDir')):
                     # We go through all the resources
-                    for res in block.idevice.getResourcesList(appendPath = False):
+                    for res in block.idevice.getResourcesList(
+                            appendPath=False):
                         if res not in resources:
                             resources.append(res)
 
@@ -162,18 +175,18 @@ def printJavaScriptIdevicesScripts(mode, page):
 
     return html
 
-def getJavascriptIdevicesResources(page, xmlOutput = False):
+
+def getJavascriptIdevicesResources(page, xmlOutput=False):
     """ Get the resources list for the page's JS iDevices """
     resources = []
 
     for idevice in page.node.idevices:
-         # We only want to add the scripts if the iDevice is a JavaScript iDevice
-         # TODO: Find a better way to do this
-        if(hasattr(idevice, '_iDeviceDir')):
-            resources = resources + idevice.getResourcesList(appendPath = False)
+        # We only want to add the scripts if the iDevice is a JavaScript iDevice
+        # TODO: Find a better way to do this
+        if (hasattr(idevice, '_iDeviceDir')):
+            resources = resources + idevice.getResourcesList(appendPath=False)
 
-
-    if(xmlOutput):
+    if (xmlOutput):
         result = ""
 
         resourcesAux = []
@@ -188,20 +201,22 @@ def getJavascriptIdevicesResources(page, xmlOutput = False):
     else:
         return resources
 
+
 def getLicenseMetadata(license):
     if license == "":
         return ""
 
     licenses = getPackageLicenses()
     if license in licenses:
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         l = licenses[license][1]
         if l:
-            return '<link rel="license" type="text/html" href="'+l+'" />'+lb
+            return '<link rel="license" type="text/html" href="' + l + '" />' + lb
         else:
             return ""
     else:
         return ""
+
 
 def getPackageLicenses():
     '''
@@ -213,176 +228,176 @@ def getPackageLicenses():
         ]
     '''
     licenses = {
-        "creative commons: attribution 4.0" : [
+        "creative commons: attribution 4.0": [
             c_("Creative Commons Attribution License 4.0"),
             "http://creativecommons.org/licenses/by/4.0/",
             "cc cc-by",
             1
         ],
-        "creative commons: attribution - share alike 4.0" : [
+        "creative commons: attribution - share alike 4.0": [
             c_("Creative Commons Attribution Share Alike License 4.0"),
             "http://creativecommons.org/licenses/by-sa/4.0/",
             "cc cc-by-sa",
             1
         ],
-        "creative commons: attribution - non derived work 4.0" : [
+        "creative commons: attribution - non derived work 4.0": [
             c_("Creative Commons Attribution No Derivatives License 4.0"),
             "http://creativecommons.org/licenses/by-nd/4.0/",
             "cc cc-by-nd",
             1
         ],
-        "creative commons: attribution - non commercial 4.0" : [
+        "creative commons: attribution - non commercial 4.0": [
             c_("Creative Commons Attribution Non-commercial License 4.0"),
             "http://creativecommons.org/licenses/by-nc/4.0/",
             "cc cc-by-nc",
             1
         ],
-        "creative commons: attribution - non commercial - share alike 4.0" : [
+        "creative commons: attribution - non commercial - share alike 4.0": [
             c_("Creative Commons Attribution Non-commercial Share Alike License 4.0"),
             "http://creativecommons.org/licenses/by-nc-sa/4.0/",
             "cc cc-by-nc-sa",
             1
         ],
-        "creative commons: attribution - non derived work - non commercial 4.0" : [
+        "creative commons: attribution - non derived work - non commercial 4.0": [
             c_("Creative Commons Attribution Non-commercial No Derivatives License 4.0"),
             "http://creativecommons.org/licenses/by-nc-nd/4.0/",
             "cc cc-by-nc-nd",
             1
         ],
-        "license GFDL" : [
-           c_("GNU Free Documentation License"),
-           "http://www.gnu.org/copyleft/fdl.html",
-           "gfdl",
+        "license GFDL": [
+            c_("GNU Free Documentation License"),
+            "http://www.gnu.org/copyleft/fdl.html",
+            "gfdl",
             1
         ],
-        "free software license GPL" : [
+        "free software license GPL": [
             c_("GNU General Public License"),
             "http://www.gnu.org/copyleft/gpl.html",
             "gpl",
             1
         ],
-        "free software license GPL" : [
+        "free software license GPL": [
             c_("GNU General Public License"),
             "http://www.gnu.org/copyleft/gpl.html",
             "gpl",
             1
         ],
-        "public domain" : [
+        "public domain": [
             c_("public domain"),
             "",
             "public-domain",
             1
         ],
-        "free software license EUPL" : [
+        "free software license EUPL": [
             c_("free software license EUPL"),
             "",
             "free-software",
             1
         ],
-        "free software license GPL" : [
+        "free software license GPL": [
             c_("free software license GPL"),
             "",
             "gpl",
             1
         ],
-        "dual free content license GPL and EUPL" : [
+        "dual free content license GPL and EUPL": [
             c_("dual free content license GPL and EUPL"),
             "",
             "gpl-eupl",
             1
         ],
-        "other free software licenses" : [
+        "other free software licenses": [
             c_("other free software licenses"),
             "",
             "other-free-software",
             1
         ],
-        "propietary license" : [
+        "propietary license": [
             c_("propietary license"),
             "",
             "propietary",
             1
         ],
-        "intellectual property license" : [
+        "intellectual property license": [
             c_("intellectual property license"),
             "",
             "",
             1
         ],
-        "not appropriate" : [
+        "not appropriate": [
             c_("not appropriate"),
             "",
             "none",
             1
         ],
         # Old licenses
-        "creative commons: attribution 3.0" : [
+        "creative commons: attribution 3.0": [
             c_("Creative Commons Attribution License 3.0"),
             "http://creativecommons.org/licenses/by/3.0/",
             "cc cc-by",
             0
         ],
-        "creative commons: attribution - share alike 3.0" : [
+        "creative commons: attribution - share alike 3.0": [
             c_("Creative Commons Attribution Share Alike License 3.0"),
             "http://creativecommons.org/licenses/by-sa/3.0/",
             "cc cc-by-sa",
             0
         ],
-        "creative commons: attribution - non derived work 3.0" : [
+        "creative commons: attribution - non derived work 3.0": [
             c_("Creative Commons Attribution No Derivatives License 3.0"),
             "http://creativecommons.org/licenses/by-nd/3.0/",
             "cc cc-by-nd",
             0
         ],
-        "creative commons: attribution - non commercial 3.0" : [
+        "creative commons: attribution - non commercial 3.0": [
             c_("Creative Commons Attribution Non-commercial License 3.0"),
             "http://creativecommons.org/licenses/by-nc/3.0/",
             "cc cc-by-nc",
             0
         ],
-        "creative commons: attribution - non commercial - share alike 3.0" : [
+        "creative commons: attribution - non commercial - share alike 3.0": [
             c_("Creative Commons Attribution Non-commercial Share Alike License 3.0"),
             "http://creativecommons.org/licenses/by-nc-sa/3.0/",
             "cc cc-by-nc-sa",
             0
         ],
-        "creative commons: attribution - non derived work - non commercial 3.0" : [
+        "creative commons: attribution - non derived work - non commercial 3.0": [
             c_("Creative Commons Attribution Non-commercial No Derivatives License 3.0"),
             "http://creativecommons.org/licenses/by-nc-nd/3.0/",
             "cc cc-by-nc-nd",
             0
         ],
-        "creative commons: attribution 2.5" : [
+        "creative commons: attribution 2.5": [
             c_("Creative Commons Attribution License 2.5"),
             "http://creativecommons.org/licenses/by/2.5/",
             "cc cc-by",
             0
         ],
-        "creative commons: attribution - share alike 2.5" : [
+        "creative commons: attribution - share alike 2.5": [
             c_("Creative Commons Attribution Share Alike License 2.5"),
             "http://creativecommons.org/licenses/by-sa/2.5/",
             "cc cc-by-sa",
             0
         ],
-        "creative commons: attribution - non derived work 2.5" : [
+        "creative commons: attribution - non derived work 2.5": [
             c_("Creative Commons Attribution No Derivatives License 2.5"),
             "http://creativecommons.org/licenses/by-nd/2.5/",
             "cc cc-by-nd",
             0
         ],
-        "creative commons: attribution - non commercial 2.5" : [
+        "creative commons: attribution - non commercial 2.5": [
             c_("Creative Commons Attribution Non-commercial License 2.5"),
             "http://creativecommons.org/licenses/by-nc/2.5/",
             "cc cc-by-nc",
             0
         ],
-        "creative commons: attribution - non commercial - share alike 2.5" : [
+        "creative commons: attribution - non commercial - share alike 2.5": [
             c_("Creative Commons Attribution Non-commercial Share Alike License 2.5"),
             "http://creativecommons.org/licenses/by-nc-sa/2.5/",
             "cc cc-by-nc-sa",
             0
         ],
-        "creative commons: attribution - non derived work - non commercial 2.5" : [
+        "creative commons: attribution - non derived work - non commercial 2.5": [
             c_("Creative Commons Attribution Non-commercial No Derivatives License 2.5"),
             "http://creativecommons.org/licenses/by-nc-nd/2.5/",
             "cc cc-by-nc-nd",
@@ -392,7 +407,8 @@ def getPackageLicenses():
 
     return licenses
 
-def renderLicense(plicense,mode="export"):
+
+def renderLicense(plicense, mode="export"):
     """
     Returns an XHTML string rendering the license.
     """
@@ -402,35 +418,39 @@ def renderLicense(plicense,mode="export"):
     licenses = getPackageLicenses()
 
     html = ""
-    lb = "\n" #Line breaks
+    lb = "\n"  # Line breaks
 
     if plicense in licenses:
         target = ""
         if mode == "authoring":
             target = ' target="_blank"'
-        html += '<div id="packageLicense" class="'+licenses[plicense][2]+'">'+lb
+        html += '<div id="packageLicense" class="' + \
+            licenses[plicense][2] + '">' + lb
         html += '<p><span>'
         if licenses[plicense][1] != "":
             html += c_("Licensed under the")
             html += '</span> '
-            html += '<a rel="license" href="%s"%s>%s</a>' % (licenses[plicense][1], target, licenses[plicense][0])
+            html += '<a rel="license" href="%s"%s>%s</a>' % (
+                licenses[plicense][1], target, licenses[plicense][0])
         else:
-            html += c_("License:")+" "
+            html += c_("License:") + " "
             html += '</span> '
             html += licenses[plicense][0]
         if plicense == 'license GFDL':
             link = "fdl.html"
             if mode == "authoring":
                 link = "/templates/fdl.html"
-            html += ' <a href="'+link+'" class="local-version"'+target+'>(%s)</a>' % c_('Local Version')
-        html += '</p>'+lb
-        html += '</div>'+lb
+            html += ' <a href="' + link + '" class="local-version"' + \
+                target + '>(%s)</a>' % c_('Local Version')
+        html += '</p>' + lb
+        html += '</div>' + lb
     else:
-        html += '<div id="packageLicense">'+lb
-        html += '<p>'+plicense+'</p>'+lb
+        html += '<div id="packageLicense">' + lb
+        html += '<p>' + plicense + '</p>' + lb
         html += '</div>'
 
     return html
+
 
 def renderFooter(footer):
     """
@@ -446,26 +466,32 @@ def renderFooter(footer):
         html += footer + "</" + footerTag + ">"
     return html
 
+
 def renderExeLink(package):
     if package.get_addExeLink():
-        return '<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>'+_("Made with eXeLearning")+'<span> ('+_("New Window")+')</span></span></a></p>';
+        return '<p id="made-with-eXe"><a href="https://exelearning.net/" target="_blank" rel="noopener"><span>' + \
+            _("Made with eXeLearning") + '<span> (' + _("New Window") + ')</span></span></a></p>'
     return ''
 
+
 def themeHasConfigXML(style):
-    themePath = Path(G.application.config.stylesDir/style)
+    themePath = Path(G.application.config.stylesDir / style)
     themeXMLFile = themePath.joinpath("config.xml")
     themeHasXML = False
     if themeXMLFile.exists():
         themeHasXML = True
     return themeHasXML
 
+
 def javaScriptIsRequired():
-    return '<span class="js-hidden js-warning">' + c_("Enable JavaScript")+'</span>'
+    return '<span class="js-hidden js-warning">' + \
+        c_("Enable JavaScript") + '</span>'
+
 
 def ideviceHeader(e, style, mode):
     dT = getExportDocType()
-    lb = "\n" #Line breaks
-    #Default HTML tags:
+    lb = "\n"  # Line breaks
+    # Default HTML tags:
     articleTag = "div"
     headerTag = "div"
     titleTag = "h2"
@@ -473,44 +499,49 @@ def ideviceHeader(e, style, mode):
         articleTag = "article"
         headerTag = "header"
         titleTag = "h1"
-        if hasattr(e.idevice.parentNode, 'exportType') and e.idevice.parentNode.exportType == 'singlepage':
+        if hasattr(
+                e.idevice.parentNode,
+                'exportType') and e.idevice.parentNode.exportType == 'singlepage':
             titleTag = "h2"
 
-    themePath = Path(G.application.config.stylesDir/style)
+    themePath = Path(G.application.config.stylesDir / style)
     themeXMLFile = themePath.joinpath("config.xml")
     themeHasXML = themeHasConfigXML(style)
 
-    w = '' # Common wrapper
-    o = '' # Old HTML (themes with no config.xml file)
-    h = '' # New HTML
+    w = ''  # Common wrapper
+    o = ''  # Old HTML (themes with no config.xml file)
+    h = ''  # New HTML
     w2 = ''
     eEm = ''
 
-    if (e.idevice.emphasis > 0 and ((e.idevice.icon and e.idevice.icon!="") or (e.idevice.title and e.idevice.title!=""))):
+    if (e.idevice.emphasis > 0 and ((e.idevice.icon and e.idevice.icon != "")
+                                    or (e.idevice.title and e.idevice.title != ""))):
 
-        w2 = '<div class="iDevice_inner">'+lb
-        w2 += '<div class="iDevice_content_wrapper">'+lb
+        w2 = '<div class="iDevice_inner">' + lb
+        w2 += '<div class="iDevice_content_wrapper">' + lb
         eEm = ' em_iDevice'
         if e.idevice.icon and e.idevice.icon != "":
-            _iconNameToClass = re.sub('[^A-Za-z0-9_-]+', '', e.idevice.icon) # Allowed CSS classNames only
-            if _iconNameToClass!="":        
-                eEm += ' em_iDevice_'+_iconNameToClass
+            # Allowed CSS classNames only
+            _iconNameToClass = re.sub('[^A-Za-z0-9_-]+', '', e.idevice.icon)
+            if _iconNameToClass != "":
+                eEm += ' em_iDevice_' + _iconNameToClass
 
-    if mode=="preview":
+    if mode == "preview":
         if themeHasXML:
-            w += '<'+articleTag+' class="iDevice_wrapper '+e.idevice.klass+eEm+'" id="id'+e.id+'">'+lb
+            w += '<' + articleTag + ' class="iDevice_wrapper ' + \
+                e.idevice.klass + eEm + '" id="id' + e.id + '">' + lb
         else:
-            w += '<'+articleTag+' class="'+e.idevice.klass+'">'+lb
+            w += '<' + articleTag + ' class="' + e.idevice.klass + '">' + lb
 
-    w += "<div class=\"iDevice emphasis"+str(e.idevice.emphasis)+"\" "
-    if mode=="preview":
-        w += "ondblclick=\"submitLink('edit', "+e.id+", 0);\""
-    w += ">"+lb
+    w += "<div class=\"iDevice emphasis" + str(e.idevice.emphasis) + "\" "
+    if mode == "preview":
+        w += "ondblclick=\"submitLink('edit', " + e.id + ", 0);\""
+    w += ">" + lb
 
     if e.idevice.emphasis > 0:
 
         if e.idevice.icon:
-            h += '<'+headerTag+' class="iDevice_header"'
+            h += '<' + headerTag + ' class="iDevice_header"'
             displayIcon = True
             # The following lines should be replaced by something like:
             '''
@@ -521,12 +552,21 @@ def ideviceHeader(e, style, mode):
             iconExists = False
             k = e.idevice.klass
             i = e.idevice.icon
-            if (k=='ListaIdevice' and i=='question') or (k=='CasestudyIdevice' and i=='casestudy') or (k=='GalleryIdevice' and i=='gallery') or (k=='ClozeIdevice' and i=='question') or (k=='ReflectionIdevice' and i=='reflection') or (k=='QuizTestIdevice' and i=='question') or (k=='TrueFalseIdevice' and i=='question') or (k=='MultiSelectIdevice' and i=='question') or (k=='MultichoiceIdevice' and i=='question'):
+            if (
+                k == 'ListaIdevice' and i == 'question') or (
+                k == 'CasestudyIdevice' and i == 'casestudy') or (
+                k == 'GalleryIdevice' and i == 'gallery') or (
+                k == 'ClozeIdevice' and i == 'question') or (
+                    k == 'ReflectionIdevice' and i == 'reflection') or (
+                        k == 'QuizTestIdevice' and i == 'question') or (
+                            k == 'TrueFalseIdevice' and i == 'question') or (
+                                k == 'MultiSelectIdevice' and i == 'question') or (
+                                    k == 'MultichoiceIdevice' and i == 'question'):
                 displayIcon = False
             # /end
-            iconPath = '/style/'+style+'/icon_'+e.idevice.icon+'.gif'
-            if mode=="view":
-                iconPath = 'icon_'+e.idevice.icon+'.gif'
+            iconPath = '/style/' + style + '/icon_' + e.idevice.icon + '.gif'
+            if mode == "view":
+                iconPath = 'icon_' + e.idevice.icon + '.gif'
             myIcon = themePath.joinpath("icon_" + e.idevice.icon + ".gif")
             if myIcon.exists():
                 iconExists = True
@@ -534,127 +574,140 @@ def ideviceHeader(e, style, mode):
                 myIcon = themePath.joinpath("icon_" + e.idevice.icon + ".png")
                 if myIcon.exists():
                     iconExists = True
-                    iconPath = '/style/'+style+'/icon_'+e.idevice.icon+'.png'
-                    if mode=="view":
-                        iconPath = 'icon_'+e.idevice.icon+'.png'
+                    iconPath = '/style/' + style + '/icon_' + e.idevice.icon + '.png'
+                    if mode == "view":
+                        iconPath = 'icon_' + e.idevice.icon + '.png'
                 else:
-                    myIcon = themePath.joinpath("icon_" + e.idevice.icon + ".svg")
+                    myIcon = themePath.joinpath(
+                        "icon_" + e.idevice.icon + ".svg")
                     if myIcon.exists():
                         iconExists = True
-                        iconPath = '/style/'+style+'/icon_'+e.idevice.icon+'.svg'
-                        if mode=="view":
-                            iconPath = 'icon_'+e.idevice.icon+'.svg'
+                        iconPath = '/style/' + style + '/icon_' + e.idevice.icon + '.svg'
+                        if mode == "view":
+                            iconPath = 'icon_' + e.idevice.icon + '.svg'
             if iconExists:
-                o += '<img alt="" class="iDevice_icon" src="'+iconPath+'" />'
-            if (e.idevice.icon+"Idevice") != e.idevice.klass:
+                o += '<img alt="" class="iDevice_icon" src="' + iconPath + '" />'
+            if (e.idevice.icon + "Idevice") != e.idevice.klass:
                 if iconExists and displayIcon:
-                    h += ' style="background-image:url('+iconPath+')"'
+                    h += ' style="background-image:url(' + iconPath + ')"'
         else:
-            h += '<'+headerTag+' class="iDevice_header iDevice_header_noIcon"'
+            h += '<' + headerTag + ' class="iDevice_header iDevice_header_noIcon"'
 #             h += ' style="background-image:none"'
-            log.debug("Idevice %s at node %s has no icon" % (e.idevice._title, e.idevice.parentNode._title))
+            log.debug("Idevice %s at node %s has no icon" %
+                      (e.idevice._title, e.idevice.parentNode._title))
         t = e.idevice.title
-        fullT = '<'+titleTag+' class="iDeviceTitle">'+t+'</'+titleTag+'>'
+        fullT = '<' + titleTag + ' class="iDeviceTitle">' + t + '</' + titleTag + '>'
         if (t == ""):
             fullT = '<span class="iDeviceTitle">&nbsp;</span>'
-        o += "<"+titleTag+" class=\"iDeviceTitle\">"+t+"</"+titleTag+">"
+        o += "<" + titleTag + " class=\"iDeviceTitle\">" + t + "</" + titleTag + ">"
         h += '>'
         h += fullT
-        h += '</'+headerTag+'>'+lb
+        h += '</' + headerTag + '>' + lb
 
     if e.idevice.emphasis <= 0:
         h = ""
         o = ""
     if themeHasXML:
-        return w+h+w2
+        return w + h + w2
     else:
-        return w+o+w2
+        return w + o + w2
+
 
 def ideviceFooter(e, style, mode):
     dT = getExportDocType()
-    lb = "\n" #Line breaks
-    #Default HTML tags:
+    lb = "\n"  # Line breaks
+    # Default HTML tags:
     articleTag = "div"
     if dT == "HTML5":
         articleTag = "article"
     themeHasXML = themeHasConfigXML(style)
     h = ''
 
-    if (e.idevice.emphasis > 0 and ((e.idevice.icon and e.idevice.icon!="") or (e.idevice.title and e.idevice.title!=""))):
+    if (e.idevice.emphasis > 0 and ((e.idevice.icon and e.idevice.icon != "")
+                                    or (e.idevice.title and e.idevice.title != ""))):
 
-        h = "</div>"+lb # Close iDevice_content_wrapper
-        h += "</div>"+lb # Close iDevice_inner
+        h = "</div>" + lb  # Close iDevice_content_wrapper
+        h += "</div>" + lb  # Close iDevice_inner
 
-    h += "</div>"+lb # Close iDevice
-    if mode=="preview":
+    h += "</div>" + lb  # Close iDevice
+    if mode == "preview":
         h += e.renderViewButtons()
-        h += "</"+articleTag+">"+lb # Close iDevice_wrapper
+        h += "</" + articleTag + ">" + lb  # Close iDevice_wrapper
     return h
 
+
 def ideviceHint(content, mode, level='h3'):
-    if content!="":
+    if content != "":
         html = ''
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = getExportDocType()
         sectionTag = "div"
         if dT == "HTML5":
             sectionTag = "section"
             level = "h1"
         #  Image paths
-        if mode=="preview":
+        if mode == "preview":
             img1 = "/images/panel-amusements.png"
             img2 = "/images/stock-stop.png"
-            html += '<script type="text/javascript">$exe.hint.imgs=["'+img1+'","'+img2+'"]</script>'+lb
+            html += '<script type="text/javascript">$exe.hint.imgs=["' + \
+                img1 + '","' + img2 + '"]</script>' + lb
         # Hint content
-        html += '<'+sectionTag+' class="iDevice_hint">'+lb
-        html += '<'+level+' class="iDevice_hint_title">' + c_("Hint")+'</'+level+'>'+lb
-        html += '<div class="iDevice_hint_content js-hidden">'+lb
+        html += '<' + sectionTag + ' class="iDevice_hint">' + lb
+        html += '<' + level + ' class="iDevice_hint_title">' + \
+            c_("Hint") + '</' + level + '>' + lb
+        html += '<div class="iDevice_hint_content js-hidden">' + lb
         html += content
-        html += '</div>'+lb
-        html += '</'+sectionTag+'>'+lb
+        html += '</div>' + lb
+        html += '</' + sectionTag + '>' + lb
         return html
 
+
 def ideviceShowEditMessage(block):
-    if block.idevice.message!="":
-       return editModeHeading(block.idevice.message)
+    if block.idevice.message != "":
+        return editModeHeading(block.idevice.message)
     else:
         return ""
+
+
 def fieldShowEditMessageEle(element):
-    if element.field.message!= "":
+    if element.field.message != "":
         return editModeHeading(element.field.message)
     else:
         return ""
 
 # Required until a better i18n solution works
-def getJavaScriptStrings(addTag = True):
+
+
+def getJavaScriptStrings(addTag=True):
     s = ''
     if addTag:
         s += '<script type="text/javascript">'
     s += '$exe_i18n={'
-    s += 'previous:"'+c_("Previous")+'",'
-    s += 'next:"'+c_("Next")+'",'
-    s += 'show:"'+c_("Show")+'",'
-    s += 'hide:"'+c_("Hide")+'",'
-    s += 'showFeedback:"'+c_("Show Feedback")+'",'
-    s += 'hideFeedback:"'+c_("Hide Feedback")+'",'
-    s += 'correct:"'+c_("Correct")+'",'
-    s += 'incorrect:"'+c_("Incorrect")+'",'
-    s += 'menu:"'+c_("Menu")+'",'
-    s += 'download:"'+c_("Download")+'",'
-    s += 'yourScoreIs:"'+c_("Your score is ")+'",'
-    s += 'dataError:"'+c_("Error recovering data")+'",'
-    s += 'epubJSerror:"'+c_("This might not work in this ePub reader.")+'",'
-    s += 'epubDisabled:"'+c_("This activity does not work in ePub.")+'",'
-    s += 'solution:"'+c_("Solution")+'",'
-    s += 'print:"'+c_("Print")+'",'
-    s += 'fullSearch:"'+c_("Search in all pages")+'",'
-    s += 'noSearchResults:"'+c_("No results for %")+'",'
-    s += 'searchResults:"'+c_("Search results for %")+'",'
-    s += 'hideResults:"'+c_("Hide results")+'",'
-    s += 'more:"'+c_("More")+'",'
-    s += 'newWindow:"'+c_("New Window")+'",'
-    s += 'fullSize:"'+c_("Full size")+'",'
-    s += 'search:"'+c_("Search")+'"'
+    s += 'previous:"' + c_("Previous") + '",'
+    s += 'next:"' + c_("Next") + '",'
+    s += 'show:"' + c_("Show") + '",'
+    s += 'hide:"' + c_("Hide") + '",'
+    s += 'showFeedback:"' + c_("Show Feedback") + '",'
+    s += 'hideFeedback:"' + c_("Hide Feedback") + '",'
+    s += 'correct:"' + c_("Correct") + '",'
+    s += 'incorrect:"' + c_("Incorrect") + '",'
+    s += 'menu:"' + c_("Menu") + '",'
+    s += 'download:"' + c_("Download") + '",'
+    s += 'yourScoreIs:"' + c_("Your score is ") + '",'
+    s += 'dataError:"' + c_("Error recovering data") + '",'
+    s += 'epubJSerror:"' + \
+        c_("This might not work in this ePub reader.") + '",'
+    s += 'epubDisabled:"' + c_("This activity does not work in ePub.") + '",'
+    s += 'solution:"' + c_("Solution") + '",'
+    s += 'print:"' + c_("Print") + '",'
+    s += 'fullSearch:"' + c_("Search in all pages") + '",'
+    s += 'noSearchResults:"' + c_("No results for %") + '",'
+    s += 'searchResults:"' + c_("Search results for %") + '",'
+    s += 'hideResults:"' + c_("Hide results") + '",'
+    s += 'more:"' + c_("More") + '",'
+    s += 'newWindow:"' + c_("New Window") + '",'
+    s += 'fullSize:"' + c_("Full size") + '",'
+    s += 'search:"' + c_("Search") + '"'
     s += '};'
     if addTag:
         s += '</script>'
@@ -663,38 +716,42 @@ def getJavaScriptStrings(addTag = True):
     return s
 
 # Required until a better i18n solution works
-def getGamesJavaScriptStrings(addTag = True):
+
+
+def getGamesJavaScriptStrings(addTag=True):
     s = ''
     if addTag:
         s += '<script type="text/javascript">'
     s += '$exe_i18n.exeGames={'
-    s += 'hangManGame:"'+c_('Hangman Game')+'",'
-    s += 'accept:"'+c_("Accept")+'",'
-    s += 'yes:"'+c_("Yes")+'",'
-    s += 'no:"'+c_("No")+'",'
-    s += 'right:"'+c_("Correct")+'",'
-    s += 'wrong:"'+c_("Wrong")+'",'
-    s += 'rightAnswer:"'+c_("Right answer")+'",'
-    s += 'stat:"'+c_("Status")+'",'
-    s += 'selectedLetters:"'+c_("Selected letters")+'",'
-    s += 'word:"'+c_("Word")+'",'
-    s += 'words:"'+c_("Words")+'",'
-    s += 'play:"'+c_("Play")+'",'
-    s += 'playAgain:"'+c_("Restart")+'",'
-    s += 'results:"'+c_("Results")+'",'
-    s += 'total:"'+c_("Total")+'",'
-    s += 'otherWord:"'+c_("Another word")+'",'
-    s += 'gameOver:"'+c_("Game over.")+'",'
-    s += 'confirmReload:"'+c_("Reload the game?")+'",'
-    s += 'clickOnPlay:\''+c_('Click on "Play" to start a new game.')+'\','
-    s += 'clickOnOtherWord:\''+c_('Click on "Another word" to continue.')+'\','
-    s += 'az:"'+c_("abcdefghijklmnopqrstuvwxyz")+'"'
+    s += 'hangManGame:"' + c_('Hangman Game') + '",'
+    s += 'accept:"' + c_("Accept") + '",'
+    s += 'yes:"' + c_("Yes") + '",'
+    s += 'no:"' + c_("No") + '",'
+    s += 'right:"' + c_("Correct") + '",'
+    s += 'wrong:"' + c_("Wrong") + '",'
+    s += 'rightAnswer:"' + c_("Right answer") + '",'
+    s += 'stat:"' + c_("Status") + '",'
+    s += 'selectedLetters:"' + c_("Selected letters") + '",'
+    s += 'word:"' + c_("Word") + '",'
+    s += 'words:"' + c_("Words") + '",'
+    s += 'play:"' + c_("Play") + '",'
+    s += 'playAgain:"' + c_("Restart") + '",'
+    s += 'results:"' + c_("Results") + '",'
+    s += 'total:"' + c_("Total") + '",'
+    s += 'otherWord:"' + c_("Another word") + '",'
+    s += 'gameOver:"' + c_("Game over.") + '",'
+    s += 'confirmReload:"' + c_("Reload the game?") + '",'
+    s += 'clickOnPlay:\'' + c_('Click on "Play" to start a new game.') + '\','
+    s += 'clickOnOtherWord:\'' + \
+        c_('Click on "Another word" to continue.') + '\','
+    s += 'az:"' + c_("abcdefghijklmnopqrstuvwxyz") + '"'
     s += '};'
     if addTag:
         s += '</script>'
     else:
         s += '\n'
     return s
+
 
 def header(style='default'):
     """Generates the common header XHTML"""
@@ -722,7 +779,7 @@ def footer():
 
 def hiddenField(name, value=""):
     """Adds a hidden field to a form"""
-    html  = "<input type=\"hidden\" "
+    html = "<input type=\"hidden\" "
     html += "name=\"%s\" " % name
     html += "id=\"%s\" " % name
     html += "value=\"%s\"/>\n" % value
@@ -731,33 +788,44 @@ def hiddenField(name, value=""):
 
 def textInput(name, value="", size=40, disabled="", **kwargs):
     """Adds a text input to a form"""
-    html  = "<input type=\"text\" "
+    html = "<input type=\"text\" "
     html += "name=\"%s\" " % name
     html += "id=\"%s\" " % name
     html += "value=\"%s\" " % value
     html += "size=\"%s\" " % size
     for key, val in list(kwargs.items()):
         html += ' %s="%s"' % (key.replace('_', ''), val.replace('"', '\\"'))
-    html += disabled+" />\n"
+    html += disabled + " />\n"
     return html
 
 
-def textArea(name, value="", disabled="", cols="80", rows="8", cssClass="", package=None):
+def textArea(
+        name,
+        value="",
+        disabled="",
+        cols="80",
+        rows="8",
+        cssClass="",
+        package=None):
     """Adds a text area to a form"""
     log.debug("textArea %s" % value)
-    html  = '<textarea name="%s" ' % name
+    html = '<textarea name="%s" ' % name
     html += 'id = "%s"' % name
     if disabled:
         html += 'disabled="disabled" '
     html += 'style=\"width:100%"'
-    html += 'cols="%s" rows="%s" class="%s">' %(cols, rows, cssClass)
+    html += 'cols="%s" rows="%s" class="%s">' % (cols, rows, cssClass)
     # to counter TinyMCE's ampersand-processing:
-    safe_value = value.replace('&','&amp;')
-    #691 Allow textareas (see TinyMCE settings)
-    safe_value = safe_value.replace('<textarea','<span data-exe-editor-type="exe-editor-textarea"')
-    safe_value = safe_value.replace('</ textarea>','<!--exe-editor-textarea--></span>')
-    safe_value = safe_value.replace('</textarea>','<!--exe-editor-textarea--></span>')
-    if (cssClass=="jsContentEditor"):
+    safe_value = value.replace('&', '&amp;')
+    # 691 Allow textareas (see TinyMCE settings)
+    safe_value = safe_value.replace(
+        '<textarea', '<span data-exe-editor-type="exe-editor-textarea"')
+    safe_value = safe_value.replace(
+        '</ textarea>',
+        '<!--exe-editor-textarea--></span>')
+    safe_value = safe_value.replace(
+        '</textarea>', '<!--exe-editor-textarea--></span>')
+    if (cssClass == "jsContentEditor"):
         if safe_value != value:
             value = safe_value
             log.debug("jsContentEditor pre-processed value to: %s" % value)
@@ -765,16 +833,17 @@ def textArea(name, value="", disabled="", cols="80", rows="8", cssClass="", pack
     html += '</textarea>'
 
     html_js = ''
-    # There's probably an editor in the JavaScript iDevice, so we add the nodes list (tinymce_anchors)
-    if (cssClass=="jsContentEditor"):
+    # There's probably an editor in the JavaScript iDevice, so we add the
+    # nodes list (tinymce_anchors)
+    if (cssClass == "jsContentEditor"):
         html_js = '<script type="text/javascript">if (typeof(tinymce_anchors)=="undefined") var tinymce_anchors = [];'
         ########
         # add exe_tmp_anchor tags
         # for ALL anchors available in the entire doc!
         # (otherwise TinyMCE will only see those anchors within this field)
         if package is not None and hasattr(package, 'anchor_fields') \
-        and package.anchor_fields is not None \
-        and G.application.config.internalAnchors!="disable_all" :
+                and package.anchor_fields is not None \
+                and G.application.config.internalAnchors != "disable_all":
             # only add internal anchors for
             # config.internalAnchors = "enable_all" or "disable_autotop"
             log.debug("textArea adding exe_tmp_anchor tags for user anchors.")
@@ -784,9 +853,10 @@ def textArea(name, value="", disabled="", cols="80", rows="8", cssClass="", pack
                     full_anchor_name = anchor_field_path + "#" + anchor_name
                     html_js += 'tinymce_anchors'
                     html_js += '.push("%s");' % full_anchor_name
-        # and below the user-defined anchors, also show "auto_top" anchors for ALL:
+        # and below the user-defined anchors, also show "auto_top" anchors for
+        # ALL:
         if package is not None and package.root is not None \
-        and G.application.config.internalAnchors=="enable_all" :
+                and G.application.config.internalAnchors == "enable_all":
             # only add auto_top anchors for
             # config.internalAnchors = "enable_all"
             # log.debug(u"textArea adding exe_tmp_anchor auto_top for ALL nodes.")
@@ -803,25 +873,35 @@ def textArea(name, value="", disabled="", cols="80", rows="8", cssClass="", pack
         # these exe_tmp_anchor tags will be removed when processed by
         # FieldWithResources' ProcessPreviewed()
         ########
-        html_js  += '</script>'
+        html_js += '</script>'
 
     return html + html_js
 
 
-def richTextArea(name, value="", width="100%", height=100, cssClass='mceEditor', package=None):
+def richTextArea(
+        name,
+        value="",
+        width="100%",
+        height=100,
+        cssClass='mceEditor',
+        package=None):
     """Adds a editor to a form"""
     log.debug("richTextArea %s, height=%s" % (value, height))
     # to counter TinyMCE's ampersand-processing:
-    safe_value = value.replace('&','&amp;')
-    #691 Allow textareas (see TinyMCE settings)
-    safe_value = safe_value.replace('<textarea','<span data-exe-editor-type="exe-editor-textarea"')
-    safe_value = safe_value.replace('</ textarea>','<!--exe-editor-textarea--></span>')
-    safe_value = safe_value.replace('</textarea>','<!--exe-editor-textarea--></span>')
+    safe_value = value.replace('&', '&amp;')
+    # 691 Allow textareas (see TinyMCE settings)
+    safe_value = safe_value.replace(
+        '<textarea', '<span data-exe-editor-type="exe-editor-textarea"')
+    safe_value = safe_value.replace(
+        '</ textarea>',
+        '<!--exe-editor-textarea--></span>')
+    safe_value = safe_value.replace(
+        '</textarea>', '<!--exe-editor-textarea--></span>')
     if safe_value != value:
         value = safe_value
         log.debug("richTextArea pre-processed value to: %s" % value)
-    html  = '<textarea name="%s" ' % name
-    html_js  = '<script type="text/javascript">if (typeof(tinymce_anchors)=="undefined") var tinymce_anchors = [];'
+    html = '<textarea name="%s" ' % name
+    html_js = '<script type="text/javascript">if (typeof(tinymce_anchors)=="undefined") var tinymce_anchors = [];'
     html += 'style=\"width:' + width + '; height:' + str(height) + 'px;" '
     html += 'class=\"%s\" ' % cssClass
     html += 'cols="52" rows="8">'
@@ -830,8 +910,8 @@ def richTextArea(name, value="", width="100%", height=100, cssClass='mceEditor',
     # for ALL anchors available in the entire doc!
     # (otherwise TinyMCE will only see those anchors within this field)
     if package is not None and hasattr(package, 'anchor_fields') \
-    and package.anchor_fields is not None \
-    and G.application.config.internalAnchors!="disable_all" :
+            and package.anchor_fields is not None \
+            and G.application.config.internalAnchors != "disable_all":
         # only add internal anchors for
         # config.internalAnchors = "enable_all" or "disable_autotop"
         log.debug("richTextArea adding exe_tmp_anchor tags for user anchors.")
@@ -843,7 +923,7 @@ def richTextArea(name, value="", width="100%", height=100, cssClass='mceEditor',
                 html_js += '.push("%s");' % full_anchor_name
     # and below the user-defined anchors, also show "auto_top" anchors for ALL:
     if package is not None and package.root is not None \
-    and G.application.config.internalAnchors=="enable_all" :
+            and G.application.config.internalAnchors == "enable_all":
         # only add auto_top anchors for
         # config.internalAnchors = "enable_all"
         # log.debug(u"richTextArea adding exe_tmp_anchor auto_top for ALL nodes.")
@@ -862,8 +942,8 @@ def richTextArea(name, value="", width="100%", height=100, cssClass='mceEditor',
     ########
     html += value
     html += '</textarea>'
-    html_js  += '</script>'
-    new_html = html+html_js
+    html_js += '</script>'
+    new_html = html + html_js
     return new_html
 
 
@@ -872,7 +952,7 @@ def image(name, value, width="", height="", alt=None, cssClass=None):
     if alt is None:
         alt = name
     log.debug("image %s" % value)
-    html  = "<img id=\"%s\" " % name
+    html = "<img id=\"%s\" " % name
     html += 'alt="%s" ' % alt
     if width:
         html += "width=\"%s\" " % width
@@ -884,6 +964,7 @@ def image(name, value, width="", height="", alt=None, cssClass=None):
     html += "/>\n"
     return html
 
+
 def flash(src, width, height, id_=None, params=None, **kwparams):
     """Returns the XHTML for flash.
     'params' is a dictionary of name, value pairs that will be turned into a
@@ -891,9 +972,9 @@ def flash(src, width, height, id_=None, params=None, **kwparams):
     log.debug("flash %s" % src)
     stan = \
         T._object(type='application/x-shockwave-flash',
-                 width=width,
-                 height=height,
-                 **kwparams)
+                  width=width,
+                  height=height,
+                  **kwparams)
     if id_:
         stan.attributes['id'] = id_
     stan.attributes['data'] = src
@@ -904,83 +985,92 @@ def flash(src, width, height, id_=None, params=None, **kwparams):
         stan = stan[T.param(name=name, value=value)]
     return str(flatten(stan).replace('&amp;', '&'), 'utf8')
 
+
 def flashMovie(movie, width, height, resourcesDir='', autoplay='false'):
     """Returns the XHTML for a flash movie"""
     log.debug("flash %s" % movie)
     src = resourcesDir + 'flowPlayer.swf'
-    params={'movie': src,
-            'allowScriptAccess' :'sameDomain',
-            'quality' :'high',
-            'scale':'noScale',
-            'wmode':'transparent',
-            'allowNetworking':'all',
-            'flashvars' : 'config={ '
-                'autoPlay: %(autoplay)s, '
-                'loop: false, '
-                'initialScale: \'scale\', '
-                'showLoopButton: false, '
-                'showPlayListButtons: false, '
-                'playList: [ { url: \'%(movie)s\' }, ]'
-            '}' % {'movie': movie, 'autoplay': autoplay}
-            }
+    params = {'movie': src,
+              'allowScriptAccess': 'sameDomain',
+              'quality': 'high',
+              'scale': 'noScale',
+              'wmode': 'transparent',
+              'allowNetworking': 'all',
+              'flashvars': 'config={ '
+              'autoPlay: %(autoplay)s, '
+              'loop: false, '
+              'initialScale: \'scale\', '
+              'showLoopButton: false, '
+              'showPlayListButtons: false, '
+              'playList: [ { url: \'%(movie)s\' }, ]'
+              '}' % {'movie': movie, 'autoplay': autoplay}
+              }
     return flash(src, width, height, id="flowPlayer", params=params)
 
 
 def submitButton(name, value, enabled=True, **kwargs):
     """Adds a submit button to a form"""
-    lb = "\n" #Line breaks
-    html  = '<input class="button" type="submit" name="%s" ' % name
+    lb = "\n"  # Line breaks
+    html = '<input class="button" type="submit" name="%s" ' % name
     html += 'value="%s" ' % value
     if not enabled:
         html += ' disabled="disabled"'
     for key, val in list(kwargs.items()):
         html += ' %s="%s"' % (key.replace('_', ''), val.replace('"', '\\"'))
-    html += ' />'+lb
+    html += ' />' + lb
     return html
 
 
 def button(name, value, enabled=True, **kwargs):
     """Adds a NON-submit button to a form"""
-    lb = "\n" #Line breaks
-    html  = '<input type="button" name="%s"' % name
+    lb = "\n"  # Line breaks
+    html = '<input type="button" name="%s"' % name
     html += ' value="%s"' % value
     if not enabled:
         html += ' disabled="disabled"'
     for key, val in list(kwargs.items()):
         html += ' %s="%s"' % (key.replace('_', ''), val.replace('"', '\\"'))
-    html += ' />'+lb
+    html += ' />' + lb
     return html
 
-def feedbackBlock(id,feedback,buttonCaption=""):
+
+def feedbackBlock(id, feedback, buttonCaption=""):
     buttonText = c_('Show Feedback')
     changeText = 'true'
-    buttonCaptionArr=[]
+    buttonCaptionArr = []
     buttonTextAll = buttonText
     if buttonCaption != "":
         buttonTextAll = buttonCaption
-        buttonCaptionArr=buttonCaption.split('|')
-        buttonText=buttonCaptionArr[0]
-        changeText = 'false' # Do not change the text on click if the text is defined by the user or the iDevice
-    lb = "\n" #Line breaks
+        buttonCaptionArr = buttonCaption.split('|')
+        buttonText = buttonCaptionArr[0]
+        # Do not change the text on click if the text is defined by the user or
+        # the iDevice
+        changeText = 'false'
+    lb = "\n"  # Line breaks
     dT = getExportDocType()
     sectionTag = "div"
     titleTag = "h3"
     if dT == "HTML5":
         sectionTag = "section"
         titleTag = "h1"
-    html = '<form name="feedback-form-'+id+'" action="#" onsubmit="return false" class="feedback-form">'
+    html = '<form name="feedback-form-' + id + \
+        '" action="#" onsubmit="return false" class="feedback-form">'
     html += lb
-    html += '<div class="block iDevice_buttons feedback-button js-required">'+lb
+    html += '<div class="block iDevice_buttons feedback-button js-required">' + lb
     html += '<p>'
-    html += '<script type="text/javascript">var feedback'+id+'text = "'+buttonTextAll+'";</script>'
-    html += '<input type="button" name="toggle-feedback-'+id+'" value="'+ buttonText+'" class="feedbackbutton feedback-toggler" />'
-    html += '</p>'+lb
-    html += '</div>'+lb
-    html += '<'+sectionTag+' id="feedback-'+id+'" class="feedback js-feedback js-hidden">'+lb
-    html += '<'+titleTag+' class="js-sr-av">'+ c_('Feedback')+'</'+titleTag+'>'+lb
+    html += '<script type="text/javascript">var feedback' + \
+        id + 'text = "' + buttonTextAll + '";</script>'
+    html += '<input type="button" name="toggle-feedback-' + id + '" value="' + \
+        buttonText + '" class="feedbackbutton feedback-toggler" />'
+    html += '</p>' + lb
+    html += '</div>' + lb
+    html += '<' + sectionTag + ' id="feedback-' + id + \
+        '" class="feedback js-feedback js-hidden">' + lb
+    html += '<' + titleTag + ' class="js-sr-av">' + \
+        c_('Feedback') + '</' + titleTag + '>' + lb
     html += feedback
-    html += "</"+sectionTag+">"+lb
-    html += "</form>"+lb
+    html += "</" + sectionTag + ">" + lb
+    html += "</form>" + lb
     return html
 
 
@@ -992,7 +1082,13 @@ def feedbackButton(name, value=None, enabled=True, **kwparams):
     return button(name, value, enabled, **kwparams)
 
 
-def submitImage(action, object_, imageFile, title="", isChanged=1, relative=False):
+def submitImage(
+        action,
+        object_,
+        imageFile,
+        title="",
+        isChanged=1,
+        relative=False):
     """
     Adds an image link which will trigger the javascript needed to
     post a form with the action and object passed in the args
@@ -1004,13 +1100,15 @@ def submitImage(action, object_, imageFile, title="", isChanged=1, relative=Fals
     relativeText = ''
     if relative:
         relativeText = 'style="position:relative;z-index:100000"'
-    html  = '<a %s' % titleText
+    html = '<a %s' % titleText
     html += ' href="#" onclick="%s" %s>' % (onclick, relativeText)
-    html += '<img alt="%s" class="submit" width="16" height="16" src="%s" />' % (title, imageFile)
+    html += '<img alt="%s" class="submit" width="16" height="16" src="%s" />' % (
+        title, imageFile)
     html += '</a>\n'
     return html
 
-def insertSymbol(name, image, title, string, text ='', num=0):
+
+def insertSymbol(name, image, title, string, text='', num=0):
     """
     Adds an image link which will trigger the javascript needed to
     post a form with the action and object passed in the args
@@ -1024,30 +1122,34 @@ def insertSymbol(name, image, title, string, text ='', num=0):
     html += '</a>\n'
     return html
 
+
 def confirmThenSubmitImage(message, action, object_, imageFile,
                            title="", isChanged=1):
     """
     Adds an image link which will trigger the javascript needed to
     post a form with the action and object passed in the args
     """
-    html  = "<a "
+    html = "<a "
     if title:
-        html += "title=\""+title+"\" "
+        html += "title=\"" + title + "\" "
     html += " href=\"#\" "
-    html += "onclick=\"confirmThenSubmitLink('"+re.escape(message)+"', '"+action+"', "
-    html += "'"+object_+"', "+str(isChanged)+");\" >"
-    html += '<img alt="%s" class="submit" width="16" height="16" src="%s" />' % (title, imageFile)
+    html += "onclick=\"confirmThenSubmitLink('" + \
+        re.escape(message) + "', '" + action + "', "
+    html += "'" + object_ + "', " + str(isChanged) + ");\" >"
+    html += '<img alt="%s" class="submit" width="16" height="16" src="%s" />' % (
+        title, imageFile)
     html += '</a>\n'
     return html
+
 
 def option(name, checked, value):
     """Add a option input"""
     chkStr = ''
     if checked:
         chkStr = 'checked="checked"'
-    html  = ('<input type="radio" name="%s"'
-             ' value="%s" %s/>\n' %
-              (name, value, chkStr))
+    html = ('<input type="radio" name="%s"'
+            ' value="%s" %s/>\n' %
+            (name, value, chkStr))
     return html
 
 
@@ -1061,7 +1163,7 @@ def checkbox(name, checked, value="", title="", instruction=""):
         html += '<b>%s</b>' % title
     html += ('<input type="checkbox" name="%s"'
              ' value="%s" %s/>\n' %
-              (name, value, chkStr))
+             (name, value, chkStr))
     if instruction:
         html += elementInstruc(instruction)
     return html
@@ -1075,11 +1177,12 @@ def elementInstruc(instruc, imageFile="help.gif", label=None):
         html = ''
     else:
         id_ = newId()
-        html  = '<a href="javascript:void(0)" '
+        html = '<a href="javascript:void(0)" '
         html += ' title="%s" ' % _('Click for completion instructions')
         html += 'onclick="showMessageBox(\'%s\');" ' % id_
         html += 'style="cursor:help;margin-left:5px">'
-        html += '<img class="help" alt="%s" ' % _('Click for completion instructions')
+        html += '<img class="help" alt="%s" ' % _(
+            'Click for completion instructions')
         html += 'src="/images/%s" style="vertical-align:middle;"/>' % imageFile
         html += '</a>\n'
         html += '<span style="display:none;">'
@@ -1088,15 +1191,16 @@ def elementInstruc(instruc, imageFile="help.gif", label=None):
         html += '</span>\n'
     return html
 
-def formField(type_, package, caption, action, object_='', instruction='', \
-        *args, **kwargs):
+
+def formField(type_, package, caption, action, object_='', instruction='',
+              *args, **kwargs):
     """
     A standard way for showing any form field nicely
     package is only needed for richTextArea, to present all available internal anchors.
     """
     tag = 'p'
     css = 'exe-text-field'
-    idvalue = action+object_
+    idvalue = action + object_
 
     if type_ == 'select':
         css = 'exe-select-field'
@@ -1109,45 +1213,50 @@ def formField(type_, package, caption, action, object_='', instruction='', \
     elif type_ == 'checkbox':
         css = 'exe-checkbox-field'
 
-    html  = '<'+tag+' class="'+css+'">'
-    if caption!="" and type_!='checkbox':
-        html += '<label for="'+idvalue+'"'
+    html = '<' + tag + ' class="' + css + '">'
+    if caption != "" and type_ != 'checkbox':
+        html += '<label for="' + idvalue + '"'
         if type_ == 'richTextArea':
-            html += ' id="'+idvalue+'-editor-label"' # ID to create the Show/Hide Editor Link
+            # ID to create the Show/Hide Editor Link
+            html += ' id="' + idvalue + '-editor-label"'
         html += '>%s</label>' % caption
     if instruction:
         html += elementInstruc(instruction)
     if type_ == 'select':
         html += select(action, object_, *args, **kwargs)
     elif type_ == 'richTextArea':
-        html += richTextArea(action+object_, package=package, *args, **kwargs)
+        html += richTextArea(action +
+                             object_, package=package, *
+                             args, **kwargs)
     elif type_ == 'textArea':
-        html += textArea(action+object_, *args, **kwargs)
+        html += textArea(action + object_, *args, **kwargs)
     elif type_ == 'textInput':
-        html += textInput(action+object_, *args, **kwargs)
+        html += textInput(action + object_, *args, **kwargs)
     elif type_ == 'checkbox':
-        if caption!="":
-            html += '<label for="'+idvalue+'">'
+        if caption != "":
+            html += '<label for="' + idvalue + '">'
         html += checkbox(*args, **kwargs)
-        if caption!="":
+        if caption != "":
             html += caption
             html += ' </label>'
-    html += '</'+tag+'>'
+    html += '</' + tag + '>'
     return html
+
 
 def select(action, object_='', options=[], selection=None):
     """Adds a dropdown selection to a form"""
-    html  = '<select '
-    html += 'name="'+action+object_+'" '
+    html = '<select '
+    html += 'name="' + action + object_ + '" '
 
     if action and object_:
         # If the user gives an object_ create an onchange handler
-        html += 'onchange="submitLink(\''+action+'\', \''+object_+'\');"'
+        html += 'onchange="submitLink(\'' + \
+            action + '\', \'' + object_ + '\');"'
 
     html += '>\n'
 
     for option, value in options:
-        html += ' <option value="'+str(value)+'" '
+        html += ' <option value="' + str(value) + '" '
         if value == selection:
             html += 'selected="selected" '
         html += '>'
@@ -1157,12 +1266,12 @@ def select(action, object_='', options=[], selection=None):
 
     return html
 
+
 def editModeHeading(text):
     """
     Provides a styled editSectionHeading
     """
     return '<p class="editModeHeading">%s</p>' % text
-
 
 
 def removeInternalLinks(html, anchor_name=""):
@@ -1176,15 +1285,15 @@ def removeInternalLinks(html, anchor_name=""):
     """
     # use lower-case for the exe-node, for TinyMCE copy/paste compatibility
     intlink_start = 'href="exe-node:'
-    intlink_pre   = 'href="'
+    intlink_pre = 'href="'
     last_end_pos = 0
     next_link_pos = html.find(intlink_start)
     while next_link_pos >= 0:
         link_name_start_pos = next_link_pos + len(intlink_pre)
         link_name_end_pos = html.find('"', link_name_start_pos)
         if link_name_end_pos >= 0:
-            link_name = html[link_name_start_pos : link_name_end_pos]
-            href_link_name = html[next_link_pos : link_name_end_pos]
+            link_name = html[link_name_start_pos: link_name_end_pos]
+            href_link_name = html[next_link_pos: link_name_end_pos]
             if anchor_name == "":
                 # if no specific one specified, then removing all of them:
                 log.warn("Export removing internal link: " + link_name)
@@ -1207,8 +1316,8 @@ def removeInternalLinks(html, anchor_name=""):
             full_link_name = ""
             link_text = ""
             if closeA_end_pos >= 0:
-                full_link_name = html[openA_start_pos : closeA_end_pos]
-                link_text = html[openA_end_pos+1 : closeA_start_pos]
+                full_link_name = html[openA_start_pos: closeA_end_pos]
+                link_text = html[openA_end_pos + 1: closeA_start_pos]
 
             # try the easy way out here, and instead of backing up a few
             # characters (but: what if other attributes such as popups?)
@@ -1227,10 +1336,11 @@ def removeInternalLinks(html, anchor_name=""):
                     html = html.replace(full_link_name, link_text, 1)
 
         # else the href quote is unclosed.  ignore, eh?
-        last_end_pos = next_link_pos+1
+        last_end_pos = next_link_pos + 1
         next_link_pos = html.find(intlink_start, last_end_pos)
 
     return html
+
 
 def removeInternalLinkNodes(html):
     """
@@ -1242,22 +1352,22 @@ def removeInternalLinkNodes(html):
     """
     # use lower-case for the exe-node, for TinyMCE copy/paste compatibility
     intlink_start = 'href="exe-node:'
-    intlink_pre   = 'href="'
+    intlink_pre = 'href="'
     next_link_pos = html.find(intlink_start)
     while next_link_pos >= 0:
         link_name_start_pos = next_link_pos + len(intlink_pre)
         link_name_end_pos = html.find('"', link_name_start_pos)
         if link_name_end_pos >= 0:
-            link_name = html[link_name_start_pos : link_name_end_pos]
+            link_name = html[link_name_start_pos: link_name_end_pos]
             log.debug("Export rendering internal link, without nodename: "
-                    + link_name)
+                      + link_name)
             # assuming that any '#'s in the node name have been escaped,
             # the first '#' should be the actual anchor:
             node_name_end_pos = link_name.find('#')
             if node_name_end_pos < 0:
                 # no hash found, => use the whole thing as the node name:
                 node_name_end_pos = len(link_name) - 1
-            link_node_name = link_name[0 : node_name_end_pos]
+            link_node_name = link_name[0: node_name_end_pos]
             if link_node_name:
                 # finally, FOR SINGLE-PAGE EXPORT,
                 # remove this particular node name:
@@ -1265,10 +1375,9 @@ def removeInternalLinkNodes(html):
                 no_node_name = intlink_pre
                 html = html.replace(old_node_name, no_node_name, 1)
         # else the href quote is unclosed.  ignore, eh?
-        next_link_pos = html.find(intlink_start, next_link_pos+1)
+        next_link_pos = html.find(intlink_start, next_link_pos + 1)
 
     return html
-
 
 
 def findLinkedField(package, exe_node_path, anchor_name):
@@ -1283,15 +1392,15 @@ def findLinkedField(package, exe_node_path, anchor_name):
             if anchor_field.GetFullNodePath() == exe_node_path:
                 if anchor_name:
                     # now ensure that this field has an anchor of this name:
-                    if anchor_name in  anchor_field.anchor_names:
+                    if anchor_name in anchor_field.anchor_names:
                         # break out and return this matching field's node:
-                        #return anchor_field.idevice.parentNode
+                        # return anchor_field.idevice.parentNode
                         return anchor_field
                 else:
                     # with no anchor_name, there is no way to further
                     # determine if this is the correct field/node or not,
                     # so just break out and return the first matching one:
-                    #return anchor_field.idevice.parentNode
+                    # return anchor_field.idevice.parentNode
                     return anchor_field
 
     return None
@@ -1331,6 +1440,7 @@ def findLinkedNode(package, exe_node_path, anchor_name, check_fields=True):
 
     return linked_node
 
+
 def getAnchorNameFromLinkName(link_name):
     """
     little helper to pull out of the (possibly optional?) Anchor from
@@ -1340,8 +1450,9 @@ def getAnchorNameFromLinkName(link_name):
     anchor_pos = link_name.find('#')
     if anchor_pos >= 0:
         # hash found, => strip off the anchor:
-        anchor_name = link_name[anchor_pos + 1 : ]
+        anchor_name = link_name[anchor_pos + 1:]
     return anchor_name
+
 
 def enableLinksToElp(package, html):
     '''
@@ -1349,19 +1460,20 @@ def enableLinksToElp(package, html):
     Replace exe-package:elp with the elp name
     Use # instead of the elp name if the package's not been saved (no name...)
     '''
-    soup = BeautifulSoup(html, features = "html.parser")
+    soup = BeautifulSoup(html, features="html.parser")
     hasElp = False
     for link in soup.findAll('a'):
-        if (link.get('href')=='exe-package:elp') and hasattr(package, 'name'):
+        if (link.get('href') == 'exe-package:elp') and hasattr(package, 'name'):
             lnk = '#'
-            if hasattr(package, 'filename') and (package.filename!=""):
-                lnk = package.name+".elp"
+            if hasattr(package, 'filename') and (package.filename != ""):
+                lnk = package.name + ".elp"
             log.debug("There is a link to the elp file: " + link.get('href'))
             link['href'] = link['href'].replace("exe-package:elp", lnk)
             hasElp = True
     if hasElp:
         html = str(soup)
     return html
+
 
 def renderInternalLinkNodeFilenames(package, html):
     """
@@ -1376,13 +1488,13 @@ def renderInternalLinkNodeFilenames(package, html):
     found_all_anchors = True
     # use lower-case for the exe-node, for TinyMCE copy/paste compatibility
     intlink_start = 'href="exe-node:'
-    intlink_pre   = 'href="'
+    intlink_pre = 'href="'
     next_link_pos = html.find(intlink_start)
     while next_link_pos >= 0:
         link_name_start_pos = next_link_pos + len(intlink_pre)
         link_name_end_pos = html.find('"', link_name_start_pos)
         if link_name_end_pos >= 0:
-            link_name = html[link_name_start_pos : link_name_end_pos]
+            link_name = html[link_name_start_pos: link_name_end_pos]
             log.debug("Export rendering internal link: " + link_name)
             # assuming that any '#'s in the node name have been escaped,
             # the first '#' should be the actual anchor:
@@ -1392,15 +1504,16 @@ def renderInternalLinkNodeFilenames(package, html):
                 node_name_end_pos = len(link_name) - 1
                 link_anchor_name = ""
             else:
-                link_anchor_name = link_name[node_name_end_pos+1 : ]
-            link_node_name = link_name[0 : node_name_end_pos]
+                link_anchor_name = link_name[node_name_end_pos + 1:]
+            link_node_name = link_name[0: node_name_end_pos]
 
             found_node = None
             if link_node_name:
                 # Okay, FOR WEBSITE EXPORT, need to find the actual node
-                # being referenced by this link, and its actual export filename:
+                # being referenced by this link, and its actual export
+                # filename:
                 found_node = findLinkedNode(package, link_node_name,
-                        link_anchor_name)
+                                            link_anchor_name)
                 if found_node and hasattr(found_node, 'tmp_export_filename'):
                     # Finally, replace this particular node name
                     # with its actual export filename:
@@ -1415,10 +1528,10 @@ def renderInternalLinkNodeFilenames(package, html):
             if found_node is None:
                 found_all_anchors = False
                 log.warn('Export unable to find corresponding node&anchor; '
-                        + 'unable to render link to: ' + link_name)
+                         + 'unable to render link to: ' + link_name)
 
         # else the href quote is unclosed.  ignore, eh?
-        next_link_pos = html.find(intlink_start, next_link_pos+1)
+        next_link_pos = html.find(intlink_start, next_link_pos + 1)
 
     if not found_all_anchors:
         # then go ahead and clear out any remaining invalid links:
@@ -1428,6 +1541,7 @@ def renderInternalLinkNodeFilenames(package, html):
     html = enableLinksToElp(package, html)
 
     return html
+
 
 def renderInternalLinkNodeAnchor(package, html):
     """
@@ -1439,13 +1553,13 @@ def renderInternalLinkNodeAnchor(package, html):
     found_all_anchors = True
     # use lower-case for the exe-node, for TinyMCE copy/paste compatibility
     intlink_start = 'href="exe-node:'
-    intlink_pre   = 'href="'
+    intlink_pre = 'href="'
     next_link_pos = html.find(intlink_start)
     while next_link_pos >= 0:
         link_name_start_pos = next_link_pos + len(intlink_pre)
         link_name_end_pos = html.find('"', link_name_start_pos)
         if link_name_end_pos >= 0:
-            link_name = html[link_name_start_pos : link_name_end_pos]
+            link_name = html[link_name_start_pos: link_name_end_pos]
             log.debug("Export rendering internal link: " + link_name)
             # assuming that any '#'s in the node name have been escaped,
             # the first '#' should be the actual anchor:
@@ -1455,16 +1569,17 @@ def renderInternalLinkNodeAnchor(package, html):
                 node_name_end_pos = len(link_name) - 1
                 link_anchor_name = ""
             else:
-                link_anchor_name = link_name[node_name_end_pos+1 : ]
-            link_node_name = link_name[0 : node_name_end_pos]
+                link_anchor_name = link_name[node_name_end_pos + 1:]
+            link_node_name = link_name[0: node_name_end_pos]
 
             found_node = None
             if link_node_name:
                 # Okay, FOR singlepage EXPORT, check the existance of the actual node
-                # being referenced by this link, and if it does not exist, remove it:
+                # being referenced by this link, and if it does not exist,
+                # remove it:
                 found_node = findLinkedNode(package, link_node_name,
-                        link_anchor_name)
-                if found_node :
+                                            link_anchor_name)
+                if found_node:
                     # Finally, replace this particular node name
                     # with an anchor:
                     # old_node_name = intlink_pre + link_node_name
@@ -1475,10 +1590,10 @@ def renderInternalLinkNodeAnchor(package, html):
             if found_node is None:
                 found_all_anchors = False
                 log.warn('Export unable to find corresponding node&anchor; '
-                        + 'unable to render link to: ' + link_name)
+                         + 'unable to render link to: ' + link_name)
 
         # else the href quote is unclosed.  ignore, eh?
-        next_link_pos = html.find(intlink_start, next_link_pos+1)
+        next_link_pos = html.find(intlink_start, next_link_pos + 1)
 
     if not found_all_anchors:
         # then go ahead and clear out any remaining invalid links:
@@ -1486,21 +1601,24 @@ def renderInternalLinkNodeAnchor(package, html):
 
     return html
 
+
 def requestHasCancel(request):
     """
     simply detect if the current request contains an action of type cancel.
     """
     is_cancel = False
     if "action" in request.args \
-    and request.args["action"][0]=="cancel":
+            and request.args["action"][0] == "cancel":
         is_cancel = True
     return is_cancel
+
 
 def hasWikipediaIdevice(node):
     for idevice in node.idevices:
         if idevice.klass == 'WikipediaIdevice':
             return True
     return False
+
 
 def ideviceHasFX(idevice):
     block = g_blockFactory.createBlock(None, idevice)
@@ -1513,6 +1631,8 @@ def ideviceHasFX(idevice):
     return False
 
 # Syntax highlighting
+
+
 def ideviceHasSH(idevice):
     block = g_blockFactory.createBlock(None, idevice)
     if not block:
@@ -1522,6 +1642,7 @@ def ideviceHasSH(idevice):
     if re.search(' class=[\'"]highlighted-code', content):
         return True
     return False
+
 
 def ideviceHasGames(idevice):
     block = g_blockFactory.createBlock(None, idevice)
@@ -1533,14 +1654,15 @@ def ideviceHasGames(idevice):
         return True
     return False
 
-def ideviceHasElpLink(idevice,package):
+
+def ideviceHasElpLink(idevice, package):
     '''
     Check if there is a link to the elp file (and the elp file exists)
     The links to the elp file (exe-package:elp) will be replaced by:
         1. # if the file does not exist (no name because it's not been saved)
         2. The elp file name if the elp exists
     '''
-    if hasattr(package, 'filename') and (package.filename!=""):
+    if hasattr(package, 'filename') and (package.filename != ""):
         block = g_blockFactory.createBlock(None, idevice)
         if not block:
             log.critical("Unable to render iDevice.")
@@ -1549,6 +1671,7 @@ def ideviceHasElpLink(idevice,package):
         if re.search('<a .*href="exe-package:elp"', content):
             return True
     return False
+
 
 def ideviceHasGallery(idevice):
     if idevice.klass == 'GalleryIdevice':
@@ -1562,6 +1685,7 @@ def ideviceHasGallery(idevice):
         return True
     return False
 
+
 def hasFX(node):
     for idevice in node.idevices:
         if ideviceHasFX(idevice):
@@ -1569,11 +1693,14 @@ def hasFX(node):
     return False
 
 # Syntax highlighting
+
+
 def hasSH(node):
     for idevice in node.idevices:
         if ideviceHasSH(idevice):
             return True
     return False
+
 
 def hasGames(node):
     for idevice in node.idevices:
@@ -1581,17 +1708,20 @@ def hasGames(node):
             return True
     return False
 
+
 def hasElpLink(node):
     for idevice in node.idevices:
-        if ideviceHasElpLink(idevice,node.package):
+        if ideviceHasElpLink(idevice, node.package):
             return True
     return False
+
 
 def hasGalleryIdevice(node):
     for idevice in node.idevices:
         if ideviceHasGallery(idevice):
             return True
     return False
+
 
 def hasMagnifier(node):
     for idevice in node.idevices:
@@ -1610,7 +1740,17 @@ def ideviceHasMediaelement(idevice):
         return True
     # Multimedia galleries (mp3, mp4, flv, ogg, ogv)
     cont = content.lower()
-    if re.search('href=".*.mp3" rel="lightbox', cont) or re.search('href=".*.mp4" rel="lightbox', cont) or re.search('href=".*.flv" rel="lightbox', cont) or re.search('href=".*.ogg" rel="lightbox', cont) or re.search('href=".*.ogv" rel="lightbox', cont):
+    if re.search(
+            'href=".*.mp3" rel="lightbox',
+            cont) or re.search(
+            'href=".*.mp4" rel="lightbox',
+            cont) or re.search(
+                'href=".*.flv" rel="lightbox',
+                cont) or re.search(
+                    'href=".*.ogg" rel="lightbox',
+                    cont) or re.search(
+                        'href=".*.ogv" rel="lightbox',
+            cont):
         return True
     return False
 
@@ -1620,6 +1760,7 @@ def nodeHasMediaelement(node):
         if ideviceHasMediaelement(idevice):
             return True
     return False
+
 
 def ideviceHasTooltips(idevice):
     block = g_blockFactory.createBlock(None, idevice)
@@ -1645,6 +1786,7 @@ def hasABCMusic(node):
             return True
     return False
 
+
 def ideviceHasABCMusic(idevice):
     block = g_blockFactory.createBlock(None, idevice)
     if not block:
@@ -1656,37 +1798,49 @@ def ideviceHasABCMusic(idevice):
         return True
     return False
 
-## Added for [#2501] Add masteryscore to manifest in evaluable nodes
-## Maybe we should reorder all this common code and move it to an Objecto Oriented logic
+# Added for [#2501] Add masteryscore to manifest in evaluable nodes
+# Maybe we should reorder all this common code and move it to an Objecto
+# Oriented logic
+
+
 def hasQuizTest(node):
     for idevice in node.idevices:
         if hasattr(idevice, "isQuiz"):
-            if idevice.isQuiz == True:
+            if idevice.isQuiz:
                 return True
     return False
 
-## Added for [#2501] Add masteryscore to manifest in evaluable nodes
-## Maybe we should reorder all this common code and move it to an Objecto Oriented logic
+# Added for [#2501] Add masteryscore to manifest in evaluable nodes
+# Maybe we should reorder all this common code and move it to an Objecto
+# Oriented logic
+
+
 def getQuizTestPassRate(node):
     for idevice in node.idevices:
         if hasattr(idevice, "isQuiz"):
-            if idevice.isQuiz == True:
+            if idevice.isQuiz:
                 return idevice.passRate
     return False
 
+
 def getFilesJSToMinify(type, scriptsDir):
     # Read about these files format (comments) in exportMinFileJS (helper.py)
-    listJSFiles=[]
-    if(type =='ims'):
-        listJSFiles+=[{'path':scriptsDir/'common.js','basename':'common.js'}]
-    elif(type=='epub3'):
-        listJSFiles+=[{'path':scriptsDir/'common.js','basename':'common.js'}]
-    elif(type=='scorm'):
-        listJSFiles+=[{'path':scriptsDir/'common.js','basename':'common.js'}]
-    elif(type=='singlepage'):
-        listJSFiles+=[{'path':scriptsDir/'common.js','basename':'common.js'}]
-    elif(type=='website'):
-        listJSFiles+=[{'path':scriptsDir/'common.js','basename':'common.js'}]
+    listJSFiles = []
+    if (type == 'ims'):
+        listJSFiles += [{'path': scriptsDir /
+                         'common.js', 'basename': 'common.js'}]
+    elif (type == 'epub3'):
+        listJSFiles += [{'path': scriptsDir /
+                         'common.js', 'basename': 'common.js'}]
+    elif (type == 'scorm'):
+        listJSFiles += [{'path': scriptsDir /
+                         'common.js', 'basename': 'common.js'}]
+    elif (type == 'singlepage'):
+        listJSFiles += [{'path': scriptsDir /
+                         'common.js', 'basename': 'common.js'}]
+    elif (type == 'website'):
+        listJSFiles += [{'path': scriptsDir /
+                         'common.js', 'basename': 'common.js'}]
 
     return listJSFiles
 
@@ -1701,9 +1855,11 @@ def getFilesCSSToMinify(type, styleDir):
     # Whatever the type is, we always include base.css
     # But if the style has a base.css file, we should always
     # include that one
-    if os.path.isfile(styleDir/'base.css'):
-        list_css_files += [{ 'path': styleDir/'base.css', 'basename': 'base.css' }]
+    if os.path.isfile(styleDir / 'base.css'):
+        list_css_files += [{'path': styleDir /
+                            'base.css', 'basename': 'base.css'}]
     else:
-        list_css_files += [{ 'path': styleDir/'..'/'base.css', 'basename': 'base.css' }]
+        list_css_files += [{'path': styleDir / '..' /
+                            'base.css', 'basename': 'base.css'}]
 
     return list_css_files

@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,11 +21,14 @@
 MathBlock can render and process MathIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.mathidevice import MathIdevice
 import logging
-from exe.webui.block            import Block
-from exe.webui.element          import MathElement
+from exe.webui.block import Block
+from exe.webui.element import MathElement
 
 log = logging.getLogger(__name__)
+
 
 class MathBlock(Block):
     """
@@ -37,7 +40,6 @@ class MathBlock(Block):
         self.contentElement = MathElement(idevice.content)
         self.contentElement.height = 250
 
-
     def process(self, request):
         """
         Process the request arguments from the web server to see if any
@@ -45,48 +47,42 @@ class MathBlock(Block):
         """
         Block.process(self, request)
         self.contentElement.process(request)
-       
-
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        html  = "<div>\n"
+        html = "<div>\n"
         html += self.contentElement.renderEdit()
         html += self.renderEditButtons()
         html += "</div>\n"
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
-        html  = "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\" "
-        html += "ondblclick=\"submitLink('edit',"+self.id+", 0);\">\n"
+        html = "<div class=\"iDevice "
+        html += "emphasis" + str(self.idevice.emphasis) + "\" "
+        html += "ondblclick=\"submitLink('edit'," + self.id + ", 0);\">\n"
         html += self.contentElement.renderPreview()
         html += self.renderViewButtons()
         html += "</div>\n"
         return html
 
-
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
         """
-        html  = "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\">\n"
+        html = "<div class=\"iDevice "
+        html += "emphasis" + str(self.idevice.emphasis) + "\">\n"
         html += self.contentElement.renderView()
         html += "</div>\n"
         return html
-    
 
-# =========================================================================    
-from exe.engine.mathidevice     import MathIdevice
-from exe.webui.blockfactory     import g_blockFactory
-g_blockFactory.registerBlockType(MathBlock, MathIdevice)    
+
+# =========================================================================
+g_blockFactory.registerBlockType(MathBlock, MathIdevice)
 
 
 # ===========================================================================

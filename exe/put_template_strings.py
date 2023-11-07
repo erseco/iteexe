@@ -21,7 +21,7 @@
 import os
 import sys
 
-from babel._compat         import StringIO
+from babel._compat import StringIO
 from babel.messages.pofile import read_po, write_po
 # Make it so we can import our own nevow and twisted etc.
 if os.name == 'posix':
@@ -42,8 +42,8 @@ except ImportError as error:
         traceback.print_exc()
         sys.exit(1)
 
-from exe.engine.package  import Package
-from exe.engine.path     import Path
+from exe.engine.package import Package
+from exe.engine.path import Path
 from exe.engine.template import Template
 
 if __name__ == "__main__":
@@ -62,7 +62,15 @@ if __name__ == "__main__":
 
     try:
         # Try to get templates' strings
-        exec(compile(open(application.config.templatesDir / 'strings.py', "rb").read(), application.config.templatesDir / 'strings.py', 'exec'))
+        exec(
+            compile(
+                open(
+                    application.config.templatesDir /
+                    'strings.py',
+                    "rb").read(),
+                application.config.templatesDir /
+                'strings.py',
+                'exec'))
 
         print('Re-adding HTML to template translations')
 
@@ -76,13 +84,16 @@ if __name__ == "__main__":
 
         # Load the catalogs from the temp directory
         for sub_dir in locale_path.dirs():
-            if (sub_dir / 'LC_MESSAGES' / 'exe.po').exists() and os.path.basename(sub_dir) in locale_catalogs:
+            if (sub_dir / 'LC_MESSAGES' /
+                    'exe.po').exists() and os.path.basename(sub_dir) in locale_catalogs:
                 catalog_stream = open(sub_dir / 'LC_MESSAGES' / 'exe.po', 'r')
                 catalog_string = catalog_stream.read()
                 catalog_stream.close()
 
-                locale_catalogs[os.path.basename(sub_dir)]['catalog'] = read_po(StringIO(catalog_string))
-                locale_catalogs[os.path.basename(sub_dir)]['path'] = sub_dir / 'LC_MESSAGES' / 'exe.po'
+                locale_catalogs[os.path.basename(sub_dir)]['catalog'] = read_po(
+                    StringIO(catalog_string))
+                locale_catalogs[os.path.basename(
+                    sub_dir)]['path'] = sub_dir / 'LC_MESSAGES' / 'exe.po'
 
         # Go through all the templates, nodes, idevices and fields
         for path, template in templates.items():
@@ -91,19 +102,24 @@ if __name__ == "__main__":
                     for field in idevice['fields']:
                         # For each locale
                         for name, locale in locale_catalogs.items():
-                            # If there is no catalog, just go to the next locale
+                            # If there is no catalog, just go to the next
+                            # locale
                             if 'catalog' not in locale:
                                 continue
 
-                            # Get the translated test and insert it into the template
+                            # Get the translated test and insert it into the
+                            # template
                             translated_text = []
                             for prop in field:
                                 for text in prop['translatable_text']:
-                                    translated_text.append(locale['locale'].ugettext(text))
-                                translated_string = prop['template'] % tuple(translated_text)
+                                    translated_text.append(
+                                        locale['locale'].ugettext(text))
+                                translated_string = prop['template'] % tuple(
+                                    translated_text)
 
                                 # Add the new translation to the catalog
-                                locale['catalog'].add(prop['raw_value'], translated_string)
+                                locale['catalog'].add(
+                                    prop['raw_value'], translated_string)
 
         # Write every catalog with the new values
         for name, locale in locale_catalogs.items():

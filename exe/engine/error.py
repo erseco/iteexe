@@ -28,13 +28,16 @@ import logging
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class Error(Exception):
     """
     Exception class used for eXe specific errors
     """
+
     def __init__(self, value):
         """
-        Initialize 
+        Initialize
         """
         Exception.__init__(self)
         self.value = value
@@ -47,4 +50,3 @@ class Error(Exception):
         return repr(self.value)
 
 # ===========================================================================
-

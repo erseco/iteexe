@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org
 #
@@ -21,11 +21,13 @@
 TrueFalseBlock can render and process TrueFalseIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.truefalseidevice import TrueFalseIdevice
 import logging
-from exe.webui.block               import Block
-from exe.webui.truefalseelement    import TrueFalseElement
-from exe.webui                     import common
-from exe.webui.element             import TextAreaElement
+from exe.webui.block import Block
+from exe.webui.truefalseelement import TrueFalseElement
+from exe.webui import common
+from exe.webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 
@@ -35,32 +37,33 @@ class TrueFalseBlock(Block):
     """
     TrueFalseBlock can render and process TrueFalseIdevices as XHTML
     """
+
     def __init__(self, parent, idevice):
         """
         Initialize a new Block object
         """
         Block.__init__(self, parent, idevice)
-        self.idevice         = idevice
-        self.questionElements  = []
+        self.idevice = idevice
+        self.questionElements = []
         self.questionInstruc = idevice.questionInstruc
-        self.keyInstruc      = idevice.keyInstruc
+        self.keyInstruc = idevice.keyInstruc
         self.feedbackInstruc = idevice.feedbackInstruc
-        self.hintInstruc     = idevice.hintInstruc 
+        self.hintInstruc = idevice.hintInstruc
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
-        if idevice.instructionsForLearners.idevice is None: 
+        if idevice.instructionsForLearners.idevice is None:
             idevice.instructionsForLearners.idevice = idevice
         self.instructionElement = \
             TextAreaElement(idevice.instructionsForLearners)
 
-        if not hasattr(self.idevice,'undo'):
+        if not hasattr(self.idevice, 'undo'):
             self.idevice.undo = True
-        
+
         i = 0
         for question in idevice.questions:
-            self.questionElements.append(TrueFalseElement(i, idevice, 
-                                                           question))
+            self.questionElements.append(TrueFalseElement(i, idevice,
+                                                          question))
             i += 1
 
     def process(self, request):
@@ -70,69 +73,67 @@ class TrueFalseBlock(Block):
         Block.process(self, request)
 
         is_cancel = common.requestHasCancel(request)
-    
+
         self.instructionElement.process(request)
-            
-        if ("addQuestion"+str(self.id)) in request.args: 
+
+        if ("addQuestion" + str(self.id)) in request.args:
             self.idevice.addQuestion()
             self.idevice.edit = True
-            # disable Undo once a question has been added: 
+            # disable Undo once a question has been added:
             self.idevice.undo = False
-        
-        if "title"+self.id in request.args \
-        and not is_cancel:
-            self.idevice.title = request.args["title"+self.id][0]
+
+        if "title" + self.id in request.args \
+                and not is_cancel:
+            self.idevice.title = request.args["title" + self.id][0]
 
         for element in self.questionElements:
             element.process(request)
 
-        if ("action" in request.args and request.args["action"][0] == "done" 
-        or not self.idevice.edit): 
+        if ("action" in request.args and request.args["action"][0] == "done"
+                or not self.idevice.edit):
             # remove the undo flag in order to reenable it next time:
-            if hasattr(self.idevice,'undo'): 
+            if hasattr(self.idevice, 'undo'):
                 del self.idevice.undo
-
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form element for editing this block
         """
-        
-        html  = "<div class=\"iDevice\"><br/>\n"
-        html += common.textInput("title"+self.id, self.idevice.title)
+
+        html = "<div class=\"iDevice\"><br/>\n"
+        html += common.textInput("title" + self.id, self.idevice.title)
         html += "<br/><br/>\n"
         html += self.instructionElement.renderEdit()
 
         for element in self.questionElements:
-            html += element.renderEdit() 
-            
-        value = _("Add another question")    
-        html += common.submitButton("addQuestion"+str(self.id), value)
+            html += element.renderEdit()
+
+        value = _("Add another question")
+        html += common.submitButton("addQuestion" + str(self.id), value)
         html += "<br /><br />" + self.renderEditButtons(undo=self.idevice.undo)
         html += "</div>\n"
 
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         sectionTag = "div"
         if dT == "HTML5":
-            sectionTag = "section"        
-        
+            sectionTag = "section"
+
         html = common.ideviceHeader(self, style, "preview")
         html += self.instructionElement.renderPreview()
-        
+
         for element in self.questionElements:
-            html += "<"+sectionTag+" class=\"question\">"+lb
+            html += "<" + sectionTag + " class=\"question\">" + lb
             html += element.renderQuestionPreview()
             html += element.renderFeedbackPreview()
-            html += "</"+sectionTag+">"+lb
-            
+            html += "</" + sectionTag + ">" + lb
+
         html += common.ideviceFooter(self, style, "preview")
 
         return html
@@ -140,41 +141,39 @@ class TrueFalseBlock(Block):
     """
     Render XML for Ustad Mobile for feature phones
     """
+
     def renderXML(self, style):
         xml = "<idevice type='multichoice' id ='%s'>\n" % self.id
         for element in self.questionElements:
             xml += element.renderQuestionXML()
         xml += "</idevice>"
-        
+
         return xml
-    
+
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
         """
-        lb = "\n" #Line breaks
+        lb = "\n"  # Line breaks
         dT = common.getExportDocType()
         sectionTag = "div"
         if dT == "HTML5":
             sectionTag = "section"
-            
+
         html = common.ideviceHeader(self, style, "view")
         html += self.instructionElement.renderView()
-        
+
         for element in self.questionElements:
-            html += "<"+sectionTag+" class=\"question\">"+lb
+            html += "<" + sectionTag + " class=\"question\">" + lb
             html += element.renderQuestionView()
             html += element.renderFeedbackView()
-            html += "</"+sectionTag+">"+lb
-            
+            html += "</" + sectionTag + ">" + lb
+
         html += common.ideviceFooter(self, style, "view")
 
         return html
-    
 
 
-from exe.engine.truefalseidevice   import TrueFalseIdevice
-from exe.webui.blockfactory        import g_blockFactory
-g_blockFactory.registerBlockType(TrueFalseBlock, TrueFalseIdevice)    
+g_blockFactory.registerBlockType(TrueFalseBlock, TrueFalseIdevice)
 
 # ===========================================================================

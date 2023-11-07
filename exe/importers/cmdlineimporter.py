@@ -28,6 +28,7 @@ class CmdlineImporter(object):
     '''
     classdocs
     '''
+
     def __init__(self, config, options):
         '''
         Constructor
@@ -39,7 +40,12 @@ class CmdlineImporter(object):
         '''
         '''
         if hasattr(self, 'import_' + self.options['import']):
-            return getattr(self, 'import_' + self.options['import'])(inputf, outputf)
+            return getattr(
+                self,
+                'import_' +
+                self.options['import'])(
+                inputf,
+                outputf)
         else:
             print(_("Import format not implemented"))
 

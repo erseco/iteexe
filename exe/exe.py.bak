@@ -13,7 +13,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#t
+# t
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,29 +30,31 @@ sys.setrecursionlimit(2000)
 
 if '--portable' in sys.argv:
     exePath = os.path.abspath(sys.argv[0])
-    exeDir  = os.path.dirname(exePath)
+    exeDir = os.path.dirname(exePath)
     pythonPath = os.path.split(exeDir)[0]
     sys.path.insert(0, pythonPath)
     from exe.application import Application
 else:
     # Try to work even with no python path
     try:
-       from exe.application import Application
-    except ImportError, error:
-       if str(error) == "No module named exe.application":
-           exePath = os.path.abspath(sys.argv[0])
-           exeDir  = os.path.dirname(exePath)
-           pythonPath = os.path.split(exeDir)[0]
-           sys.path.insert(0, pythonPath)
-           from exe.application import Application
-       else:
-           import traceback
-           traceback.print_exc()
-           sys.exit(1)
+        from exe.application import Application
+    except ImportError as error:
+        if str(error) == "No module named exe.application":
+            exePath = os.path.abspath(sys.argv[0])
+            exeDir = os.path.dirname(exePath)
+            pythonPath = os.path.split(exeDir)[0]
+            sys.path.insert(0, pythonPath)
+            from exe.application import Application
+        else:
+            import traceback
+            traceback.print_exc()
+            sys.exit(1)
+
 
 def main():
     application = Application()
     application.main()
+
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -49,16 +49,17 @@ Unset = object()
 # This is a constant that means, we don't have an attribute of this name
 DontHave = object()
 
+
 class Renderable(object):
     """
     A base class for all things rendered
     """
 
-    # Set this to a template filename if you are use a template page to do 
+    # Set this to a template filename if you are use a template page to do
     # your rendering
     _templateFileName = ''
-    name = None # Must provide a name in dervied classes, or pass one to
-    #__init__
+    name = None  # Must provide a name in dervied classes, or pass one to
+    # __init__
 
     # Default attribute values
     docFactory = None
@@ -76,13 +77,14 @@ class Renderable(object):
         'name' is a identifier to distuniguish us from the other children of our
         parent
         """
-        self.parent = parent # This is the same for both blocks and pages
+        self.parent = parent  # This is the same for both blocks and pages
         if name:
             self.name = name
         elif not self.name:
-            raise AssertionError('Element of class "%s" created with no name.' %
-                                 self.__class__.__name__)
-            
+            raise AssertionError(
+                'Element of class "%s" created with no name.' %
+                self.__class__.__name__)
+
         # Make pylint happy. These attributes will be gotten from
         # self.application
         self.config = Unset
@@ -106,7 +108,7 @@ class Renderable(object):
             self.webServer = None
         if self._templateFileName:
             if hasattr(self, 'config') and self.config:
-                pth = self.config.webDir/'templates'/self._templateFileName
+                pth = self.config.webDir / 'templates' / self._templateFileName
                 self.docFactory = loaders.xmlfile(pth)
             else:
                 # Assume directory is included in the filename
@@ -156,7 +158,6 @@ class Renderable(object):
             setattr(self, attr, res)
         return res
 
-
     def process(self, request):
         """
         Called when a request comes in.
@@ -176,6 +177,7 @@ class _RenderablePage(Renderable):
     """
     For internal use only
     """
+
     def __init__(self, parent, package=None, config=None):
         """
         Same as Renderable.__init__ but uses putChild to put ourselves
@@ -201,10 +203,13 @@ class RenderableResource(_RenderablePage, Resource):
     def render(self, request):
         "Disable cache of renderable resources"
         request.setHeader('Expires', 'Fri, 25 Nov 1966 08:22:00 EST')
-        request.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
+        request.setHeader(
+            "Cache-Control",
+            "no-store, no-cache, must-revalidate")
         request.setHeader("Pragma", "no-cache")
         request.setHeader("X-XSS-Protection", "0")
         return Resource.render(self, request)
+
 
 class File(static.File):
     def render(self, request):
@@ -212,11 +217,13 @@ class File(static.File):
         Disable cache of static files and add missing content MimeTypes
         """
         request.setHeader('Expires', 'Fri, 25 Nov 1966 08:22:00 EST')
-        request.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
+        request.setHeader(
+            "Cache-Control",
+            "no-store, no-cache, must-revalidate")
         request.setHeader("Pragma", "no-cache")
-        
+
         # SVG files must have MimeType "image/svg+xml",
         # otherwise the browser will show nothing
         self.contentTypes['.svg'] = 'image/svg+xml'
-        
+
         return static.File.render(self, request)

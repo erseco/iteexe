@@ -45,49 +45,68 @@ XLF_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
 </xliff>
 '''
 
+
 def safe_unicode(text):
-    if type(text) is UnicodeType:
+    if isinstance(text, UnicodeType):
         return text
-    elif type(text) is StringType:
+    elif isinstance(text, StringType):
         try:
             return str(text, 'utf-8')
-        except:
+        except BaseException:
             return str(text, 'iso-8859-15')
     else:
         try:
             return str(text)
-        except:
+        except BaseException:
             return 'ERROR'
 
 
 class ContentEscaper(BeautifulSoup):
     def handle_data(self, data):
         # Repace special chars with their HTML codes
-        # Note: The order is important, if this is updated, xliffimport.py should be aswell
-        data_end = data.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-        #if hasattr(self, "currentData"):
+        # Note: The order is important, if this is updated, xliffimport.py
+        # should be aswell
+        data_end = data.replace(
+            '&',
+            '&amp;').replace(
+            '<',
+            '&lt;').replace(
+            '>',
+            '&gt;').replace(
+                '"',
+            '&quot;')
+        # if hasattr(self, "currentData"):
         try:
             self.currentData.append(data_end)
-        except:
+        except BaseException:
             self.current_data.append(data_end)
 
+
 def escape_content(content):
-    html = ContentEscaper(content)      
+    html = ContentEscaper(content)
     return html.__unicode__()
+
 
 class XliffExport(object):
     """
     XliffExport will export a package as an XLIFF file
     """
 
-    def __init__(self, config, filename, source_lang = "es", target_lang = "eu", source_copied_in_target = True, wrap_cdata = False):
+    def __init__(
+            self,
+            config,
+            filename,
+            source_lang="es",
+            target_lang="eu",
+            source_copied_in_target=True,
+            wrap_cdata=False):
         self.config = config
         self.filename = filename
         self.source_copied_in_target = source_copied_in_target
         self.source_lang = source_lang
         self.target_lang = target_lang
         self.wrap_cdata = wrap_cdata
-        
+
     def export(self, package):
         content = self.getContentForNode(package.root, 'noderoot')
         data = XLF_TEMPLATE % {'transunits': content,
@@ -102,43 +121,53 @@ class XliffExport(object):
     def getContentForNode(self, node, id):
         content = ''
         content += '<group>'
-        content += TRANS_UNIT % {'content': safe_unicode(node.getTitle()),
-                                 'id': '%s-nodename' % id,
-                                 'target': self.source_copied_in_target and safe_unicode(node.getTitle()) or escape_content(''),
-                                 'cdata_begin': escape_content(''),
-                                 'cdata_end': escape_content(''),
-                                 'source_lang': self.source_lang,
-                                 'target_lang': self.target_lang
-                                 }
+        content += TRANS_UNIT % {
+            'content': safe_unicode(
+                node.getTitle()),
+            'id': '%s-nodename' % id,
+            'target': self.source_copied_in_target and safe_unicode(
+                node.getTitle()) or escape_content(''),
+            'cdata_begin': escape_content(''),
+            'cdata_end': escape_content(''),
+            'source_lang': self.source_lang,
+            'target_lang': self.target_lang}
         content += '</group>'
 
         for idevice in node.idevices:
             content += '<group>'
-            
-            content += TRANS_UNIT % {'content': safe_unicode(idevice.title),
-                                     'id': '%s-idev%s-title' % (id, idevice.id),
-                                     'target': self.source_copied_in_target and safe_unicode(idevice.title) or escape_content(''),
-                                     'cdata_begin': escape_content(''),
-                                     'cdata_end': escape_content(''),
-                                     'source_lang': self.source_lang,
-                                     'target_lang': self.target_lang
-                                     }
 
-            
+            content += TRANS_UNIT % {
+                'content': safe_unicode(
+                    idevice.title),
+                'id': '%s-idev%s-title' % (id,
+                                           idevice.id),
+                'target': self.source_copied_in_target and safe_unicode(
+                    idevice.title) or escape_content(''),
+                'cdata_begin': escape_content(''),
+                'cdata_end': escape_content(''),
+                'source_lang': self.source_lang,
+                'target_lang': self.target_lang}
+
             for field in idevice.getRichTextFields():
-                content += TRANS_UNIT % {'content': safe_unicode(escape_content(field.content_w_resourcePaths)),
-                                         'id': '%s-idev%s-field%s' % (id, idevice.id, field.id),
-                                         'target': self.source_copied_in_target and safe_unicode(escape_content(field.content_w_resourcePaths)) or escape_content(''),
-                                         'cdata_begin': self.wrap_cdata and CDATA_BEGIN or escape_content(''),
-                                         'cdata_end': self.wrap_cdata and CDATA_END or escape_content(''),
-                                         'source_lang': self.source_lang,
-                                         'target_lang': self.target_lang
-                                         }
+                content += TRANS_UNIT % {
+                    'content': safe_unicode(
+                        escape_content(
+                            field.content_w_resourcePaths)),
+                    'id': '%s-idev%s-field%s' % (id,
+                                                 idevice.id,
+                                                 field.id),
+                    'target': self.source_copied_in_target and safe_unicode(
+                        escape_content(
+                            field.content_w_resourcePaths)) or escape_content(''),
+                    'cdata_begin': self.wrap_cdata and CDATA_BEGIN or escape_content(''),
+                    'cdata_end': self.wrap_cdata and CDATA_END or escape_content(''),
+                    'source_lang': self.source_lang,
+                    'target_lang': self.target_lang}
 
             content += '</group>'
 
         for descendant in node.children:
-            content += self.getContentForNode(descendant, id+'-node' + descendant.id)
+            content += self.getContentForNode(descendant,
+                                              id + '-node' + descendant.id)
 
         return content
-

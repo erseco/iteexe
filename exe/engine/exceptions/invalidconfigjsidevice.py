@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,6 +22,7 @@ class InvalidConfigJsIdevice(Exception):
     """
     Exception raised when a JS iDevice cannot be loaded
     """
+
     def __init__(self, name, message):
         self.name = name
         self.message = message

@@ -32,7 +32,7 @@ class Classification(object):
         if self.file:
             try:
                 self.dom = parse(self.file)
-            except:
+            except BaseException:
                 raise Exception('Can not create dom object')
 
     def setSource(self, source, configDir):
@@ -109,14 +109,16 @@ class Classification(object):
         else:
             for sourceTerm in dom.getElementsByTagName('sourceTerm'):
                 if sourceTerm.firstChild.nodeValue == identifier:
-                    targets = sourceTerm.parentNode.getElementsByTagName('targetTerm')
+                    targets = sourceTerm.parentNode.getElementsByTagName(
+                        'targetTerm')
                     if targets:
                         val = targets[0].firstChild.nodeValue
-                        if not val in data:
+                        if val not in data:
                             data[val] = ''
         if data:
             for termNode in dom.getElementsByTagName('term'):
-                termidentifier, caption = self.getChildCaptionIdentifier(termNode)
+                termidentifier, caption = self.getChildCaptionIdentifier(
+                    termNode)
                 if termidentifier in data:
                     data[termidentifier] = caption
         return data
@@ -134,7 +136,8 @@ class Classification(object):
             if rootNode:
                 for node in rootNode.childNodes:
                     if node.nodeName == 'term':
-                        termidentifier, caption = self.getChildCaptionIdentifier(node)
+                        termidentifier, caption = self.getChildCaptionIdentifier(
+                            node)
                         if termidentifier:
                             data[termidentifier] = caption
         else:
@@ -143,7 +146,8 @@ class Classification(object):
 
     def getDataByIdentifier(self, identifier=False, stype=False):
         data = []
-        for key, value in self.getElementsByIdentifier(identifier, stype).items():
+        for key, value in self.getElementsByIdentifier(
+                identifier, stype).items():
             reg = {'text': value, 'identifier': key}
             data.append(reg)
         return data

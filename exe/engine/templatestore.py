@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2017, CeDeC
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,12 +21,14 @@ TemplateStore is responsible for managing the Packages which the eXe server
 has loaded, (and loading and saving them?)
 """
 
-from exe.engine.template      import Template
+from exe.engine.template import Template
 from multiprocessing.sharedctypes import template
 import logging
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class TemplateStore:
     """
     TemplateStore is responsible for managing the Templates which the eXe server
@@ -43,7 +45,7 @@ class TemplateStore:
         (returns the list of templates)
         """
         return self._templates
-    
+
     def getTemplate(self, name):
         """
         (returns a template given its name)
@@ -59,30 +61,28 @@ class TemplateStore:
         """
         if (template in self._templates):
             self._templates.remove(template)
-            
+
             for listener in self._listeners:
                 listener.delTemplate(template)
-    
+
     def addTemplate(self, template):
         """
         (adds a template)
         """
         if (template not in self._templates):
             self._templates.append(template)
-            
+
             for listener in self._listeners:
-                listener.addTemplate(template) 
+                listener.addTemplate(template)
             return True
         else:
-            return False 
-    
-    
+            return False
+
     def register(self, listener):
         """
         (registers a listener interested in being informed of the changes in TemplateStore)
         """
         self._listeners.append(listener)
-
 
     def load(self):
         log.debug("loadTemplates from %s" % self._config.templatesDir)

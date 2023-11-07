@@ -24,8 +24,8 @@ anything it just redirects the user to a new package.
 
 import logging
 import os
-from exe                      import globals as G
-from exe.webui.renderable     import RenderableResource
+from exe import globals as G
+from exe.webui.renderable import RenderableResource
 from exe.jsui.mainpage import MainPage
 from twisted.web import error
 
@@ -35,10 +35,10 @@ log = logging.getLogger(__name__)
 class PackageRedirectPage(RenderableResource):
     """
     PackageRedirectPage is the first screen the user loads.  It doesn't show
-    anything it just redirects the user to a new package or loads an existing 
+    anything it just redirects the user to a new package or loads an existing
     package.
     """
-    
+
     name = '/'
 
     def __init__(self, webServer, packagePath=None):
@@ -78,10 +78,14 @@ class PackageRedirectPage(RenderableResource):
                         return self.mainpages[session.uid][name]
                 # This will just raise an error
                 log.error("child %s not found. uri: %s" % (name, request.uri))
-                log.error("Session uid: %s, Mainpages: %s" % (session.uid, self.mainpages))
-                return error.NoResource("No such child resource %(resource)s. Try again clicking %(link)s" % {
-                                        "resource": name.encode('utf-8'),
-                                        "link": "<a href='%s' target='_top'>%s</a>" % ('/', 'eXe')})
+                log.error(
+                    "Session uid: %s, Mainpages: %s" %
+                    (session.uid, self.mainpages))
+                return error.NoResource(
+                    "No such child resource %(resource)s. Try again clicking %(link)s" % {
+                        "resource": name.encode('utf-8'),
+                        "link": "<a href='%s' target='_top'>%s</a>" % ('/',
+                                                                       'eXe')})
 
     def bindNewPackage(self, package, session):
         """
@@ -92,9 +96,11 @@ class PackageRedirectPage(RenderableResource):
         log.debug("Mainpages: %s" % self.mainpages)
         session_mainpages = self.mainpages.get(session.uid)
         if session_mainpages:
-            session_mainpages[package.name] = MainPage(None, package, session, self.webServer)
+            session_mainpages[package.name] = MainPage(
+                None, package, session, self.webServer)
         else:
-            self.mainpages[session.uid] = {package.name: MainPage(None, package, session, self.webServer)}
+            self.mainpages[session.uid] = {package.name: MainPage(
+                None, package, session, self.webServer)}
         log.debug("Mainpages: %s" % self.mainpages)
 
     def render_GET(self, request):
@@ -104,16 +110,17 @@ class PackageRedirectPage(RenderableResource):
         log.debug("render_GET" + repr(request.args))
         # Create new package
         session = request.getSession()
-        template_base = self.config.templatesDir / (self.config.defaultContentTemplate + '.elt')
-        
+        template_base = self.config.templatesDir / \
+            (self.config.defaultContentTemplate + '.elt')
+
         if os.path.exists(template_base):
-            package = session.packageStore.createPackageFromTemplate(template_base, is_new_package=True)
+            package = session.packageStore.createPackageFromTemplate(
+                template_base, is_new_package=True)
         else:
             package = session.packageStore.createPackage()
-            
+
         self.bindNewPackage(package, session)
         log.info("Created a new package name=" + package.name)
         # Tell the web browser to show it
         request.redirect(package.name.encode('utf8'))
         return ''
-

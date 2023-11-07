@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 ImageWithTextBlock can render and process ImageWithTextIdevices as XHTML
 """
 
+from exe.webui.blockfactory import g_blockFactory
+from exe.engine.imagewithtextidevice import ImageWithTextIdevice
 import logging
-from exe.webui.block   import Block
+from exe.webui.block import Block
 from exe.webui.element import TextAreaElement, ImageElement
-from exe.webui         import common
+from exe.webui import common
 
 log = logging.getLogger(__name__)
 
@@ -43,13 +45,12 @@ class ImageWithTextBlock(Block):
         Block.__init__(self, parent, idevice)
         self.imageElement = ImageElement(idevice.image)
 
-        # to compensate for the strange unpickling timing when objects are 
+        # to compensate for the strange unpickling timing when objects are
         # loaded from an elp, ensure that proper idevices are set:
         # (only applies to the image-embeddable ones, not FlashMovieElement)
-        if idevice.text.idevice is None: 
+        if idevice.text.idevice is None:
             idevice.text.idevice = idevice
-        self.textElement  = TextAreaElement(idevice.text)
-
+        self.textElement = TextAreaElement(idevice.text)
 
     def process(self, request):
         """
@@ -60,27 +61,26 @@ class ImageWithTextBlock(Block):
         Block.process(self, request)
 
         if ("action" not in request.args or
-            request.args["action"][0] != "delete"):
+                request.args["action"][0] != "delete"):
             self.imageElement.process(request)
             self.textElement.process(request)
-            
-        if "float"+self.id in request.args:
-            self.idevice.float = request.args["float"+self.id][0]
-            
-        if "caption"+self.id in request.args:
-            self.idevice.caption = request.args["caption"+self.id][0]
 
+        if "float" + self.id in request.args:
+            self.idevice.float = request.args["float" + self.id][0]
+
+        if "caption" + self.id in request.args:
+            self.idevice.caption = request.args["caption" + self.id][0]
 
     def renderEdit(self, style):
         """
         Returns an XHTML string with the form elements for editing this block
         """
         log.debug("renderEdit")
-        html  = "<div class=\"iDevice\">\n"
-        html += self.imageElement.renderEdit()       
-        floatArr    = [[_('Left'), 'left'],
-                      [_('Right'), 'right'],
-                      [_('None'),  'none']]
+        html = "<div class=\"iDevice\">\n"
+        html += self.imageElement.renderEdit()
+        floatArr = [[_('Left'), 'left'],
+                    [_('Right'), 'right'],
+                    [_('None'), 'none']]
 
         this_package = None
         if self.idevice is not None and self.idevice.parentNode is not None:
@@ -98,16 +98,15 @@ class ImageWithTextBlock(Block):
         html += "</div>\n"
         return html
 
-
     def renderPreview(self, style):
         """
         Returns an XHTML string for previewing this block
         """
         log.debug("renderPreview")
-        html  = "\n<!-- image with text iDevice -->\n"
+        html = "\n<!-- image with text iDevice -->\n"
         html += "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\" "
-        html += "ondblclick=\"submitLink('edit',"+self.id+", 0);\">\n"
+        html += "emphasis" + str(self.idevice.emphasis) + "\" "
+        html += "ondblclick=\"submitLink('edit'," + self.id + ", 0);\">\n"
         html += "<div class=\"image_text\" style=\""
         html += "width:" + str(self.idevice.image.width) + "px; "
         html += "float:%s;\">\n" % self.idevice.float
@@ -116,22 +115,21 @@ class ImageWithTextBlock(Block):
         html += "" + self.idevice.caption + "</div>"
         html += "</div>\n"
         html += self.textElement.renderPreview()
-        html += "<br/>\n"        
+        html += "<br/>\n"
         html += "<div style=\"clear:both;\">"
         html += "</div>\n"
         html += self.renderViewButtons()
         html += "</div>\n"
         return html
-    
 
     def renderView(self, style):
         """
         Returns an XHTML string for viewing this block
-        """        
+        """
         log.debug("renderView")
-        html  = "\n<!-- image with text iDevice -->\n"
+        html = "\n<!-- image with text iDevice -->\n"
         html += "<div class=\"iDevice "
-        html += "emphasis"+str(self.idevice.emphasis)+"\">\n"
+        html += "emphasis" + str(self.idevice.emphasis) + "\">\n"
         html += "<div class=\"image_text\" style=\""
         html += "width:" + str(self.idevice.image.width) + "px; "
         html += "float:%s;\">\n" % self.idevice.float
@@ -144,10 +142,8 @@ class ImageWithTextBlock(Block):
         html += "</div>\n"
         html += "</div>\n"
         return html
-    
 
-from exe.engine.imagewithtextidevice import ImageWithTextIdevice
-from exe.webui.blockfactory          import g_blockFactory
-g_blockFactory.registerBlockType(ImageWithTextBlock, ImageWithTextIdevice)    
+
+g_blockFactory.registerBlockType(ImageWithTextBlock, ImageWithTextIdevice)
 
 # ===========================================================================

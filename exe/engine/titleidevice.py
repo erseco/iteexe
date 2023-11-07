@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,13 +18,16 @@
 # ===========================================================================
 """
 This module is kept here for backwards compatibility of packages because
-Jelly expects to be able to import a TitleIdevice class from a titleidevice 
+Jelly expects to be able to import a TitleIdevice class from a titleidevice
 module.  See node.py:Node.upgradeToVersion2 for more details.
 """
 
 # ===========================================================================
+
+
 class TitleIdevice:
     """For backwards compatibility of jellied packages only"""
+
     def __init__(self):
         """Initialize"""
         pass

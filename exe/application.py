@@ -30,34 +30,40 @@ import sys
 
 from tempfile import mkdtemp
 # Make it so we can import our own nevow and twisted etc.
-if os.name == 'posix' and not ('--standalone' in sys.argv or '--portable' in sys.argv):
+if os.name == 'posix' and not (
+        '--standalone' in sys.argv or '--portable' in sys.argv):
     sys.path.insert(0, '/usr/share/exe')
 
 # This *must* always be the first import to prevent a warning on Windows
-from exe.webui.webserver     import WebServer
+from exe.webui.webserver import WebServer
 
-from getopt                  import getopt, GetoptError
-from twisted.internet        import reactor
-from twisted.web.static      import File
+from getopt import getopt, GetoptError
+from twisted.internet import reactor
+from twisted.web.static import File
 
-from exe                     import globals as G
-from exe.engine              import version
+from exe import globals as G
+from exe.engine import version
 from exe.engine.idevicestore import IdeviceStore
-from exe.engine.package      import Package
-from exe.engine.translate    import installSafeTranslate
-from exe.webui.browser       import launchBrowser
+from exe.engine.package import Package
+from exe.engine.translate import installSafeTranslate
+from exe.webui.browser import launchBrowser
 
 log = logging.getLogger(__name__)
+
 
 class Windows_Log(object):
     """
     Logging for py2exe application
     """
+
     def __init__(self, level):
         self.level = level
+
     def write(self, text):
         log.log(self.level, text)
-if sys.platform[:3] == "win" and not (sys.argv[0].endswith("exe_do") or \
+
+
+if sys.platform[:3] == "win" and not (sys.argv[0].endswith("exe_do") or
                                       sys.argv[0].endswith("exe_do.exe")):
     # put stderr and stdout into the log file
     sys.stdout = Windows_Log(logging.INFO)
@@ -67,6 +73,7 @@ del Windows_Log
 # Global application variable
 G.application = None
 
+
 class Application:
     """
     Main application class, pulls together everything and runs it.
@@ -74,7 +81,7 @@ class Application:
 
     # Responsible for the execution of the functions upgrade_to_version_x
     # Upload version file to '2'
-    # It is necessary to edit the value in each update if we want it to execute 
+    # It is necessary to edit the value in each update if we want it to execute
     #   the functions upgrade_to_version_x
     # They also run, obviously, if the 'configDir/version' file does not exist
     version = 2
@@ -89,7 +96,7 @@ class Application:
         self.webServer = None
         self.exeAppUri = None
         self.standalone = False  # Used for the ready to run exe
-        self.snap = False #  Used for the Snap package
+        self.snap = False  # Used for the Snap package
         self.portable = False  # FM: portable mode
         self.persistNonPersistants = False
         self.tempWebDir = mkdtemp('.eXe')
@@ -119,7 +126,8 @@ class Application:
             log.info('done serving')
         else:
             log.error('eXe appears to already be running')
-            log.error('looks like the eXe server was not able to find a valid port; terminating...')
+            log.error(
+                'looks like the eXe server was not able to find a valid port; terminating...')
         shutil.rmtree(self.tempWebDir, True)
 
     def upgrade(self):
@@ -131,10 +139,11 @@ class Application:
             # Try to read version from file, if that fails assume 0
             try:
                 stored_version = int(version_file.bytes())
-            except:
+            except BaseException:
                 stored_version = 0
 
-        # Execute upgrade_to_version_x (if they exist) until we reach current version
+        # Execute upgrade_to_version_x (if they exist) until we reach current
+        # version
         for v in range(stored_version + 1, self.version + 1):
             method = getattr(Application, 'upgrade_to_version_%d' % v, None)
             if method:
@@ -146,7 +155,8 @@ class Application:
         """Hide experimental idevices"""
         log.info('Upgrading to version 1')
 
-        # Go through all iDevices and hide them if the category is Experimental or they are old
+        # Go through all iDevices and hide them if the category is Experimental
+        # or they are old
         iDevicesToHide = [
             'reflection',
             'case study',
@@ -163,14 +173,15 @@ class Application:
         ]
         for idevice in self.ideviceStore.getIdevices():
             lower_title = idevice._title.lower()
-            if self.config.idevicesCategories.get(lower_title, '') == ['Experimental'] or lower_title in iDevicesToHide:
+            if self.config.idevicesCategories.get(lower_title, '') == [
+                    'Experimental'] or lower_title in iDevicesToHide:
                 if lower_title not in self.config.hiddeniDevices:
                     self.config.hiddeniDevices.append(lower_title)
                     self.config.configParser.set('idevices', lower_title, '0')
 
     def upgrade_to_version_2(self):
         # In the update of version 2 we want to do the same as 'upgrade_to_version_1'
-        # Old iDevices must be hidden again 
+        # Old iDevices must be hidden again
         self.upgrade_to_version_1()
 
     def processArgs(self):
@@ -178,7 +189,12 @@ class Application:
         Processes the command line arguments
         """
         try:
-            possibles_args = ["help", "version", "standalone", "portable", "snap"]
+            possibles_args = [
+                "help",
+                "version",
+                "standalone",
+                "portable",
+                "snap"]
             options, packages = getopt(sys.argv[1:], "hV", possibles_args)
         except GetoptError:
             self.usage()
@@ -207,7 +223,6 @@ class Application:
             elif option[0].lower() == '--snap':
                 self.snap = True
 
-
     def loadConfiguration(self):
         """
         Loads the config file and applies all the settings
@@ -227,16 +242,17 @@ class Application:
         else:
             from exe.engine.linuxconfig import LinuxConfig
             configKlass = LinuxConfig
-            
+
         try:
             self.config = configKlass()
-        except:
+        except BaseException:
             configPath = configKlass.getConfigPath()
             backup = configPath + '.backup'
             configPath.move(backup)
             self.config = configKlass()
             self.loadErrors.append(
-               _('An error has occurred when loading your config. A backup is saved at %s') % backup)
+                _('An error has occurred when loading your config. A backup is saved at %s') %
+                backup)
         log.debug("logging set up")
 
     def preLaunch(self):
@@ -248,20 +264,21 @@ class Application:
         self.ideviceStore = IdeviceStore(self.config)
         try:
             self.ideviceStore.load()
-        except:
+        except BaseException:
             backup = self.config.configDir / 'idevices.backup'
             if backup.exists():
                 backup.rmtree()
             (self.config.configDir / 'idevices').move(backup)
             self.loadErrors.append(
-               _('An error has occurred when loading your Idevice Store. A backup is saved at %s') % backup)
+                _('An error has occurred when loading your Idevice Store. A backup is saved at %s') %
+                backup)
             self.ideviceStore.load()
         # Make it so jelly can load objects from ~/.exe/idevices
-        sys.path.append(self.config.configDir/'idevices')
+        sys.path.append(self.config.configDir / 'idevices')
         self.webServer = WebServer(self, self.packagePath)
-        # and determine the web server's port before launching the client, so it can use the same port#:
+        # and determine the web server's port before launching the client, so
+        # it can use the same port#:
         self.webServer.find_port()
-
 
         # Add missing mime types to Twisted for Windows
         File.contentTypes.update({
@@ -294,7 +311,7 @@ class Application:
                 package = Package.load(self.packagePath)
                 self.webServer.root.package = package
                 launchBrowser(self.config, package.name)
-            except:
+            except BaseException:
                 self.webServer.root.packagePath = None
                 launchBrowser(self.config, "")
         else:
@@ -305,7 +322,8 @@ class Application:
         Print usage info
         """
         self.loadConfiguration()
-        print(_("""eXeLearning, the EXtremely Easy to use eLearning authoring tool
+        print(
+            _("""eXeLearning, the EXtremely Easy to use eLearning authoring tool
    Usage: %s [OPTION] [PACKAGE]
   -V, --version    print version information and exit
   -h, --help       display this help and exit
@@ -313,6 +331,8 @@ class Application:
   --portable       Run in portable mode
 Settings are read from exe.conf in $HOME/.exe on Linux/Unix/Mac OS or
 in Documents and Settings/<user name>/Application Data/exe on Windows XP or
-Users/<user name>/AppData/Roaming/exe on Windows 7/8/10""") % os.path.basename(sys.argv[0]))
+Users/<user name>/AppData/Roaming/exe on Windows 7/8/10""") %
+            os.path.basename(
+                sys.argv[0]))
 
 # ===========================================================================

@@ -22,11 +22,14 @@ The StandAlone config overrides the Config class with Standalone specific
 configuration
 """
 
-import sys, os
+import sys
+import os
 from exe.engine.config import Config
 from exe.engine.path import Path
 
 # ===========================================================================
+
+
 class StandaloneConfig(Config):
     """
     The StandaloneConfig overrides the Config class with ready-to-run specific
@@ -42,20 +45,20 @@ class StandaloneConfig(Config):
             self.exePath = self.exePath.dirname()
         exePath = self.exePath
         # Override the default settings
-        self.webDir        = exePath
-        self.configDir     = exePath/'config'
-        self.localeDir     = exePath/'locale'
-        self.stylesDir     = Path(exePath/'style').abspath()
-        self.templatesDir  = Path(exePath/'content_template').abspath()
-        self.styles        = []
-        self.lastDir       = exePath
-        self.eXeUIversion  = 0
+        self.webDir = exePath
+        self.configDir = exePath / 'config'
+        self.localeDir = exePath / 'locale'
+        self.stylesDir = Path(exePath / 'style').abspath()
+        self.templatesDir = Path(exePath / 'content_template').abspath()
+        self.styles = []
+        self.lastDir = exePath
+        self.eXeUIversion = 0
 
     def _getConfigPathOptions(self):
         """
         Returns the best places for a linux config file
         """
-        return [self.configDir/'exe.conf']
+        return [self.configDir / 'exe.conf']
 
 
 # ===========================================================================

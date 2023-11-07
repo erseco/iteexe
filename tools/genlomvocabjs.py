@@ -18,18 +18,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
+import re
+import json
+from exe.engine.path import Path
+from twisted.web.domhelpers import findNodesNamed
+from twisted.web.microdom import parseString
 import sys
 sys.path.insert(0, '.')
 
-from twisted.web.microdom import parseString
-from twisted.web.domhelpers import findNodesNamed
-from exe.engine.path import Path
-import json
-import re
 
 if __name__ == '__main__':
-    files = {'lomVocab': Path('exe') / 'webui' / 'schemas' / 'scorm2004' / 'common' / 'vocabValues.xsd',
-             'lomesVocab': Path('exe') / 'webui' / 'schemas' / 'scorm2004' / 'vocab' / 'lomesvocab.xsd'}
+    files = {
+        'lomVocab': Path('exe') / 'webui' / 'schemas' / 'scorm2004' / 'common' / 'vocabValues.xsd',
+        'lomesVocab': Path('exe') / 'webui' / 'schemas' / 'scorm2004' / 'vocab' / 'lomesvocab.xsd'}
     response = ''
     vocab = {}
     for varname, f in list(files.items()):
@@ -40,9 +41,13 @@ if __name__ == '__main__':
             enumerations = findNodesNamed(node, 'xs:enumeration')
             vocab[name] = []
             for enumeration in enumerations:
-                vocab[name].append([enumeration.getAttribute('value'), '_(%s)' % enumeration.getAttribute('value')])
-        response += '%s = %s;\n\n' % (varname, json.dumps(vocab, indent=4).encode('utf-8'))
+                vocab[name].append([enumeration.getAttribute(
+                    'value'), '_(%s)' % enumeration.getAttribute('value')])
+        response += '%s = %s;\n\n' % (varname,
+                                      json.dumps(
+                                          vocab,
+                                          indent=4).encode('utf-8'))
     outfile = Path('exe') / 'jsui' / 'scripts' / 'lomvocab.js'
-    response = re.sub('"_\(', '_("', response)
-    response = re.sub('\)"', '")', response)
+    response = re.sub('"_\\(', '_("', response)
+    response = re.sub('\\)"', '")', response)
     outfile.write_bytes(response)

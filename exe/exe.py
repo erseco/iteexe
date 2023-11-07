@@ -13,7 +13,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#t
+# t
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -23,6 +23,7 @@
 The eXe main script
 """
 
+from exe.application import Application
 import os
 import sys
 
@@ -39,20 +40,21 @@ sys.setrecursionlimit(2000)
 #     try:
 #        from .exe.application import Application
 #     except ImportError as error:
-       # if str(error) == "No module named exe.application":
+# if str(error) == "No module named exe.application":
 exePath = os.path.abspath(sys.argv[0])
-exeDir  = os.path.dirname(exePath)
+exeDir = os.path.dirname(exePath)
 pythonPath = os.path.split(exeDir)[0]
 sys.path.insert(0, pythonPath)
-from exe.application import Application
-       # else:
-       #     import traceback
-       #     traceback.print_exc()
-       #     sys.exit(1)
+# else:
+#     import traceback
+#     traceback.print_exc()
+#     sys.exit(1)
+
 
 def main():
     application = Application()
     application.main()
+
 
 if __name__ == "__main__":
     main()

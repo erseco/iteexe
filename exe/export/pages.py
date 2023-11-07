@@ -30,19 +30,23 @@ from exe import globals as G
 log = logging.getLogger(__name__)
 
 # List of filenames that can't be used
-# Most of this names correspond to Windows reserved names and cannot be used to name folders or files
-forbiddenPageNames = ['CON', 'PRN', 'AUX', 'CLOCK$', 'NUL', 
-                        'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 
-                        'COM6', 'COM7', 'COM8', 'COM9', 'LPT1', 
-                        'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 
-                        'LPT7', 'LPT8', 'LPT9']
+# Most of this names correspond to Windows reserved names and cannot be
+# used to name folders or files
+forbiddenPageNames = ['CON', 'PRN', 'AUX', 'CLOCK$', 'NUL',
+                      'COM1', 'COM2', 'COM3', 'COM4', 'COM5',
+                      'COM6', 'COM7', 'COM8', 'COM9', 'LPT1',
+                      'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6',
+                      'LPT7', 'LPT8', 'LPT9']
 
 # ===========================================================================
+
+
 class Page(object):
     """
     This is an abstraction for a page containing a node
     e.g. in a SCORM package or Website
     """
+
     def __init__(self, name, depth, node):
         """
         Initialize
@@ -95,25 +99,31 @@ def uniquifyNames(pages):
         # Try to find a page name that doesn't exist
         duplicates = 0
         while page_name in page_names:
-            # The first time add the number, the following replace the previous one
+            # The first time add the number, the following replace the previous
+            # one
             if duplicates == 0:
                 # Add number at the end or replace the last char if ISO9660 compatibility
                 # is enabled and the name is 8 chars long
-                if G.application.config.cutFileName == '1' and len(page_name) == 8:
+                if G.application.config.cutFileName == '1' and len(
+                        page_name) == 8:
                     page_name = page_name[:-1] + str(duplicates)
                 else:
                     page_name += str(duplicates)
             else:
                 # Replace previous number (if ISO9660 is enabled and we already
                 # filled the 8 chars, ensure we keep it in 8 chars)
-                if G.application.config.cutFileName == '1' and len(page_name) == 8:
-                    page_name = page_name[:-len(str(duplicates))] + str(duplicates)
+                if G.application.config.cutFileName == '1' and len(
+                        page_name) == 8:
+                    page_name = page_name[:- \
+                        len(str(duplicates))] + str(duplicates)
                 else:
-                    page_name = page_name[:-len(str(duplicates - 1))] + str(duplicates)
+                    page_name = page_name[:- \
+                        len(str(duplicates - 1))] + str(duplicates)
 
             duplicates += 1
 
-        # We have a unique page name, save it so we can use it in the following ones
+        # We have a unique page name, save it so we can use it in the following
+        # ones
         page_names.append(page_name)
 
         # Save page name on page info
@@ -121,4 +131,4 @@ def uniquifyNames(pages):
         # For export, temporarily set this unique name on the node itself,
         # such that any links to it can use the proper target; also
         # including the quote() & ".html", as per WebsitePage's:
-        page.node.tmp_export_filename = quote(page_name) + '.' +  extension
+        page.node.tmp_export_filename = quote(page_name) + '.' + extension

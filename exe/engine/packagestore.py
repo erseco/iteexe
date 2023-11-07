@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,8 @@ has loaded, (and loading and saving them?)
 """
 
 import logging
-from exe.engine.package      import Package
-from exe                     import globals as G
+from exe.engine.package import Package
+from exe import globals as G
 log = logging.getLogger(__name__)
 
 
@@ -33,9 +33,9 @@ class PackageStore:
     PackageStore is responsible for managing the Packages which the eXe server
     has loaded, and loading and saving them
     """
-    def __init__(self):
-        self.loaded       = {}
 
+    def __init__(self):
+        self.loaded = {}
 
     def createPackage(self):
         """
@@ -47,19 +47,17 @@ class PackageStore:
         name = "newPackage"
         while name in self.loaded:
             name = "newPackage" + str(i)
-            i += 1                    
+            i += 1
         package = Package(name)
         self.loaded[package.name] = package
 
         return package
-
 
     def getPackage(self, name):
         """
         Get package using the name
         """
         return self.loaded[name]
-    
 
     def addPackage(self, package):
         """
@@ -67,14 +65,12 @@ class PackageStore:
         """
         self.loaded[package.name] = package
 
-
     def saveAll(self):
         """
         Save all the packages in the package store out to disk
         """
         for package in list(self.loaded.values()):
             package.save()
-
 
     def loadPackage(self, path):
         """
@@ -84,13 +80,15 @@ class PackageStore:
         self.loaded[package.name] = package
         return package
 
-
     def createPackageFromTemplate(self, templateBase, is_new_package=False):
         """
         Creates a new package from Template
         """
         log.debug("createPackageFromTemplate")
-        package = Package.load(templateBase, isTemplate=True, is_new_package=is_new_package)
+        package = Package.load(
+            templateBase,
+            isTemplate=True,
+            is_new_package=is_new_package)
         package.set_templateFile(str(templateBase.basename().splitext()[0]))
         # Make up an initial unique name
         i = 1
@@ -98,10 +96,10 @@ class PackageStore:
         while name in self.loaded:
             name = "newPackage" + str(i)
             i += 1
-        
+
         # Prevent the package from opening on the last node edited
         package.currentNode = package.root
-        
+
         package.name = name
         package.filename = ""
 
@@ -113,10 +111,10 @@ class PackageStore:
             package.lang = G.application.config.locale.split('_')[0]
         else:
             package.lang = G.application.config.locale
-            
+
         package.translatePackage()
         package.isChanged = False
-        
+
         self.loaded[package.name] = package
 
         return package

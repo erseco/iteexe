@@ -15,13 +15,14 @@ try:
     # we might be able to revert this some day.
     # If this doesn't work, try import modulefinder
     try:
-         import py2exe.mf as modulefinder
+        import py2exe.mf as modulefinder
     except ImportError:
         import modulefinder
-    import win32com, sys
+    import win32com
+    import sys
     for p in win32com.__path__[1:]:
         modulefinder.AddPackagePath("win32com", p)
-    for extra in ["win32com.shell"]: #,"win32com.mapi"
+    for extra in ["win32com.shell"]:  # ,"win32com.mapi"
         __import__(extra)
         m = sys.modules[extra]
         for p in m.__path__[1:]:
@@ -36,20 +37,21 @@ g_files = {
         # Although this is a copy of debian/changelog
         "ChangeLog",
         # Removed, this is the GPL - to copyright
-        #"COPYING",
+        # "COPYING",
         # No longer used, after bug 2284 was fixed
-        #"NEWS",
+        # "NEWS",
         # ReadMe file
         "README",
         # eXe main icon
         "exe/webui/images/eXe_icon.ico",
-        #"exe/webui/mr_x.gif",
+        # "exe/webui/mr_x.gif",
         # License file
         "installs/windows/exeLicense.txt",
         # Root certificates
         os.path.join(os.path.dirname(httplib2.__file__), 'cacerts.txt')
     ]
 }
+
 
 def dataFiles(dirs, excludes=[]):
     """
@@ -62,7 +64,8 @@ def dataFiles(dirs, excludes=[]):
     # Go throught all files
     for file in dirs:
         # This will prevent it from copying hidden or excluded files
-        if not os.path.basename(file[0]).startswith(".") and file not in excludes:
+        if not os.path.basename(file[0]).startswith(
+                ".") and file not in excludes:
             #  If it is a file
             if os.path.isfile(file):
                 # If there is source dir
@@ -90,6 +93,7 @@ def dataFiles(dirs, excludes=[]):
                 # Call this function with the subdirectory
                 dataFiles(glob.glob(file + "/*"), excludes)
 
+
 # Source dir
 g_oldBase = "exe/webui"
 # Destination dir
@@ -110,7 +114,7 @@ dataFiles(
         "exe/webui/tools"
     ],
     # We exlude mimetext executables for other OS
-    excludes = ['mimetex-darwin.cgi']
+    excludes=['mimetex-darwin.cgi']
 )
 
 # Process metadata validation rules

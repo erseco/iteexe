@@ -60,7 +60,8 @@ class OutlinePane(Renderable, Resource):
                 node = package.findNode(nodeId)
                 if node is not None:
                     package.currentNode = node
-                    self.parent.clientHandleFactory.clientHandles[request.args['clientHandleId'][0]].currentNodeId = node.id
+                    self.parent.clientHandleFactory.clientHandles[
+                        request.args['clientHandleId'][0]].currentNodeId = node.id
                 else:
                     log.error("changeNode cannot locate " + nodeId)
 
@@ -74,8 +75,12 @@ class OutlinePane(Renderable, Resource):
             self.package.currentNode = node.createChild()
             client.currentNodeId = self.package.currentNode.id
             log.debug('Updating clients Outlines')
-            client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-            client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+            client.sendScript(
+                'eXe.app.getController("Outline").reload()',
+                filter_func=allSessionPackageClients)
+            client.call(
+                'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+                client.currentNodeId)
 
     def handleDelNode(self, client, nodeId):
         """Called from xmlhttp.
@@ -85,12 +90,16 @@ class OutlinePane(Renderable, Resource):
         if node is not None and node is not self.package.root:
             # Update our server version of the package
             if (node.isAncestorOf(self.package.currentNode) or
-                node is self.package.currentNode):
+                    node is self.package.currentNode):
                 self.package.currentNode = node.parent
                 client.currentNodeId = self.package.currentNode.id
             node.delete()
-            client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-            client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+            client.sendScript(
+                'eXe.app.getController("Outline").reload()',
+                filter_func=allSessionPackageClients)
+            client.call(
+                'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+                client.currentNodeId)
         else:
             log.error("deleteNode cannot locate " + nodeId)
 
@@ -106,8 +115,12 @@ class OutlinePane(Renderable, Resource):
         # and those of ALL of its children nodes, as well:
         node.RenamedNodePath()
 
-        client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-        client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+        client.sendScript(
+            'eXe.app.getController("Outline").reload()',
+            filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+            client.currentNodeId)
 
     def handleSetTreeSelection(self, client):
         """
@@ -124,29 +137,45 @@ class OutlinePane(Renderable, Resource):
         """Promotes a node"""
         node = self.package.findNode(sourceNodeId)
         node.promote()
-        client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-        client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+        client.sendScript(
+            'eXe.app.getController("Outline").reload()',
+            filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+            client.currentNodeId)
 
     def handleDemote(self, client, sourceNodeId):
         """Demotes a node"""
         node = self.package.findNode(sourceNodeId)
         node.demote()
-        client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-        client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+        client.sendScript(
+            'eXe.app.getController("Outline").reload()',
+            filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+            client.currentNodeId)
 
     def handleUp(self, client, sourceNodeId):
         """Moves a node up its list of siblings"""
         node = self.package.findNode(sourceNodeId)
         node.up()
-        client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-        client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+        client.sendScript(
+            'eXe.app.getController("Outline").reload()',
+            filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+            client.currentNodeId)
 
     def handleDown(self, client, sourceNodeId):
         """Moves a node down its list of siblings"""
         node = self.package.findNode(sourceNodeId)
         node.down()
-        client.sendScript('eXe.app.getController("Outline").reload()', filter_func=allSessionPackageClients)
-        client.call('eXe.app.getController("Outline").loadNodeOnAuthoringPage', client.currentNodeId)
+        client.sendScript(
+            'eXe.app.getController("Outline").reload()',
+            filter_func=allSessionPackageClients)
+        client.call(
+            'eXe.app.getController("Outline").loadNodeOnAuthoringPage',
+            client.currentNodeId)
 
     def render(self, request=None):
         """

@@ -27,12 +27,12 @@ import random
 if '..' not in sys.path:
     sys.path.insert(0, '..')
 
-from exe.application         import Application
-from exe.engine.config       import Config
+from exe.application import Application
+from exe.engine.config import Config
 from exe.engine.configparser import ConfigParser
-from exe.engine.package      import Package
-from exe.engine.path         import Path
-from exe                import globals as G
+from exe.engine.package import Package
+from exe.engine.path import Path
+from exe import globals as G
 
 
 # Choose which ConfigParser we'll use
@@ -63,8 +63,10 @@ class FakeClient(object):
     def sendScript(self, script, filter_func=None):
         pass
 
+
 class FakeSession(object):
-    uid = random.randint(1,100)
+    uid = random.randint(1, 100)
+
 
 class FakeRequest(object):
     """
@@ -88,12 +90,13 @@ class FakeRequest(object):
         self.locateHook = None
         self.parent = None
         self.isAttrib = None
-        self.inURL = None 
+        self.inURL = None
         self.precompile = None
-    
-    #fake setHeader - its really fake
+
+    # fake setHeader - its really fake
     def setHeader(self, header_name, header_val):
         pass
+
 
 class SuperTestCase(unittest.TestCase):
     """
@@ -118,7 +121,7 @@ class SuperTestCase(unittest.TestCase):
         # Start up the app and friends
         if G.application is None:
             G.application = Application()
-            
+
         self.app = G.application
         G.application = self.app
         self.app.loadConfiguration()
@@ -148,14 +151,15 @@ class SuperTestCase(unittest.TestCase):
         confParser = ConfigParser()
         SuperTestCase.update_config_parser(confParser)
         confParser.write(logFileName)
-        
+
         if G.application is None:
             G.application = Application()
-        
+
             G.application.loadConfiguration()
-            SuperTestCase.update_config_parser(G.application.config.configParser)
+            SuperTestCase.update_config_parser(
+                G.application.config.configParser)
             G.application.config.loadSettings()
-            
+
             G.application.preLaunch()
 
     @classmethod
@@ -185,7 +189,6 @@ class SuperTestCase(unittest.TestCase):
         logging = configParser.addSection('logging')
         logging.root = 'DEBUG'
 
-    
     def _setupConfigFile(self, configParser):
         """
         Override this to setup any customised config
@@ -243,13 +246,14 @@ class HTMLChecker(object):
         """
         # Wrap the html in proper document tags if necessary
         if wrap:
-            template = ('<?xml version="1.0" encoding="iso-8859-1"?>'
-                        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 '
-                        'Transitional//EN" '
-                        '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-                        '<html xmlns="http://www.w3.org/1999/xhtml">'
-                        '<head><title>No Title</title></head><body>'
-                        '%s</body></html>')
+            template = (
+                '<?xml version="1.0" encoding="iso-8859-1"?>'
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 '
+                'Transitional//EN" '
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+                '<html xmlns="http://www.w3.org/1999/xhtml">'
+                '<head><title>No Title</title></head><body>'
+                '%s</body></html>')
             if addForm:
                 template = template % \
                     ('<form method="post" action="NO_ACTION"'
@@ -259,8 +263,9 @@ class HTMLChecker(object):
         htmlFile = open('tmp.html', 'wb')
         htmlFile.write(html.encode('utf-8'))
         htmlFile.close()
-        #stdin, stdout, stderr = os.popen3('xmllint --encode utf8 --dtdvalid xhtml1-strict.dtd tmp.html', True)
-        stdin, stdout, stderr = os.popen3('xmllint --encode utf8 --dtdvalid xhtml1-transitional.dtd tmp.html', True)
+        # stdin, stdout, stderr = os.popen3('xmllint --encode utf8 --dtdvalid xhtml1-strict.dtd tmp.html', True)
+        stdin, stdout, stderr = os.popen3(
+            'xmllint --encode utf8 --dtdvalid xhtml1-transitional.dtd tmp.html', True)
         out = stdout.read()
         err = stderr.read()
         ret = os.wait()[1] >> 8
@@ -271,7 +276,9 @@ class HTMLChecker(object):
             # Here we have errors and must filter some out before returning
             return self.filterErrors(err, ret)
         else:
-            raise ValueError('Unknown return code returned by xmllint: %d' % ret)
+            raise ValueError(
+                'Unknown return code returned by xmllint: %d' %
+                ret)
 
     def filterErrors(self, stderr, returnCode):
         """
@@ -296,10 +303,10 @@ class HTMLChecker(object):
         for reg in self.resToIgnore:
             if hasattr(reg, 'search'):
                 # Regular expression search filter
-                check = lambda k: reg.search(k)
+                def check(k): return reg.search(k)
             else:
                 # String in filter
-                check = lambda k: reg in k
+                def check(k): return reg in k
             for key in list(errors.keys()):
                 if check(key):
                     del errors[key]
@@ -310,8 +317,7 @@ class HTMLChecker(object):
             def output(line=''):
                 print(line)
                 errorFile.write(line + '\n')
-            keys = list(errors.keys())
-            keys.sort()
+            keys = sorted(errors.keys())
             if returnCode == 1:
                 output("Invalid XML:")
             else:
@@ -340,6 +346,7 @@ class TestSuperTestCase(SuperTestCase):
         Tests that the setup runs.
         To run type: python utils.py
         """
+
 
 if __name__ == '__main__':
     unittest.main()

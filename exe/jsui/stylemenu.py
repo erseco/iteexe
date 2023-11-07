@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2012, Pedro Peña Pérez, Open Phoenix IT
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,21 +22,27 @@
 StyleMenu provides a list of Styles used in eXe and handle related client events
 """
 
+import locale
+import json
 import logging
 from xml.dom.minidom import parse
-from exe                       import globals as G
-from exe.engine.path           import Path
+from exe import globals as G
+from exe.engine.path import Path
 from exe.webui.renderable import Renderable
 from twisted.web.resource import Resource
 from exe.webui.livepage import allSessionClients
 log = logging.getLogger(__name__)
-import json
-import locale
 
-x_ = lambda s: s
-fakeTranslate = [x_('INTEF with horizontal menu')]  # Unused var to add translatable style menu strings to pybabel
+
+def x_(s): return s
+
+
+# Unused var to add translatable style menu strings to pybabel
+fakeTranslate = [x_('INTEF with horizontal menu')]
 
 # ===========================================================================
+
+
 class StyleMenu(Renderable, Resource):
     """
     StyleMenu provides a list of Styles used in eXe and handle related client events
@@ -44,9 +50,9 @@ class StyleMenu(Renderable, Resource):
     name = 'styleMenu'
 
     def __init__(self, parent):
-        """ 
+        """
         Initialize
-        """ 
+        """
         Renderable.__init__(self, parent)
         if parent:
             self.parent.putChild(self.name, self)
@@ -56,65 +62,77 @@ class StyleMenu(Renderable, Resource):
 
     def process(self, request):
         log.debug("process")
-        
-        if ("action" in request.args and 
-            request.args["action"][0] == "ChangeStyle"):
-            log.debug("changing style to "+request.args["object"][0])
+
+        if ("action" in request.args and
+                request.args["action"][0] == "ChangeStyle"):
+            log.debug("changing style to " + request.args["object"][0])
             self.package.style = request.args["object"][0]
             self.package.isChanged = True
-            
-    """    
-    def stylename(self,direc): 
-        #FM: load style name 
+
+    """
+    def stylename(self,direc):
+        #FM: load style name
         themePath = G.application.config.stylesDir.joinpath(direc)
         themeXMLFile = Path(themePath/"config.xml")
         if themeXMLFile.isfile():
              xmldom = parse(themeXMLFile)
-             rf = xmldom.getElementsByTagName('name')[0].firstChild.nodeValue   
+             rf = xmldom.getElementsByTagName('name')[0].firstChild.nodeValue
         else:
             rf=direc.capitalize()
         return rf
         """
-          
+
     def render(self, request=None):
         """
         Returns a JSON string with the styles
         """
         log.debug("render")
 
-        l = []       
-        printableStyles = [(x.get_name(), x.get_dirname()) for x in self.config.styleStore.getStyles()]
+        l = []
+        printableStyles = [(x.get_name(), x.get_dirname())
+                           for x in self.config.styleStore.getStyles()]
 
         def sortfunc(s1, s2):
             return locale.strcoll(s1[0], s2[0])
         locale.setlocale(locale.LC_ALL, "")
         printableStyles.sort(sortfunc)
         for printableStyle, style in printableStyles:
-            l.append({ "label": printableStyle, "style": style, "selected": True if style == self.package.style else False})
-        return json.dumps(l).encode('utf-8')     
-    
+            l.append({"label": printableStyle, "style": style,
+                     "selected": True if style == self.package.style else False})
+        return json.dumps(l).encode('utf-8')
+
     def addStyle(self, style):
         """
         Adds an Style to the list
         """
-        self.client.sendScript('eXe.app.getController("Toolbar").stylesRender()', filter_func=allSessionClients)
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").stylesRender()',
+            filter_func=allSessionClients)
         """
         The Styles are now in two different menus
         """
-        self.client.sendScript('eXe.app.getController("Toolbar").stylesRenderAdvanced()', filter_func=allSessionClients)        
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").stylesRenderAdvanced()',
+            filter_func=allSessionClients)
         """
         We reload the Styles manager panel too
         """
-        self.client.sendScript('Ext.getCmp("stylemanagerwin").down("form").reload("doList")', filter_func=allSessionClients)
-    
+        self.client.sendScript(
+            'Ext.getCmp("stylemanagerwin").down("form").reload("doList")',
+            filter_func=allSessionClients)
+
     def delStyle(self, style):
         """
         Delete an Style to the list
         """
-        self.client.sendScript('eXe.app.getController("Toolbar").stylesRender()', filter_func=allSessionClients)
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").stylesRender()',
+            filter_func=allSessionClients)
         """
         The Styles are now in two different menus
-        """        
-        self.client.sendScript('eXe.app.getController("Toolbar").stylesRenderAdvanced()', filter_func=allSessionClients)
-    
+        """
+        self.client.sendScript(
+            'eXe.app.getController("Toolbar").stylesRenderAdvanced()',
+            filter_func=allSessionClients)
+
 # ===========================================================================

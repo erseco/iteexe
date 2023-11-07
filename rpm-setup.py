@@ -6,7 +6,7 @@
 import os.path
 import glob
 from distutils.core import setup
-from exe.engine     import version
+from exe.engine import version
 
 # Files that are going to be copied (We add these ones manually)
 g_files = {
@@ -14,9 +14,9 @@ g_files = {
         # Although this is a copy of debian/changelog.gz
         "ChangeLog",
         # Removed, this is the GPL - to copyright
-        #"COPYING",
+        # "COPYING",
         # No longer used, after bug 2284 was fixed
-        #"NEWS"
+        # "NEWS"
     ],
     # ReadMe file
     '/usr/share/doc/intef-exe': ["README"],
@@ -26,7 +26,8 @@ g_files = {
     '/usr/share/pixmaps': ["exe.xpm"]
 }
 
-def dataFiles(dirs, excludes = []):
+
+def dataFiles(dirs, excludes=[]):
     """
     Recursively get all the files in these 'dirs' directories
     except those listed in 'excludes'
@@ -38,7 +39,7 @@ def dataFiles(dirs, excludes = []):
     for file in dirs:
         # This will prevent it from copying hidden or excluded files
         if not os.path.basename(file[0]).startswith("."):
-             #  If it is a file
+            #  If it is a file
             if os.path.isfile(file) and file not in excludes:
                 # We get only the part after that from the file path
                 path = file[len(g_oldBase) + 1:]
@@ -60,6 +61,7 @@ def dataFiles(dirs, excludes = []):
                 # Call this function with the subdirectory
                 dataFiles(glob.glob(file + "/*"), excludes)
 
+
 # Source dir
 g_oldBase = "exe/webui"
 # Destination dir
@@ -79,7 +81,7 @@ dataFiles(
         "exe/webui/templates",
         "exe/webui/tools"
     ],
-    excludes = [
+    excludes=[
         "exe/webui/templates/mimetex-darwin.cgi",
         "exe/webui/templates/mimetex.exe"
     ]
@@ -111,28 +113,28 @@ dataFiles(["exe/jsui/scripts", "exe/jsui/templates"])
 # Run the setup
 setup(
     # Project name
-    name = version.project,
+    name=version.project,
     # Project version
-    version = version.version,
+    version=version.version,
     # Project description
-    description = "The EXtremely Easy to use eLearning authoring tool",
+    description="The EXtremely Easy to use eLearning authoring tool",
     # Project long description
-    long_description = """\
+    long_description="""\
 The eXe project is an authoring environment to enable teachers
 to publish web content without the need to become proficient in
 HTML or XML markup.  Content generated using eXe can be used by
 any Learning Management System.
 """,
     # Project homepage
-    url = "http://exelearning.net",
+    url="http://exelearning.net",
     # Project author
-    author = "INTEF-eXe Project",
+    author="INTEF-eXe Project",
     # Author email
-    author_email = "admin@exelearning.net",
+    author_email="admin@exelearning.net",
     # Project license
-    license = "GPL",
+    license="GPL",
     # Executable files
-    scripts = ["exe/exe", "exe/exe_do"],
+    scripts=["exe/exe", "exe/exe_do"],
     # Project packages
     packages=[
         "exe",
@@ -145,5 +147,5 @@ any Learning Management System.
         "exe.engine.exceptions"
     ],
     # Files list
-    data_files = list(g_files.items())
+    data_files=list(g_files.items())
 )

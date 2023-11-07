@@ -20,12 +20,15 @@
 from exe.engine.config import Config
 import logging
 from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
-import unittest, sys
+import unittest
+import sys
 from exe.engine.configparser import ConfigParser
 from exe.engine.path import Path
 import utils
 
 # ===========================================================================
+
+
 class TestConfig(utils.SuperTestCase):
 
     def _setupConfigFile(self, configParser):
@@ -37,7 +40,7 @@ class TestConfig(utils.SuperTestCase):
         tmp = Path('tmp')
         if not tmp.exists():
             tmp.mkdir()
-        logfn = tmp/'exe.log'
+        logfn = tmp / 'exe.log'
         if logfn.exists():
             try:
                 logfn.remove()
@@ -53,11 +56,11 @@ class TestConfig(utils.SuperTestCase):
         Tests that the correct logging directory is made
         """
         # See if we can read it
-        Config._getConfigPathOption  = lambda s: ['test.conf']
+        Config._getConfigPathOption = lambda s: ['test.conf']
         rootLog = logging.getLogger()
-        fooLog  = logging.getLogger("foo")
-        barLog  = logging.getLogger("bar")
-        self.assertEqual(fooLog.level,  DEBUG)
+        fooLog = logging.getLogger("foo")
+        barLog = logging.getLogger("bar")
+        self.assertEqual(fooLog.level, DEBUG)
         self.assertEqual(rootLog.level, ERROR)
 
         rootLog.debug("This")
@@ -71,15 +74,15 @@ class TestConfig(utils.SuperTestCase):
         barLog.warning("Boston")
         barLog.error("Massachusetts")
 
-        results = ["root ERROR software", "root CRITICAL you can", 
-                   "foo DEBUG distribute", "foo INFO is free", 
+        results = ["root ERROR software", "root CRITICAL you can",
+                   "foo DEBUG distribute", "foo INFO is free",
                    "foo ERROR and/or modify", "bar ERROR Massachusetts"]
         resultFile = open("tmp/exe.log")
         i = 0
         for line in resultFile.readlines():
             self.assertEqual(line[24:].strip(), results[i])
             i += 1
-                
+
 #    def testUpgradeAppDir(self):
 #        """
 #        Tests that config files with

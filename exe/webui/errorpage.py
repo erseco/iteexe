@@ -32,14 +32,14 @@ class ErrorPage(Resource):
     """
     Displays a page with an error message
     """
-    
+
     def __init__(self, errMessage):
         """
         Initialize
         """
         Resource.__init__(self)
         self.errMessage = errMessage
-        
+
     def getChild(self, name, request):
         """
         Get the child page for the name given
@@ -49,15 +49,14 @@ class ErrorPage(Resource):
         else:
             return Resource.getChild(self, name, request)
 
-
     def render_GET(self, request):
         """
         Create a new package and redirect the webrowser to the URL for it
         """
         log.info("render_GET" + repr(request.args))
-                     
+
         # Rendering
-        html = "<html><body>" 
+        html = "<html><body>"
         html += "<b>" + self.errMessage + "</b>"
         html += common.footer()
         return html

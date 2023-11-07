@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2017, CeDeC
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 
 import chardet
 import logging
-from xml.dom              import minidom
-from zipfile              import ZipFile
-from exe.engine.path           import Path, TempDirPath, toUnicode
+from xml.dom import minidom
+from zipfile import ZipFile
+from exe.engine.path import Path, TempDirPath, toUnicode
 
 import collections
 if hasattr(collections, 'OrderedDict'):
@@ -31,6 +31,7 @@ else:
     OrderedDict = ordereddict.OrderedDict
 
 log = logging.getLogger(__name__)
+
 
 class Template():
     """
@@ -78,17 +79,21 @@ class Template():
                 setattr(self, internal_attribute, xml_values[attr])
 
             # _is_base_template should be always a boolean
-            if not type(self._is_base_template) is bool:
+            if not isinstance(self._is_base_template, bool):
                 self._is_base_template = bool(self._is_base_template)
 
-            self._attributes = OrderedDict(sorted(list(_attributespre.items()), key=lambda t: t[1][2]))
+            self._attributes = OrderedDict(
+                sorted(
+                    list(
+                        _attributespre.items()),
+                    key=lambda t: t[1][2]))
 
     def get_name(self):
         """
         Get name property.
         """
         return _(self._name)
-    
+
     def set_name(self, name):
         """
         Set new value for name property.
@@ -100,7 +105,7 @@ class Template():
         Get author property.
         """
         return self._author
-    
+
     def set_author(self, author):
         """
         Set new value for author property.
@@ -112,13 +117,13 @@ class Template():
         Get author URL property.
         """
         return self._author_url
-    
+
     def set_author_url(self, author_url):
         """
         Set new value for author URL property.
         """
         self._author_url = author_url
-    
+
     # Template public properties
     name = property(get_name, set_name)
     author = property(get_author, set_author)
@@ -133,12 +138,13 @@ class Template():
             if self._valid:
                 source_zip = ZipFile(self.path, 'r')
                 configxml = source_zip.read('config.xml')
-                
+
                 try:
                     newconfigdata = configxml.decode()
                 except UnicodeDecodeError:
                     configcharset = chardet.detect(configxml)
-                    newconfigdata = configxml.decode(configcharset['encoding'], 'replace')
+                    newconfigdata = configxml.decode(
+                        configcharset['encoding'], 'replace')
 
                 xml_config = minidom.parseString(newconfigdata)
 
@@ -147,29 +153,31 @@ class Template():
 
                 # Get main <template> tag
                 template_tag = xml_config.getElementsByTagName('template')
-                
+
                 # If there is a main element tag
                 if len(template_tag) > 0:
                     # Go over all the child nodes
                     for tag in template_tag[0].childNodes:
                         if isinstance(tag, minidom.Element):
-                            result.update({tag.tagName: tag.firstChild.nodeValue})
-                    
+                            result.update(
+                                {tag.tagName: tag.firstChild.nodeValue})
+
                     if 'name' in result:
                         self._validConfig = True
                         return result
-        except:
+        except BaseException:
             self._valid = False
 
     def _checkValid(self):
         """
-        Perform basic checks to ensure the template is valid 
+        Perform basic checks to ensure the template is valid
         """
         source_zip = ZipFile(self.path, 'r')
         namelist = source_zip.namelist()
-        
+
         # To be valid it must have a config.xml and a contentv3.xml
-        # Further checks regarding config.xml will be done when trying to load it
+        # Further checks regarding config.xml will be done when trying to load
+        # it
         if 'config.xml' in namelist and 'contentv3.xml' in namelist:
             self._valid = True
         else:
@@ -188,9 +196,10 @@ class Template():
         properties = []
         for attribute in list(self._attributes.keys()):
             value = getattr(self, attribute)
-            properties.append({'name': _(self._attributes[attribute][0]), 'value': value})
+            properties.append(
+                {'name': _(self._attributes[attribute][0]), 'value': value})
 
-        return properties 
+        return properties
 
     def __cmp__(self, other):
         """

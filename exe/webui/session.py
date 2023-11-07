@@ -46,13 +46,17 @@ def setLocaleFromRequest(request):
         if self.real_prepath_len is not None:
             path = request.postpath = request.prepath[self.real_prepath_len:]
             del request.prepath[self.real_prepath_len:]
-        result = defer.maybeDeferred(self.renderLocalized, request).addCallback(
-            self._handle_NOT_DONE_YET, request)
+        result = defer.maybeDeferred(
+            self.renderLocalized,
+            request).addCallback(
+            self._handle_NOT_DONE_YET,
+            request)
         return result
+
 
 class eXeResourceAdapter(appserver.OldResourceAdapter):
     def renderLocalized(self, request):
-#        setLocaleFromRequest(request)
+        #        setLocaleFromRequest(request)
         return self.original.render(request)
 
     def renderHTTP(self, ctx):
@@ -60,9 +64,13 @@ class eXeResourceAdapter(appserver.OldResourceAdapter):
         if self.real_prepath_len is not None:
             path = request.postpath = request.prepath[self.real_prepath_len:]
             del request.prepath[self.real_prepath_len:]
-        result = defer.maybeDeferred(self.renderLocalized, request).addCallback(
-            self._handle_NOT_DONE_YET, request)
+        result = defer.maybeDeferred(
+            self.renderLocalized,
+            request).addCallback(
+            self._handle_NOT_DONE_YET,
+            request)
         return result
+
 
 compy.registerAdapter(eXeResourceAdapter, resource.IResource, inevow.IResource)
 
@@ -76,11 +84,11 @@ class eXeRequest(appserver.NevowRequest):
         self.locale = None
 
     def gotPageContext(self, pageContext):
-#         request = inevow.IRequest(pageContext)
-#        self.locale = setLocaleFromRequest(request)
+        #         request = inevow.IRequest(pageContext)
+        #        self.locale = setLocaleFromRequest(request)
         appserver.NevowRequest.gotPageContext(self, pageContext)
 
-    def getSession(self, sessionInterface = None):
+    def getSession(self, sessionInterface=None):
         self.sitepath = [str(self.host.port)]
         log.debug("In Cookie's: %s" % self.received_cookies)
         session = appserver.NevowRequest.getSession(self, sessionInterface)
@@ -89,9 +97,10 @@ class eXeRequest(appserver.NevowRequest):
 
     def getPackageName(self):
         try:
-            return ''+self.getHeader('referer').split('/')[-1]
-        except:
+            return '' + self.getHeader('referer').split('/')[-1]
+        except BaseException:
             return None
+
 
 class eXeSession(server.Session):
     def __init__(self, *args, **kwargs):

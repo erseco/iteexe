@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2007 eXe Project, New Zealand Tertiary Education Commission
 #
@@ -25,50 +25,53 @@ import copy
 import logging
 import re
 import collections
-from copy                 import deepcopy
-from exe.engine.persist   import Persistable
+from copy import deepcopy
+from exe.engine.persist import Persistable
 from exe.engine.translate import lateTranslate
-from exe.engine.resource  import Resource
+from exe.engine.resource import Resource
 
 log = logging.getLogger(__name__)
 
 # ===========================================================================
+
+
 class Idevice(Persistable):
     """
     The base class for all iDevices
-    iDevices are mini templates which the user uses to create content in the 
+    iDevices are mini templates which the user uses to create content in the
     package
     """
 
     # Class attributes
-    # see derieved classes for persistenceVersion 
+    # see derieved classes for persistenceVersion
     nextId = 1
     NoEmphasis, SomeEmphasis, StrongEmphasis = list(range(3))
 
-    def __init__(self, title, author, purpose, tip, icon, parentNode = None):
+    def __init__(self, title, author, purpose, tip, icon, parentNode=None):
         """Initialize a new iDevice, setting a unique id"""
         log.debug("Creating iDevice")
-        
-        self.edit        = True
+
+        self.edit = True
         self.lastIdevice = True
-        self.emphasis    = Idevice.NoEmphasis
-        self.id          = str(Idevice.nextId)
-        Idevice.nextId  += 1
-        self.version      = 0
-        self.parentNode   = parentNode
-        self._title       = title
-        self._author      = author
-        self._purpose     = purpose
-        self._tip         = tip
-        self.icon         = icon
+        self.emphasis = Idevice.NoEmphasis
+        self.id = str(Idevice.nextId)
+        Idevice.nextId += 1
+        self.version = 0
+        self.parentNode = parentNode
+        self._title = title
+        self._author = author
+        self._purpose = purpose
+        self._tip = tip
+        self.icon = icon
         self.originalicon = icon
-        self._typeName    = title        
-            
+        self._typeName = title
+
         # userResources are copied into and stored in the package
         self.userResources = []
-        # systemResources are resources from whatever style dir we are using at render time
+        # systemResources are resources from whatever style dir we are using at
+        # render time
         self.systemResources = []
-            
+
     # Properties
     def get_title(self):
         """
@@ -79,12 +82,11 @@ class Idevice(Persistable):
             self._title = 'NO TITLE'
         if self._title:
             title = c_(self._title)
-            title = title.replace('&', '&amp;') 
+            title = title.replace('&', '&amp;')
             title = title.replace('"', '&quot;')
             return title
         else:
             return ''
-
 
     def set_title(self, value):
         """
@@ -93,11 +95,11 @@ class Idevice(Persistable):
         if c_(self._title) != value:
             self._title = value
 
-    title    = property(get_title, set_title)
+    title = property(get_title, set_title)
     rawTitle = lateTranslate('title')
-    author   = lateTranslate('author')
-    purpose  = lateTranslate('purpose')
-    tip      = lateTranslate('tip')
+    author = lateTranslate('author')
+    purpose = lateTranslate('purpose')
+    tip = lateTranslate('tip')
 
     def get_klass(self):
         if hasattr(self, 'class_'):
@@ -110,7 +112,8 @@ class Idevice(Persistable):
                 if self._title == '':
                     customIdeviceClass += 'untitledIdevice'
                 else:
-                    customIdeviceClass += 'Idevice'+re.sub( '\W+', '', self._title )
+                    customIdeviceClass += 'Idevice' + \
+                        re.sub('\\W+', '', self._title)
                 # 3. Icon
                 if self.icon:
                     customIdeviceClass += ' icon' + self.icon
@@ -158,15 +161,15 @@ class Idevice(Persistable):
         log.debug("Cloning iDevice")
         newIdevice = copy.deepcopy(self)
         return newIdevice
-        
+
     def delete(self):
         """
         delete an iDevice from it's parentNode
         """
         # Clear out old user resources
         # use reverse for loop to delete old user resources
-        length=len(self.userResources) 
-        for i in range(length-1, -1, -1):
+        length = len(self.userResources)
+        for i in range(length - 1, -1, -1):
             # possible bug fix, due to inconsistent order of loading:
             # ensure that this idevice IS attached to the resource:
             if self.userResources[i]._idevice is None:
@@ -181,7 +184,6 @@ class Idevice(Persistable):
             self.parentNode.idevices.remove(self)
             self.parentNode = None
 
-
     def isFirst(self):
         """
         Return true if this is the first iDevice in this node
@@ -189,14 +191,12 @@ class Idevice(Persistable):
         index = self.parentNode.idevices.index(self)
         return index == 0
 
-
     def isLast(self):
         """
         Return true if this is the last iDevice in this node
         """
         index = self.parentNode.idevices.index(self)
         return index == len(self.parentNode.idevices) - 1
-
 
     def movePrev(self):
         """
@@ -207,8 +207,7 @@ class Idevice(Persistable):
         if index > 0:
             temp = parentNode.idevices[index - 1]
             parentNode.idevices[index - 1] = self
-            parentNode.idevices[index]     = temp
-
+            parentNode.idevices[index] = temp
 
     def moveNext(self):
         """
@@ -219,8 +218,7 @@ class Idevice(Persistable):
         if index < len(parentNode.idevices) - 1:
             temp = parentNode.idevices[index + 1]
             parentNode.idevices[index + 1] = self
-            parentNode.idevices[index]     = temp
-
+            parentNode.idevices[index] = temp
 
     def setParentNode(self, parentNode):
         """
@@ -237,31 +235,31 @@ class Idevice(Persistable):
         # and update any internal anchors and their links:
         self.ChangedParentNode(old_node, parentNode)
 
-
     def ChangedParentNode(self, old_node, new_node):
         """
         To update all fo the anchors (if any) that are defined within
-        any of this iDevice's various fields, and any 
+        any of this iDevice's various fields, and any
         internal links corresponding to those anchors.
         This is essentially a variation of Node:RenamedNode()
-        It also removes any internal links from the data structures as well, 
+        It also removes any internal links from the data structures as well,
         if this iDevice is being deleted
         """
         my_fields = self.getRichTextFields()
         num_fields = len(my_fields)
-        for field_loop in range(num_fields-1, -1, -1):
+        for field_loop in range(num_fields - 1, -1, -1):
             this_field = my_fields[field_loop]
             if hasattr(this_field, 'anchor_names') \
-            and len(this_field.anchor_names) > 0:
+                    and len(this_field.anchor_names) > 0:
                 # okay, this is an applicable field with some anchors:
-                this_field.ReplaceAllInternalAnchorsLinks(oldNode=old_node, 
-                        newNode=new_node)
+                this_field.ReplaceAllInternalAnchorsLinks(oldNode=old_node,
+                                                          newNode=new_node)
 
                 if new_node:
-                    # add this particular anchor field into the new node's list:
+                    # add this particular anchor field into the new node's
+                    # list:
                     if not hasattr(new_node, 'anchor_fields'):
                         new_node.anchor_fields = []
-                    if this_field not in new_node.anchor_fields: 
+                    if this_field not in new_node.anchor_fields:
                         new_node.anchor_fields.append(this_field)
                     if new_package:
                         if not hasattr(new_package, 'anchor_nodes'):
@@ -274,8 +272,8 @@ class Idevice(Persistable):
             # go ahead and remove any of its internal links
             # from the corresponding data structures:
             if not new_node \
-            and hasattr(this_field, 'intlinks_to_anchors') \
-            and len(this_field.intlinks_to_anchors) > 0:
+                    and hasattr(this_field, 'intlinks_to_anchors') \
+                    and len(this_field.intlinks_to_anchors) > 0:
                 this_field.RemoveAllInternalLinks()
 
         return
@@ -290,22 +288,22 @@ class Idevice(Persistable):
         # in the parent iDevice class, merely return a None,
         # and let each specific iDevice class implement its own version:
         log.warn("getResourcesField called on iDevice; no specific "
-                + "implementation available for this particular iDevice "
-                + "class: " + repr(self) )
+                 + "implementation available for this particular iDevice "
+                 + "class: " + repr(self))
         return None
 
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         Currently used by Extract to find all fields which have internal links.
         """
         # in the parent iDevice class, merely return an empty list,
         # and let each specific iDevice class implement its own version:
         log.warn("getRichTextFields called on iDevice; no specific "
-                + "implementation available for this particular iDevice "
-                + "class: " + repr(self) )
+                 + "implementation available for this particular iDevice "
+                 + "class: " + repr(self))
         return []
 
     def get_translatable_fields(self):
@@ -338,11 +336,10 @@ class Idevice(Persistable):
         Should be called in derived classes.
         """
         log.debug("upgrading to version 1")
-        self._title   = self.__dict__.get('title', self.title)
-        self._author  = self.__dict__.get('author', self.title)
+        self._title = self.__dict__.get('title', self.title)
+        self._author = self.__dict__.get('author', self.title)
         self._purpose = self.__dict__.get('purpose', self.title)
-        self._tip     = self.__dict__.get('tip', self.title)
-
+        self._tip = self.__dict__.get('tip', self.title)
 
     def _upgradeIdeviceToVersion2(self):
         """
@@ -352,7 +349,7 @@ class Idevice(Persistable):
         log.debug("upgrading to version 2, for 0.12")
         self.userResources = []
         if self.icon:
-            self.systemResources = ["icon_"+self.icon+".gif"]
+            self.systemResources = ["icon_" + self.icon + ".gif"]
         else:
             self.systemResources = []
 
@@ -361,7 +358,8 @@ class Idevice(Persistable):
             icon = "icon_" + self.icon + ".gif"
             if icon in self.systemResources:
                 self.systemResources.remove(icon)
+
     def _upgradeIdeviceToVersion4(self):
         pass
-            
+
 # ===========================================================================

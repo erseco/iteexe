@@ -1,5 +1,5 @@
 # ===========================================================================
-# eXe 
+# eXe
 # Copyright 2004-2006, University of Auckland
 # Copyright 2004-2008 eXe Project, http://eXeLearning.org/
 #
@@ -22,10 +22,10 @@ A Multiple Select Idevice is one built up from Questions
 """
 
 import logging
-from exe.engine.persist   import Persistable
-from exe.engine.idevice   import Idevice
+from exe.engine.persist import Persistable
+from exe.engine.idevice import Idevice
 from exe.engine.translate import lateTranslate
-from exe.engine.field     import SelectQuestionField
+from exe.engine.field import SelectQuestionField
 import re
 log = logging.getLogger(__name__)
 
@@ -39,14 +39,14 @@ class MultiSelectIdevice(Idevice):
 
     def __init__(self):
         """
-        Initialize 
+        Initialize
         """
         Idevice.__init__(self,
                          x_("Multi-select"),
                          x_("University of Auckland"),
-                         x_("""Although more often used in formal testing 
-situations MCQs can be used as a testing tool to stimulate thought and  
-discussion on topics students may feel a little reticent in responding to. 
+                         x_("""Although more often used in formal testing
+situations MCQs can be used as a testing tool to stimulate thought and
+discussion on topics students may feel a little reticent in responding to.
 
 When designing a MCQ test consider the following:
 <ul>
@@ -54,30 +54,29 @@ When designing a MCQ test consider the following:
 <li>    What intellectual skills are being tested</li>
 <li> What are the language skills of the audience</li>
 <li> Gender and cultural issues</li>
-<li> Avoid grammar language and question structures that might provide 
+<li> Avoid grammar language and question structures that might provide
      clues</li>
 </ul>
  """), x_("""When building an MCQ consider the following: <ul>
-<li> Use phrases that learners are familiar with and have 
+<li> Use phrases that learners are familiar with and have
 encountered in their study </li>
 <li> Keep responses concise </li>
 <li> There should be some consistency between the stem and the responses </li>
 <li> Provide enough options to challenge learners to think about their response
 </li>
-<li> Try to make sure that correct responses are not more detailed than the 
+<li> Try to make sure that correct responses are not more detailed than the
 distractors </li>
 <li> Distractors should be incorrect but plausible </li>
 </ul>
 """), "question")
-        self.emphasis   = Idevice.SomeEmphasis
-        self.questions  = []
+        self.emphasis = Idevice.SomeEmphasis
+        self.questions = []
         self.addQuestion()
         self.systemResources += ["common.js"]
-        
 
     def addQuestion(self):
         """
-        Add a new question to this iDevice. 
+        Add a new question to this iDevice.
         """
         question = SelectQuestionField(self, x_('Question'))
         question.addOption()
@@ -96,9 +95,9 @@ distractors </li>
 
     def getRichTextFields(self):
         """
-        Like getResourcesField(), a general helper to allow nodes to search 
+        Like getResourcesField(), a general helper to allow nodes to search
         through all of their fields without having to know the specifics of each
-        iDevice type.  
+        iDevice type.
         """
         fields_list = []
 
@@ -109,17 +108,17 @@ distractors </li>
 
     def burstHTML(self, i):
         """
-        takes a BeautifulSoup fragment (i) and bursts its contents to 
+        takes a BeautifulSoup fragment (i) and bursts its contents to
         import this idevice from a CommonCartridge export
         """
         # MultiSelect Idevice:
-        title = i.find(name='h2', attrs={'class' : 'iDeviceTitle' })
+        title = i.find(name='h2', attrs={'class': 'iDeviceTitle'})
         self.title = title.renderContents().decode('utf-8')
 
-        inner = i.find(name='div', attrs={'class' : 'iDevice_inner' })
+        inner = i.find(name='div', attrs={'class': 'iDevice_inner'})
         # copied and modified from Multi-Choice:
 
-        ms_questions = inner.findAll(name='div', attrs={'class' : 'question'})
+        ms_questions = inner.findAll(name='div', attrs={'class': 'question'})
         if len(ms_questions) < 1:
             # need to remove the default 1st question
             del self.questions[0]
@@ -131,26 +130,34 @@ distractors </li>
 
             question = ms_questions[question_num]
 
-            questions = question.findAll(name='div', attrs={'class' : 'block' , 'id' : re.compile('^taquestion') })
+            questions = question.findAll(
+                name='div',
+                attrs={
+                    'class': 'block',
+                    'id': re.compile('^taquestion')})
             if len(questions) == 1:
                 # ELSE: should warn of unexpected result!
                 inner_question = questions[0]
                 self.questions[question_num].questionTextArea.content_wo_resourcePaths \
-                        = inner_question.renderContents().decode('utf-8')
+                    = inner_question.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].questionTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].questionTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].questionTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].questionTextArea.content_wo_resourcePaths)
                 self.questions[question_num].questionTextArea.content \
-                        = self.questions[question_num].questionTextArea.content_w_resourcePaths
+                    = self.questions[question_num].questionTextArea.content_w_resourcePaths
 
-            options = question.findAll(name='div', attrs={'class' : 'block' , 
-                    'id' : re.compile('^taans') })
-            answers = question.findAll(name='input', 
-                    attrs={'type' : 'checkbox'})
+            options = question.findAll(
+                name='div',
+                attrs={
+                    'class': 'block',
+                    'id': re.compile('^taans')})
+            answers = question.findAll(name='input',
+                                       attrs={'type': 'checkbox'})
             # multi-select only has 1 feedback per question:
-            feedbacks = question.findAll(name='div', 
-                    attrs={'id' : re.compile('^tafeedback') })
+            feedbacks = question.findAll(
+                name='div', attrs={
+                    'id': re.compile('^tafeedback')})
             if len(options) < 1:
                 # need to remove the default 1st option
                 del self.questions[question_num].options[0]
@@ -161,38 +168,38 @@ distractors </li>
                     self.questions[question_num].addOption()
 
                 self.questions[question_num].options[option_loop].answerTextArea.content_wo_resourcePaths \
-                        = options[option_loop].renderContents().decode('utf-8')
+                    = options[option_loop].renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].options[option_loop].answerTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].options[option_loop].answerTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].options[option_loop].answerTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].options[option_loop].answerTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].options[option_loop].answerTextArea.content_wo_resourcePaths)
                 self.questions[question_num].options[option_loop].answerTextArea.content \
-                        = self.questions[question_num].options[option_loop].answerTextArea.content_w_resourcePaths
+                    = self.questions[question_num].options[option_loop].answerTextArea.content_w_resourcePaths
                 # and finally, see if this is a correct answer:
-                #if not (even_score % 2):
+                # if not (even_score % 2):
                 this_answer = answers[option_loop].attrMap['value']
                 if this_answer == "True":
                     # then this option is correct:
                     self.questions[question_num].options[option_loop].isCorrect\
-                            = True
+                        = True
 
             if len(feedbacks) >= 1:
                 inner_feedback = feedbacks[0]
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = inner_feedback.renderContents().decode('utf-8')
+                    = inner_feedback.renderContents().decode('utf-8')
                 # and add the LOCAL resource paths back in:
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent( \
-                            self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
+                    = self.questions[question_num].feedbackTextArea.MassageResourceDirsIntoContent(
+                    self.questions[question_num].feedbackTextArea.content_wo_resourcePaths)
                 self.questions[question_num].feedbackTextArea.content = \
-                        self.questions[question_num].feedbackTextArea.content_w_resourcePaths
+                    self.questions[question_num].feedbackTextArea.content_w_resourcePaths
             else:
                 # no user-defined feedback, just using the default:
                 self.questions[question_num].feedbackTextArea.content = ""
                 self.questions[question_num].feedbackTextArea.content_w_resourcePaths \
-                        = ""
+                    = ""
                 self.questions[question_num].feedbackTextArea.content_wo_resourcePaths \
-                        = ""
+                    = ""
 
     def upgradeToVersion1(self):
         """
