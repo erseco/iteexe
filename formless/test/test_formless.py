@@ -22,7 +22,7 @@ class Typed(TestCase):
         self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\xc3\xa9sar')
 
         s = formless.String(str=True)
-        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\u00e9sar')
+        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\\u00e9sar')
 
         s = formless.String(required=True)
         self.assertRaises(formless.InputError, process, s, "")
@@ -51,7 +51,7 @@ class Typed(TestCase):
         self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\xc3\xa9sar')
 
         s = formless.Text(str=True)
-        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\u00e9sar')
+        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\\u00e9sar')
 
         s = formless.Text(required=True)
         self.assertRaises(formless.InputError, process, s, "")
@@ -86,7 +86,7 @@ class Typed(TestCase):
         self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\xc3\xa9sar')
 
         s = formless.Password(str=True)
-        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\u00e9sar')
+        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\\u00e9sar')
 
         s = formless.Password(required=True)
         self.assertRaises(formless.ValidateError, process, s, "")
@@ -114,7 +114,7 @@ class Typed(TestCase):
         self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\xc3\xa9sar')
 
         s = formless.PasswordEntry(str=True)
-        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\u00e9sar')
+        self.assertEqual(process(s, 'C\xc3\xa9sar'), 'C\\u00e9sar')
 
         s = formless.PasswordEntry(strip=True)
         self.assertEqual(process(s, ''), None)

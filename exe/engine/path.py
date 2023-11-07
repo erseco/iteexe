@@ -37,21 +37,18 @@ Date:    7 Mar 2004
 
 
 import sys, os, fnmatch, glob, shutil, codecs
-try:
-        import hashlib
-except ImportError:
-        import md5 as hashlib
+import hashlib
 from tempfile import mkdtemp
 import logging
+
 log = logging.getLogger(__name__)
 
 __version__ = '2.0.4'
 __all__ = ['Path', 'TempDirPath']
 
-# Universal newline support
+# In Python 3, just use 'r' for reading text files with universal newline support
 _textmode = 'r'
-if hasattr(file, 'newlines'):
-    _textmode = 'U'
+
 
 def getFileSystemEncoding():
     """

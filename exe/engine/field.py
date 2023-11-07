@@ -404,8 +404,8 @@ class FieldWithResources(Field):
         search_strings = ["src=\"resources/", "exe_math_latex=\"resources/", \
                 "href=\"resources/", \
 # JR: Anadimos que busque en los recursos activos los apuntados por flv_src y los que estan en el data de los SWF
-		"flv_src\" value=\"resources/", \
-		"application/x-shockwave-flash\" data=\"resources/", \
+        "flv_src\" value=\"resources/", \
+        "application/x-shockwave-flash\" data=\"resources/", \
 #JR: Anadimos que busque tambien para onmouseover y onmouseout
         "this.src=\'resources/" , \
 #Cambio src por data
@@ -1210,10 +1210,10 @@ class FieldWithResources(Field):
                            + "value=\"/previews/" \
                            + pre_input_file_name_str
 #JR: Si contiene flowplayer lo embebemos
-		   if new_content.find("flowPlayer") >= 0:
+                   if new_content.find("flowPlayer") >= 0:
                        embed_flv_player = True
                        log.debug('ProcessPreviewedMedia: this is an eXe flv.')
-		       
+               
                    if new_content.find(exe_flv_parmline) >= 0:
                        embed_flv_player = True
                        log.debug('ProcessPreviewedMedia: this is an eXe flv.')
@@ -1370,7 +1370,7 @@ class FieldWithResources(Field):
                    new_content = new_content.replace(embed_search_str,
                                                      embed_replace_str)
 
-		   ######
+           ######
                    # and one more place that it needs to change, in the 
                    # case of the Windows Media Player, which has been
                    # hacked in tinyMCE to now include a data source
@@ -1442,12 +1442,12 @@ class FieldWithResources(Field):
     
             # Find the next source image in the content, continuing the loop:
             found_pos = new_content.find(search_str, found_pos+1)
-	# JR - Quitamos lo que va entre <embed>...</embed>
-	#aux = re.compile("<embed.*id=\"flowplayer\".*></embed>")
-	#new_content = aux.sub("", new_content)
-	#log.debug(new_content)
+    # JR - Quitamos lo que va entre <embed>...</embed>
+    #aux = re.compile("<embed.*id=\"flowplayer\".*></embed>")
+    #new_content = aux.sub("", new_content)
+    #log.debug(new_content)
 
-	return new_content
+        return new_content
         # end ProcessPreviewedMedia()
 
 
@@ -1847,7 +1847,7 @@ class FieldWithResources(Field):
         # an IMG tag, etc.
         # For now, though, this easy parsing is working well:
 #JR        search_str = "src=\"../previews/" 
-	search_str = "src=\"/previews/"
+        search_str = "src=\"/previews/"
         # BEWARE OF THE ABOVE in regards to ProcessPreviewedMedia(),
         # which takes advantage of the fact that the embedded media
         # actually gets stored as src="previews/".
@@ -2301,15 +2301,15 @@ class FieldWithResources(Field):
         exported_src = "src=\""
         export_content = content.replace(resources_url_src,exported_src)
 
-#JR: Se lo quitamos tambien a los flv
-	export_content = export_content.replace("'playlist': [ { 'url': 'resources/", "'playlist': [ { 'url': '")
-#JR: Y a los SWF 
-	export_content = export_content.replace("name=\"movie\" value=\"resources/", "name=\"movie\" value=\"")
-	export_content = export_content.replace("application/x-shockwave-flash\" data=\"resources/", "application/x-shockwave-flash\" data=\"")
-#JR: Y a los MP3
-	export_content = export_content.replace("application/x-shockwave-flash\" data=\"../templates/xspf_player.swf?song_url=resources/", "application/x-shockwave-flash\" data=\"../templates/xspf_player.swf?song_url=")
-#JR: Quito los & en las llamadas a xspf_player
-	export_content = export_content.replace("&song_title=", "&amp;song_title=")
+    #JR: Se lo quitamos tambien a los flv
+        export_content = export_content.replace("'playlist': [ { 'url': 'resources/", "'playlist': [ { 'url': '")
+    #JR: Y a los SWF 
+        export_content = export_content.replace("name=\"movie\" value=\"resources/", "name=\"movie\" value=\"")
+        export_content = export_content.replace("application/x-shockwave-flash\" data=\"resources/", "application/x-shockwave-flash\" data=\"")
+    #JR: Y a los MP3
+        export_content = export_content.replace("application/x-shockwave-flash\" data=\"../templates/xspf_player.swf?song_url=resources/", "application/x-shockwave-flash\" data=\"../templates/xspf_player.swf?song_url=")
+    #JR: Quito los & en las llamadas a xspf_player
+        export_content = export_content.replace("&song_title=", "&amp;song_title=")
 
         # for embedded media, that takes care of the <embed> tag part,
         # but there's another media occurrence that contains the src param:
@@ -3398,9 +3398,9 @@ class ClozelangField(FieldWithResources):
             x_("""<p>If this option is set, each word will be marked as the 
 learner types it rather than all the words being marked the end of the 
 exercise.</p>""")
-	self.showScore = False
+        self.showScore = False
         self._showScoreInstruc = \
-            x_("""<p>If this option is set, the score will be shown.</p>""")
+                x_("""<p>If this option is set, the score will be shown.</p>""")
 
     # Property handlers
     def set_encodedContent(self, value):

@@ -1,43 +1,39 @@
 # Copyright (c) 2004 Divmod.
 # See LICENSE for details.
 
-from nevow.compy import Interface, implements
-
+from zope.interface import Interface, Attribute
 
 class ITyped(Interface):
-    """Typeds correspond roughly to <input> tags in HTML, or
-    with a complex type, more than one <input> tag whose input
-    is processed and coerced as a unit.
     """
+    Typeds correspond roughly to <input> tags in HTML, or with a complex type,
+    more than one <input> tag whose input is processed and coerced as a unit.
+    """
+    
+    label = Attribute("""The short label which will describe this
+                         parameter/properties purpose to the user.""")
+
+    description = Attribute("""A long description which further describes the sort
+                               of input the user is expected to provide.""")
+
+    default = Attribute("""A default value that may be used as an initial value in
+                           the form.""")
+
+    complexType = Attribute("""Whether or not this Typed is a "simple" type and the 
+                               infrastructure should render label, description, and 
+                               error UI automatically, or this type is "complex" in 
+                               which case it will be required to render all UI 
+                               including UI which is normally common to all Typed UI.
+                               This MAY BE DEPRECATED if a better implementation is
+                               devised.""")
+
     def coerce(self, val, configurable):
-        """Coerce the input 'val' from a string into a value suitable 
-        for the type described by the implementor. If coercion fails, 
-        coerce should raise InputError with a suitable error message 
-        to be shown to the user. 'configurable' is the configurable object
-        in whose context the coercion is taking place.
-        
-        May return a Deferred.
         """
-
-    label = property(doc="""The short label which will describe this
-        parameter/properties purpose to the user.""")
-    
-    description = property(doc="""A long description which further describes the sort
-        of input the user is expected to provide.""")
-    
-    default = property(doc="""A default value that may be used as an initial value in
-        the form.""")
-
-    complexType = property(doc="""Whether or not this Typed
-        is a "simple" type and the infrastructure should render label,
-        description, and error UI automatically, or this type is
-        "complex" in which case it will be required to render all UI
-        including UI which is normally common to all Typed UI.
-        
-        This MAY BE DEPRECATED if a better implementation is
-        devised.
-        """)
-
+        Coerce the input 'val' from a string into a value suitable for the type
+        described by the implementor. If coercion fails, coerce should raise 
+        InputError with a suitable error message to be shown to the user. 
+        'configurable' is the configurable object in whose context the coercion 
+        is taking place. May return a Deferred.
+        """
 
 
 class IBinding(Interface):
@@ -46,9 +42,12 @@ class IBinding(Interface):
     instance. At the most basic level, Binding instances represent named
     python properties and methods.
     """
+    
+    default = Attribute("""The default value for this binding.""")
+    
     def getArgs(self):
         """Return a copy of this bindings Typed instances; if this binding is a
-        Property binding, it will be a list of one Typed istance; if this binding is a
+        Property binding, it will be a list of one Typed instance; if this binding is a
         MethodBinding, it will be a list of all the Typed instances describing
         the method's arguments.
         
@@ -57,25 +56,22 @@ class IBinding(Interface):
         store the user-entered values temporarily in the case of an error
         in one or more input values.
         """
-
+    
     def getViewName(self):
         """Todo: remove?
         """
-
+    
     def configure(self, boundTo, results):
         """Configure the object "boundTo" in the manner appropriate
         to this Binding; if this binding represents a property, set the
         property; if this binding represents a method, call the method.
         """
-
+    
     def coerce(self, val, configurable):
         """TODO This is dumb. remove it and leave it on ITyped
         
         Make the code that calls coerce call it on the typed directly
         """
-
-    default = property(doc="""The default value for this binding.""")
-
 
 
 
@@ -229,10 +225,8 @@ class IConfigurable(Interface):
         object.
         """
 
-    postLocation = property(doc="""The location of this object in the
-    URL. Forms described by bindings returned from getBindingNames
-    will be posted to postLocation + '/freeform_post!' + bindingName
-    """)
+    postLocation = Attribute("""The location of this object in the URL. Forms described by bindings returned from getBindingNames will be posted to postLocation + '/freeform_post!' + bindingName""")
+
 
     def __adapt__(other, default=None):
         from formless.annotate import TypedInterface

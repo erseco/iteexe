@@ -39,7 +39,9 @@ from twisted.internet            import threads, reactor, defer
 from exe.webui.livepage          import RenderableLivePage,\
     otherSessionPackageClients, allSessionClients, allSessionPackageClients
 from nevow                       import loaders, inevow, tags
-from nevow.livepage              import handler, IClientHandle, js
+from nevow.athena               import LivePage, handler
+
+from exe.webui.livepage         import IClientHandle, js
 from exe.jsui.idevicepane        import IdevicePane
 from exe.jsui.outlinepane        import OutlinePane
 from exe.jsui.recentmenu         import RecentMenu

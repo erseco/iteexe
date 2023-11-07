@@ -23,9 +23,9 @@ Functions for handling persistance in eXe
 import logging
 
 import io
-from twisted.persisted.styles import Versioned, doUpgrade
-from twisted.spread  import jelly
-from twisted.spread  import banana
+
+from twisted.persisted.styles import Versioned
+from twisted.spread import jelly, banana
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ except ImportError:
     
 
 
-class Persistable(object, jelly.Jellyable, jelly.Unjellyable, Versioned):
+class Persistable(jelly.Jellyable, jelly.Unjellyable, Versioned):
     """
     Base class for persistent classes
     """
@@ -55,19 +55,17 @@ class Persistable(object, jelly.Jellyable, jelly.Unjellyable, Versioned):
         """
         return self.__getstate__()
 
-
     def __getstate__(self):
         """
         Return which variables we should persist
         """
-        toPersist = dict([(key, value) for key, value in list(self.__dict__.items())
-                          if key not in self.nonpersistant])
-
+        toPersist = {key: value for key, value in self.__dict__.items()
+                     if key not in self.nonpersistant}
         return Versioned.__getstate__(self, toPersist)
 
     def afterUpgrade(self):
         """
-        Called after all items bieng loaded have been loaded
+        Called after all items being loaded have been loaded
         and upgraded.
         """
 
@@ -75,32 +73,32 @@ class Persistable(object, jelly.Jellyable, jelly.Unjellyable, Versioned):
 
 def encodeObject(toEncode):
     """
-    Take a object and turn it into an string
+    Take an object and turn it into a string representation.
     """
     log.debug("encodeObject")
 
     encoder = Banana()
     encoder.connectionMade()
     encoder._selectDialect("none")
-    strBuffer = io.StringIO()
-    encoder.transport = strBuffer
+    str_buffer = io.BytesIO()  # Updated to BytesIO for byte handling
+    encoder.transport = str_buffer
     encoder.sendEncoded(jelly.jelly(toEncode))
 
-    return strBuffer.getvalue()
+    return str_buffer.getvalue()
 
 def decodeToList(toDecode):
     """
-    Decodes an object to a list of jelly strings, but doesn't unjelly them
+    Decodes an object to a list of jelly strings, but doesn't unjelly them.
     """
     log.debug("decodeObjectRaw starting decodeToList")
     decoder = Banana()
     decoder.connectionMade()
     decoder._selectDialect("none")
-    jellyData = []
-    decoder.expressionReceived = jellyData.append
+    jelly_data = []
+    decoder.expressionReceived = jelly_data.append
     decoder.dataReceived(toDecode)
     log.debug("decodeObjectRaw ending decodeToList")
-    return jellyData
+    return jelly_data
 
 def fixDataForMovedObjects(jellyData):
     """
@@ -132,9 +130,8 @@ def decodeObjectRaw(toDecode):
 
 def decodeObject(toDecode):
     """
-    Take a string and turn it into an object
+    Take a string and turn it into an object.
     """
     decoded = decodeObjectRaw(toDecode)
     doUpgrade()
     return decoded
-

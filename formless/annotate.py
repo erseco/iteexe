@@ -2,33 +2,37 @@
 # Copyright (c) 2004 Divmod.
 # See LICENSE for details.
 
-
-"""And the earth was without form, and void; and darkness was upon the face of the deep.
+"""
+And the earth was without form, and void; and darkness was upon the face of the deep.
 """
 
 import os
 import sys
 import copy
 import inspect
-import types
+from zope.interface import Interface, Attribute
 import warnings
 
 from nevow import inevow
 from nevow import util
-from nevow.compy import MetaInterface, Interface, Adapter, registerAdapter, implements
-from nevow import compy
-
+from nevow.compy import registerAdapter
 from formless import iformless
 
-
-class count(object):
+# Updated count class with Python 3 syntax for iterators
+class count:
     def __init__(self):
         self.id = 0
     def __next__(self):
         self.id += 1
         return self.id
 
-nextId = count().__next__
+    # Adding the next function to make the class compatible with Python 2's next() function
+    def next(self):
+        return self.__next__()
+
+# Instantiating count and getting the nextId function
+counter = count()
+nextId = counter.__next__
 
 
 class InputError(Exception):
@@ -198,8 +202,8 @@ class FileUpload(Typed):
         return val.filename
 
 
+# Integer coercion method updated for Python 3
 class Integer(Typed):
-
     requiredFailMessage = 'Please enter an integer.'
 
     def coerce(self, val, configurable):
@@ -208,13 +212,7 @@ class Integer(Typed):
         try:
             return int(val)
         except ValueError:
-            if sys.version_info < (2,3): # Long/Int aren't integrated
-                try:
-                    return int(val)
-                except ValueError:
-                    raise InputError("'%s' is not an integer." % val)
-            
-            raise InputError("'%s' is not an integer." % val)
+            raise InputError("'{0}' is not an integer.".format(val))
 
 
 class Real(Typed):
@@ -686,7 +684,7 @@ def labelAndDescriptionFromDocstring(docstring):
         return None, '\n'.join(docs)
 
 
-class MetaTypedInterface(MetaInterface):
+class MetaTypedInterface(type(Interface)):
     """The metaclass for TypedInterface. When TypedInterface is subclassed,
     this metaclass' __new__ method is invoked. The Typed Binding introspection
     described in the Binding docstring occurs, and when it is all done, there will
@@ -806,12 +804,18 @@ class MetaTypedInterface(MetaInterface):
                 properties.append(
                     Property(key, value, value.id)
                 )
+        # Define a key function for sorting, assuming you're sorting by 'id'
+        def get_sort_key(item):
+            return item.id
+
+        # Then, use the key function with the sort() method
         for attacher in actionAttachers:
             attacher.attachActionBindings(possibleActions)
-        methods.sort(_sorter)
-        properties.sort(_sorter)
+
+        methods.sort(key=get_sort_key)
+        properties.sort(key=get_sort_key)
         dct['__spec__'] = spec = methods + properties
-        spec.sort(_sorter)
+        spec.sort(key=get_sort_key)
         dct['name'] = name
 
         # because attributes "label" and "description" would become Properties,
@@ -828,11 +832,12 @@ class MetaTypedInterface(MetaInterface):
 
         # What the heck...work around strange bug in Zope C Optimizations
         # whose cause I cannot figure out.
+        # Update the call to the superclass's __new__ method to Python 3 syntax
         try:
-            return MetaInterface.__new__(cls, name, bases, dct)
+            return type(Interface).__new__(cls, name, bases, dct)
         except TypeError as e:
             if len(e.args) == 1 and e.args[0] == '_interface_coptimizations.SpecificationBase.__new__(MetaTypedInterface) is not safe, use object.__new__()':
-                return object.__new__(cls, name, bases, dct)
+                return type.__new__(cls, name, bases, dct)
             raise
 
 
@@ -841,11 +846,11 @@ class MetaTypedInterface(MetaInterface):
 #######################################
 
 
-class TypedInterface(Interface, metaclass=MetaTypedInterface):
+# TypedInterface updated to Python 3, using the correct metaclass syntax
+class TypedInterface(Interface):
     """Inherit from this to create interfaces which annotate the types of
     properties and types of parameters methods take and types of objects
     methods return. See documentation for MetaTypedInterface for examples of
     what is valid, and what is produced.
     """
-
-
+    __id__ = Attribute("An abstract identifier for instances of this interface.")
