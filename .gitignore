@@ -52,3 +52,4 @@ exe/webui/scripts/tinymce_4/js/tinymce/tinymce.js
 exe/webui/content_template/strings.py
 
 # Avoid the env dir, for virtualenv
+env
