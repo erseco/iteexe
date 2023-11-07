@@ -23,8 +23,8 @@ configuration
 """
 
 import os
-from exe.engine.linuxconfig import LinuxConfig
-from exe.engine.path import Path
+from engine.linuxconfig import LinuxConfig
+from engine.path import Path
 
 # ===========================================================================
 

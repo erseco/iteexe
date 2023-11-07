@@ -23,26 +23,26 @@
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.path import Path, toUnicode
-from exe.engine.field import Field, FieldWithResources, FeedbackField, TextAreaField
-from exe.engine.resource import Resource
-from exe.engine.persist import Persistable
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.path import Path, toUnicode
+from engine.field import Field, FieldWithResources, FeedbackField, TextAreaField
+from engine.resource import Resource
+from engine.persist import Persistable
+from engine.translate import lateTranslate
 from exe import globals as G
-from exe.engine.node import Node
+from engine.node import Node
 import os
 import urllib.request
 import urllib.parse
 import urllib.error
 import shutil
-from exe.engine.translate import lateTranslate
-from exe.engine.mimetex import compile
+from engine.translate import lateTranslate
+from engine.mimetex import compile
 from html.parser import HTMLParser
 from html.entities import name2codepoint
-from exe.engine.htmlToText import HtmlToText
+from engine.htmlToText import HtmlToText
 from twisted.persisted.styles import Versioned
-from exe.webui import common
+from webui import common
 
 import re
 

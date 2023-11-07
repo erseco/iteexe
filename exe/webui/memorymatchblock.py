@@ -16,20 +16,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.memorymatchidevice import MemoryMatchIdeviceInc
-from exe.export.exportmediaconverter import ExportMediaConverter
-from exe.export.xmlpage import XMLPage
+from webui.blockfactory import g_blockFactory
+from engine.memorymatchidevice import MemoryMatchIdeviceInc
+from export.exportmediaconverter import ExportMediaConverter
+from export.xmlpage import XMLPage
 
 """
 ExampleBlock can render and process ExampleIdevices as XHTML
 """
 
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui.element import Element
-from exe.engine.extendedfieldengine import *
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui.element import Element
+from engine.extendedfieldengine import *
 
 log = logging.getLogger(__name__)
 

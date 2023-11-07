@@ -26,9 +26,9 @@ The ReleaseNotesPage is responsible for showing Release Notes information
 import os
 import codecs
 from twisted.web.resource import Resource
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from nevow import rend, tags
-from exe.engine import version
+from engine import version
 
 import logging
 

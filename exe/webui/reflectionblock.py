@@ -20,13 +20,13 @@
 ReflectionBlock can render and process ReflectionIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.reflectionidevice import ReflectionIdevice
+from webui.blockfactory import g_blockFactory
+from engine.reflectionidevice import ReflectionIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
-from exe.webui.element import Feedback2Element
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
+from webui.element import Feedback2Element
 
 log = logging.getLogger(__name__)
 

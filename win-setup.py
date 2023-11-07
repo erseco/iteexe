@@ -7,7 +7,7 @@ import os
 import py2exe
 import httplib2
 from distutils.core import setup
-from exe.engine import version
+from engine import version
 try:
     # py2exe 0.6.4 introduced a replacement modulefinder.
     # This means we have to add package paths there, not to the built-in

@@ -21,11 +21,11 @@
 MathBlock can render and process MathIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.mathidevice import MathIdevice
+from webui.blockfactory import g_blockFactory
+from engine.mathidevice import MathIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import MathElement
+from webui.block import Block
+from webui.element import MathElement
 
 log = logging.getLogger(__name__)
 

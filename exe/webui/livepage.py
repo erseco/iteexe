@@ -19,7 +19,7 @@
 # ===========================================================================
 import logging
 import itertools
-from exe.webui.renderable import _RenderablePage
+from webui.renderable import _RenderablePage
 import nevow
 from nevow.athena import LivePage
 from nevow import inevow, tags, compy, flat

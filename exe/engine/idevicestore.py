@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,11 +22,11 @@
 The collection of iDevices available
 """
 
-from exe.engine import persist
-from exe.engine.idevice import Idevice
-from exe.engine.jsidevice import JsIdevice
-from exe.engine.exceptions.invalidconfigjsidevice import InvalidConfigJsIdevice
-from exe.engine.field import TextAreaField, FeedbackField, Feedback2Field
+from engine import persist
+from engine.idevice import Idevice
+from engine.jsidevice import JsIdevice
+from engine.exceptions.invalidconfigjsidevice import InvalidConfigJsIdevice
+from engine.field import TextAreaField, FeedbackField, Feedback2Field
 from nevow.flat import flatten
 
 import imp
@@ -73,7 +72,7 @@ class IdeviceStore:
         Devuelve True si el iDevice es de la clase GenericIdevice
         (Returns True if the iDevice is of class GenericIdevice)
         """
-        from exe.engine.genericidevice import GenericIdevice
+        from engine.genericidevice import GenericIdevice
         if isinstance(idevice, GenericIdevice):
             return True
         else:
@@ -295,23 +294,23 @@ class IdeviceStore:
         JRJ: Esta función devuelve los iDevices de FPD
         (this function returns the FPD iDevices)
         """
-        from exe.engine.reflectionfpdidevice import ReflectionfpdIdevice
-        from exe.engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
-        from exe.engine.clozefpdidevice import ClozefpdIdevice
-        from exe.engine.clozelangfpdidevice import ClozelangfpdIdevice
-        from exe.engine.parasabermasfpdidevice import ParasabermasfpdIdevice
-        from exe.engine.debesconocerfpdidevice import DebesconocerfpdIdevice
-        from exe.engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
-        from exe.engine.recomendacionfpdidevice import RecomendacionfpdIdevice
-        from exe.engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
-        from exe.engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
-        from exe.engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
-        from exe.engine.casopracticofpdidevice import CasopracticofpdIdevice
-        from exe.engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
-        from exe.engine.destacadofpdidevice import DestacadofpdIdevice
-        from exe.engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
-        from exe.engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
-        from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
+        from engine.reflectionfpdidevice import ReflectionfpdIdevice
+        from engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
+        from engine.clozefpdidevice import ClozefpdIdevice
+        from engine.clozelangfpdidevice import ClozelangfpdIdevice
+        from engine.parasabermasfpdidevice import ParasabermasfpdIdevice
+        from engine.debesconocerfpdidevice import DebesconocerfpdIdevice
+        from engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
+        from engine.recomendacionfpdidevice import RecomendacionfpdIdevice
+        from engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
+        from engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
+        from engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
+        from engine.casopracticofpdidevice import CasopracticofpdIdevice
+        from engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
+        from engine.destacadofpdidevice import DestacadofpdIdevice
+        from engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
+        from engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
+        from engine.freetextfpdidevice import FreeTextfpdIdevice
 
         idevices_FPD = []
         idevices_FPD.append(ReflectionfpdIdevice())
@@ -340,60 +339,60 @@ class IdeviceStore:
         JRJ: Carga los iDevices de fábrica
         (loads the factory iDevices)
         """
-        from exe.engine.freetextidevice import FreeTextIdevice
-        from exe.engine.multimediaidevice import MultimediaIdevice
-        from exe.engine.reflectionidevice import ReflectionIdevice
-        from exe.engine.casestudyidevice import CasestudyIdevice
-        from exe.engine.truefalseidevice import TrueFalseIdevice
+        from engine.freetextidevice import FreeTextIdevice
+        from engine.multimediaidevice import MultimediaIdevice
+        from engine.reflectionidevice import ReflectionIdevice
+        from engine.casestudyidevice import CasestudyIdevice
+        from engine.truefalseidevice import TrueFalseIdevice
         # converting ImageWithTextIdevice -> FreeTextIdevice:
-        # from exe.engine.imagewithtextidevice  import ImageWithTextIdevice
-        from exe.engine.wikipediaidevice import WikipediaIdevice
-        from exe.engine.attachmentidevice import AttachmentIdevice
-        from exe.engine.titleidevice import TitleIdevice
-        from exe.engine.galleryidevice import GalleryIdevice
-        from exe.engine.clozeidevice import ClozeIdevice
-        # from exe.engine.clozelangidevice          import ClozelangIdevice
-        from exe.engine.flashwithtextidevice import FlashWithTextIdevice
-        from exe.engine.externalurlidevice import ExternalUrlIdevice
-        from exe.engine.imagemagnifieridevice import ImageMagnifierIdevice
+        # from engine.imagewithtextidevice  import ImageWithTextIdevice
+        from engine.wikipediaidevice import WikipediaIdevice
+        from engine.attachmentidevice import AttachmentIdevice
+        from engine.titleidevice import TitleIdevice
+        from engine.galleryidevice import GalleryIdevice
+        from engine.clozeidevice import ClozeIdevice
+        # from engine.clozelangidevice          import ClozelangIdevice
+        from engine.flashwithtextidevice import FlashWithTextIdevice
+        from engine.externalurlidevice import ExternalUrlIdevice
+        from engine.imagemagnifieridevice import ImageMagnifierIdevice
         # converting Maths Idevice -> FreeTextIdevice:
-        # from exe.engine.mathidevice           import MathIdevice
-        from exe.engine.multichoiceidevice import MultichoiceIdevice
-        from exe.engine.rssidevice import RssIdevice
-        from exe.engine.multiselectidevice import MultiSelectIdevice
-        from exe.engine.appletidevice import AppletIdevice
-        from exe.engine.flashmovieidevice import FlashMovieIdevice
-        from exe.engine.quiztestidevice import QuizTestIdevice
-        from exe.engine.listaidevice import ListaIdevice
-        from exe.engine.notaidevice import NotaIdevice
-        from exe.engine.sortidevice import SortIdeviceInc
-        from exe.engine.hangmanidevice import HangmanIdeviceInc
-        from exe.engine.clickinorderidevice import ClickInOrderIdeviceInc
-        from exe.engine.memorymatchidevice import MemoryMatchIdeviceInc
-        from exe.engine.placetheobjectsidevice import PlaceTheObjectsIdeviceInc
-        from exe.engine.fileattachidevice import FileAttachIdeviceInc
+        # from engine.mathidevice           import MathIdevice
+        from engine.multichoiceidevice import MultichoiceIdevice
+        from engine.rssidevice import RssIdevice
+        from engine.multiselectidevice import MultiSelectIdevice
+        from engine.appletidevice import AppletIdevice
+        from engine.flashmovieidevice import FlashMovieIdevice
+        from engine.quiztestidevice import QuizTestIdevice
+        from engine.listaidevice import ListaIdevice
+        from engine.notaidevice import NotaIdevice
+        from engine.sortidevice import SortIdeviceInc
+        from engine.hangmanidevice import HangmanIdeviceInc
+        from engine.clickinorderidevice import ClickInOrderIdeviceInc
+        from engine.memorymatchidevice import MemoryMatchIdeviceInc
+        from engine.placetheobjectsidevice import PlaceTheObjectsIdeviceInc
+        from engine.fileattachidevice import FileAttachIdeviceInc
 
         # JRJ
         # Necesarios para la FPD
         # (Necessary for FPD)
-        from exe.engine.reflectionfpdidevice import ReflectionfpdIdevice
-        from exe.engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
-        from exe.engine.clozefpdidevice import ClozefpdIdevice
-        from exe.engine.clozelangfpdidevice import ClozelangfpdIdevice
-        from exe.engine.parasabermasfpdidevice import ParasabermasfpdIdevice
-        from exe.engine.debesconocerfpdidevice import DebesconocerfpdIdevice
-        from exe.engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
-        from exe.engine.recomendacionfpdidevice import RecomendacionfpdIdevice
-        from exe.engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
-        from exe.engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
-        from exe.engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
-        from exe.engine.casopracticofpdidevice import CasopracticofpdIdevice
-        from exe.engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
-        from exe.engine.destacadofpdidevice import DestacadofpdIdevice
-        # from exe.engine.correccionfpdidevice		import CorreccionfpdIdevice
-        from exe.engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
-        from exe.engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
-        from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
+        from engine.reflectionfpdidevice import ReflectionfpdIdevice
+        from engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
+        from engine.clozefpdidevice import ClozefpdIdevice
+        from engine.clozelangfpdidevice import ClozelangfpdIdevice
+        from engine.parasabermasfpdidevice import ParasabermasfpdIdevice
+        from engine.debesconocerfpdidevice import DebesconocerfpdIdevice
+        from engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
+        from engine.recomendacionfpdidevice import RecomendacionfpdIdevice
+        from engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
+        from engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
+        from engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
+        from engine.casopracticofpdidevice import CasopracticofpdIdevice
+        from engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
+        from engine.destacadofpdidevice import DestacadofpdIdevice
+        # from engine.correccionfpdidevice		import CorreccionfpdIdevice
+        from engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
+        from engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
+        from engine.freetextfpdidevice import FreeTextfpdIdevice
 
         factoryExtendedIdevices = []
 
@@ -494,7 +493,7 @@ class IdeviceStore:
                 self.delIdevice(idevice)
 
     def __upgradeExtended(self):
-        from exe.engine.galleryidevice import GalleryIdevice
+        from engine.galleryidevice import GalleryIdevice
 
         for idevice in self.extended:
             if isinstance(idevice, GalleryIdevice):
@@ -552,7 +551,7 @@ class IdeviceStore:
         else:
             self.generic = self.__createGeneric()
             self.factoryiDevices = self.factoryiDevices + self.generic
-            from exe.engine.listaidevice import ListaIdevice
+            from engine.listaidevice import ListaIdevice
             self.addIdevice(ListaIdevice())
 
     def __loadJs(self):
@@ -635,7 +634,7 @@ class IdeviceStore:
 
         idevices = []
 
-        from exe.engine.genericidevice import GenericIdevice
+        from engine.genericidevice import GenericIdevice
 
         readingAct = GenericIdevice(
             x_("Reading Activity"),
@@ -749,7 +748,7 @@ that may help or hinder the learner in the performance of the task."""), "")
         Create the Reading Activity 0.11
         We do this only once when the user first runs eXe 0.11
         """
-        from exe.engine.genericidevice import GenericIdevice
+        from engine.genericidevice import GenericIdevice
 
         readingAct = GenericIdevice(_("Reading Activity 0.11"),
                                     "reading",

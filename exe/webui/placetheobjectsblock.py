@@ -20,15 +20,15 @@
 PlaceTheObjects block renders the place the objects idevice game as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.placetheobjectsidevice import PlaceTheObjectsIdeviceInc
+from webui.blockfactory import g_blockFactory
+from engine.placetheobjectsidevice import PlaceTheObjectsIdeviceInc
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui.element import Element
-from exe.webui import common
-from exe.webui.element import TextElement
-from exe.engine.extendedfieldengine import *
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui.element import Element
+from webui import common
+from webui.element import TextElement
+from engine.extendedfieldengine import *
 
 log = logging.getLogger(__name__)
 

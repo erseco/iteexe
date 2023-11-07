@@ -23,8 +23,8 @@ FreeTextIdevice: just has a block of text
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField
+from engine.idevice import Idevice
+from engine.field import TextAreaField
 log = logging.getLogger(__name__)
 
 # ===========================================================================

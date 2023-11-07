@@ -22,11 +22,11 @@
 An Attachment Idevice allows a file to be attached to a package.
 """
 
-from exe.engine.idevice import Idevice
-from exe.engine.path import Path
-from exe.engine.translate import lateTranslate
-from exe.engine.resource import Resource
-from exe.engine.field import TextAreaField
+from engine.idevice import Idevice
+from engine.path import Path
+from engine.translate import lateTranslate
+from engine.resource import Resource
+from engine.field import TextAreaField
 
 import logging
 log = logging.getLogger(__name__)

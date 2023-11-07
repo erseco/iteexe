@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2012, Pedro Peña Pérez, Open Phoenix IT
@@ -35,49 +34,49 @@ import tempfile
 import base64
 import certifi
 from sys import platform
-from exe.engine.version import release, revision
+from engine.version import release, revision
 from twisted.internet import threads, reactor, defer
-from exe.webui.livepage import RenderableLivePage, \
+from webui.livepage import RenderableLivePage, \
     otherSessionPackageClients, allSessionClients, allSessionPackageClients
 from nevow import loaders, inevow, tags
 from nevow.athena import LivePage, handler
 
-from exe.webui.livepage import IClientHandle, js
-from exe.jsui.idevicepane import IdevicePane
-from exe.jsui.outlinepane import OutlinePane
-from exe.jsui.recentmenu import RecentMenu
-from exe.jsui.stylemenu import StyleMenu
-from exe.jsui.propertiespage import PropertiesPage
-from exe.jsui.templatemenu import TemplateMenu
-from exe.webui.authoringpage import AuthoringPage
-from exe.webui.stylemanagerpage import StyleManagerPage
-from exe.webui.renderable import File
-from exe.export.websiteexport import WebsiteExport
-from exe.export.textexport import TextExport
-from exe.export.singlepageexport import SinglePageExport
-from exe.export.scormexport import ScormExport
-from exe.export.imsexport import IMSExport
-from exe.export.xliffexport import XliffExport
-from exe.importers.xliffimport import XliffImport
-from exe.importers.scanresources import Resources
-from exe.engine.path import Path, toUnicode, TempDirPath
-from exe.engine.package import Package
-from exe.engine.template import Template
+from webui.livepage import IClientHandle, js
+from jsui.idevicepane import IdevicePane
+from jsui.outlinepane import OutlinePane
+from jsui.recentmenu import RecentMenu
+from jsui.stylemenu import StyleMenu
+from jsui.propertiespage import PropertiesPage
+from jsui.templatemenu import TemplateMenu
+from webui.authoringpage import AuthoringPage
+from webui.stylemanagerpage import StyleManagerPage
+from webui.renderable import File
+from export.websiteexport import WebsiteExport
+from export.textexport import TextExport
+from export.singlepageexport import SinglePageExport
+from export.scormexport import ScormExport
+from export.imsexport import IMSExport
+from export.xliffexport import XliffExport
+from importers.xliffimport import XliffImport
+from importers.scanresources import Resources
+from engine.path import Path, toUnicode, TempDirPath
+from engine.package import Package
+from engine.template import Template
 from exe import globals as G
 from tempfile import mkdtemp, mkstemp
-from exe.engine.mimetex import compile
+from engine.mimetex import compile
 from urllib.parse import unquote
 from urllib.request import urlretrieve
-from exe.engine.locationbuttons import LocationButtons
-from exe.export.epub3export import Epub3Export
-from exe.export.xmlexport import XMLExport
+from engine.locationbuttons import LocationButtons
+from export.epub3export import Epub3Export
+from export.xmlexport import XMLExport
 from requests_oauthlib import OAuth2Session
-from exe.webui.oauthpage import ProcomunOauth
+from webui.oauthpage import ProcomunOauth
 from suds.client import Client
-from exe.export.pages import forbiddenPageNames
+from export.pages import forbiddenPageNames
 
-from exe.engine.lom import lomsubs
-from exe.engine.lom.lomclassification import Classification
+from engine.lom import lomsubs
+from engine.lom.lomclassification import Classification
 import zipfile
 log = logging.getLogger(__name__)
 PROCOMUN_WSDL = ProcomunOauth.BASE_URL + '/oauth_services?wsdl'

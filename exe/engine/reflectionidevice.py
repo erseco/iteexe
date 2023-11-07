@@ -24,9 +24,9 @@ before they look at the answer/s
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.translate import lateTranslate
-from exe.engine.field import TextAreaField, Feedback2Field
+from engine.idevice import Idevice
+from engine.translate import lateTranslate
+from engine.field import TextAreaField, Feedback2Field
 import re
 log = logging.getLogger(__name__)
 

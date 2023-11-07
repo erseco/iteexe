@@ -27,23 +27,23 @@ import random
 if '..' not in sys.path:
     sys.path.insert(0, '..')
 
-from exe.application import Application
-from exe.engine.config import Config
-from exe.engine.configparser import ConfigParser
-from exe.engine.package import Package
-from exe.engine.path import Path
+from application import Application
+from engine.config import Config
+from engine.configparser import ConfigParser
+from engine.package import Package
+from engine.path import Path
 from exe import globals as G
 
 
 # Choose which ConfigParser we'll use
 if sys.platform[:3] == "win":
-    from exe.engine.winconfig import WinConfig
+    from engine.winconfig import WinConfig
     Config = WinConfig
 elif sys.platform[:6] == "darwin":
-    from exe.engine.macconfig import MacConfig
+    from engine.macconfig import MacConfig
     Config = MacConfig
 else:
-    from exe.engine.linuxconfig import LinuxConfig
+    from engine.linuxconfig import LinuxConfig
     Config = LinuxConfig
 
 

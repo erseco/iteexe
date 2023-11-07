@@ -20,12 +20,12 @@
 GenericBlock can render and process GenericIdevices as XHTML
 """
 
-from exe.engine.genericidevice import GenericIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.genericidevice import GenericIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui.elementfactory import g_elementFactory
-from exe.webui import common
+from webui.block import Block
+from webui.elementfactory import g_elementFactory
+from webui import common
 
 log = logging.getLogger(__name__)
 

@@ -31,13 +31,13 @@ from PIL import Image, ImageDraw
 from twisted.persisted.styles import requireUpgrade
 
 from exe import globals as G
-from exe.engine.field import TextField
-from exe.engine.idevice import Idevice
-from exe.engine.path import Path, TempDirPath, toUnicode
-from exe.engine.persist import Persistable
-from exe.engine.resource import Resource
-from exe.engine.translate import lateTranslate
-from exe.webui.common import docType
+from engine.field import TextField
+from engine.idevice import Idevice
+from engine.path import Path, TempDirPath, toUnicode
+from engine.persist import Persistable
+from engine.resource import Resource
+from engine.translate import lateTranslate
+from webui.common import docType
 
 log = logging.getLogger(__name__)
 
@@ -521,7 +521,7 @@ these in a gallery context rather then individually.</p>"""),
         if hasattr(self, 'images'):
             if isinstance(self.images, list):
                 images = self.images
-                from exe.engine.galleryidevice import GalleryImages
+                from engine.galleryidevice import GalleryImages
                 self.images = GalleryImages(self)
                 while len(images) > 0:
                     self.images.append(images.pop())

@@ -1717,7 +1717,7 @@ translations = {
  "Timeline": "Tijdlijn", 
  "Overlays main area when player guesses wrong": "Hoofdgebeid van de overlay nadat de speler verkeerd heeft geraden", 
  "Select target language": "Kies de doeltaal", 
- "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from eXe.": "Klik op de knop \"Bestanden toevoegen\" om het .jclic.zip bestand te kiezen. Klik daarna op de Upload knop. <p>Een voortgangsindicator is zichtbaar als het HTML bestand wordt aangemaakt door eXe.", 
+ "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from ": "Klik op de knop \"Bestanden toevoegen\" om het .jclic.zip bestand te kiezen. Klik daarna op de Upload knop. <p>Een voortgangsindicator is zichtbaar als het HTML bestand wordt aangemaakt door eXe.", 
  "Sindhi ": "Sindhi", 
  "final": "definitief", 
  "classroom": "klaslokaal", 

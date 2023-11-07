@@ -1,5 +1,5 @@
 import re
-from exe.webui import common
+from webui import common
 from webassets.filter.rjsmin import RJSMin
 
 # This is used in case cssmin is bundled with eXe (as in portable versions)

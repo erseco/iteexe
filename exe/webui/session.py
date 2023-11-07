@@ -22,7 +22,7 @@ from twisted.web import server, resource
 from twisted.internet import reactor, defer
 from nevow import compy, appserver, inevow
 from nevow.i18n import languagesFactory
-from exe.engine.packagestore import PackageStore
+from engine.packagestore import PackageStore
 from exe import globals as G
 import logging
 

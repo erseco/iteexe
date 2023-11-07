@@ -21,13 +21,13 @@
 TrueFalseBlock can render and process TrueFalseIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.truefalseidevice import TrueFalseIdevice
+from webui.blockfactory import g_blockFactory
+from engine.truefalseidevice import TrueFalseIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.truefalseelement import TrueFalseElement
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui.truefalseelement import TrueFalseElement
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

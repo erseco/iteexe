@@ -25,8 +25,8 @@ anything it just redirects the user to a new package.
 import logging
 import os
 from exe import globals as G
-from exe.webui.renderable import RenderableResource
-from exe.jsui.mainpage import MainPage
+from webui.renderable import RenderableResource
+from jsui.mainpage import MainPage
 from twisted.web import error
 
 log = logging.getLogger(__name__)

@@ -22,15 +22,15 @@ Gallery block can render a group of images, each with desciptions and popup on
 a single image
 """
 
-from exe.engine.galleryidevice import GalleryIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.galleryidevice import GalleryIdevice
+from webui.blockfactory import g_blockFactory
 import logging
 import urllib.request
 import urllib.parse
 import urllib.error
 import re
-from exe.webui.block import Block
-from exe.webui import common
+from webui.block import Block
+from webui import common
 
 log = logging.getLogger(__name__)
 

@@ -20,8 +20,8 @@
 '''
 @author: Pedro Peña Pérez
 '''
-from exe.engine.package import Package
-from exe.importers.xliffimport import XliffImport
+from engine.package import Package
+from importers.xliffimport import XliffImport
 
 
 class CmdlineImporter(object):

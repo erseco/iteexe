@@ -18,14 +18,14 @@
 # ===========================================================================
 
 import unittest
-from exe.engine.node import Node
-from exe.engine.packagestore import PackageStore
+from engine.node import Node
+from engine.packagestore import PackageStore
 from exe import globals as G
-from exe.application import Application
-from exe.engine.path import Path
+from application import Application
+from engine.path import Path
 import sys
-from exe.engine.config import Config
-from exe.engine.configparser import ConfigParser
+from engine.config import Config
+from engine.configparser import ConfigParser
 from utils import SuperTestCase
 
 # ===========================================================================

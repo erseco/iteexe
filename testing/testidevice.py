@@ -18,12 +18,12 @@
 # ===========================================================================
 
 import unittest
-from exe.engine.node import Node
-from exe.engine.idevice import Idevice
-from exe.engine.packagestore import PackageStore
+from engine.node import Node
+from engine.idevice import Idevice
+from engine.packagestore import PackageStore
 from exe import globals as G
 import shutil
-from exe.application import Application
+from application import Application
 
 
 class TestIdevice(unittest.TestCase):

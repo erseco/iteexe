@@ -23,10 +23,10 @@ TextPageExport will export a package as a text file.
 
 import os
 from html import escape
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
-from exe.engine.path import Path
-from exe.engine.htmlToText import HtmlToText
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
+from engine.path import Path
+from engine.htmlToText import HtmlToText
 
 import logging
 log = logging.getLogger(__name__)

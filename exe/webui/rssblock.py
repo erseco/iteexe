@@ -21,14 +21,14 @@
 RssBlock can render and process RssIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.rssidevice import RssIdevice
+from webui.blockfactory import g_blockFactory
+from engine.rssidevice import RssIdevice
 import re
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
-from exe.engine.idevice import Idevice
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
+from engine.idevice import Idevice
 
 log = logging.getLogger(__name__)
 

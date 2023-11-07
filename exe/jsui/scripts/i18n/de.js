@@ -1441,7 +1441,7 @@ translations = {
  "unknown": "Unbekannt", 
  "Overlays main area when player guesses wrong": "Layer \u00fcber dem Haupt-Bereich, wenn der Spieler das Objekt falsch platziert", 
  "Select target language": "W\u00e4hlen Sie die Zielsprache", 
- "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from eXe.": "Klicken Sie auf den Button 'Datei hinzf\u00fcgen' um die .jclic.zip-Datei auszuw\u00e4hlen. Dann klicken Sie auf den Upload-Button.<p>Die Aktivit\u00e4t wird sichtbar, sobald die HTML-Datei durch eXe erstellt wird.", 
+ "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from ": "Klicken Sie auf den Button 'Datei hinzf\u00fcgen' um die .jclic.zip-Datei auszuw\u00e4hlen. Dann klicken Sie auf den Upload-Button.<p>Die Aktivit\u00e4t wird sichtbar, sobald die HTML-Datei durch eXe erstellt wird.", 
  "Sindhi ": "Sindhi", 
  "Predefined Template Content": "Vordefinierter Inhalt der Dokumentvorlage", 
  "classroom": "Klassenzimmer", 

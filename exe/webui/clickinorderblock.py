@@ -20,15 +20,15 @@
 ClickInOrderBlock can render and process ExampleIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.clickinorderidevice import ClickInOrderIdeviceInc
+from webui.blockfactory import g_blockFactory
+from engine.clickinorderidevice import ClickInOrderIdeviceInc
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui.element import TextElement
-from exe.webui.element import Element
-from exe.webui import common
-from exe.engine.extendedfieldengine import ChoiceElement, \
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui.element import TextElement
+from webui.element import Element
+from webui import common
+from engine.extendedfieldengine import ChoiceElement, \
     field_engine_check_fields_are_ints
 
 log = logging.getLogger(__name__)

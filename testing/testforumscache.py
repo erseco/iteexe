@@ -18,8 +18,8 @@
 # ===========================================================================
 
 import unittest
-from exe.engine.forumscache import ForumsCache
-from exe.engine.forumidevice import ForumIdevice
+from engine.forumscache import ForumsCache
+from engine.forumidevice import ForumIdevice
 
 
 class TestForumsCache(unittest.TestCase):

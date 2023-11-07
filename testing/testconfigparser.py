@@ -8,7 +8,7 @@ http://www.fsf.org/licensing/licenses/gpl.txt
 """
 
 import unittest
-from exe.engine.configparser import ConfigParser, Section
+from engine.configparser import ConfigParser, Section
 from tempfile import TemporaryFile
 from pprint import pprint
 import sys

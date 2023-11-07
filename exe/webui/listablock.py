@@ -22,12 +22,12 @@
 
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.listaidevice import ListaIdevice
+from webui.blockfactory import g_blockFactory
+from engine.listaidevice import ListaIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement, ElementWithResources
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement, ElementWithResources
 from html import escape
 import random
 

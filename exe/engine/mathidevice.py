@@ -20,11 +20,11 @@ MathIdevice: just has a block of text
 
 import os
 from exe import globals as G
-from exe.engine.freetextidevice import FreeTextIdevice
-from exe.engine.path import Path
+from engine.freetextidevice import FreeTextIdevice
+from engine.path import Path
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import MathField
+from engine.idevice import Idevice
+from engine.field import MathField
 log = logging.getLogger(__name__)
 
 
@@ -165,7 +165,7 @@ class MathIdevice(Idevice):
             # Not sure why this can't be imported up top, but it gives
             # ImportError: cannot import name GalleryImages,
             # so here it be:
-            from exe.engine.galleryidevice import GalleryImage
+            from engine.galleryidevice import GalleryImage
 
             full_image_path = self.content.gifResource.path
             # with empty caption:

@@ -18,7 +18,7 @@
 # ===========================================================================
 
 import unittest
-from exe.importers.scanresources import Resources
+from importers.scanresources import Resources
 import utils
 
 

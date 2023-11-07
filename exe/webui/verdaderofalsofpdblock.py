@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,14 +22,14 @@
 TrueFalsefpdBlock can render and process TrueFalseIdevices as XHTML
 """
 
-from exe.engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
+from webui.blockfactory import g_blockFactory
 import logging
 import re
-from exe.webui.block import Block
-from exe.webui.truefalseelement import TrueFalseElement
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui.truefalseelement import TrueFalseElement
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

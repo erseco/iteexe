@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,14 +22,14 @@ FPD - CasestudyBlock
 can render and process CasestudyIdevices as XHTML
 """
 
-from exe.engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui.questionelement import QuestionElement
-from exe.webui.element import ImageElement
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui.questionelement import QuestionElement
+from webui.element import ImageElement
+from webui import common
+from webui.element import TextAreaElement
 
 
 log = logging.getLogger(__name__)

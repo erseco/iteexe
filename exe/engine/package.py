@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -35,49 +34,49 @@ import uuid
 from dateutil.tz import tzlocal
 import re
 from xml.dom import minidom
-from exe.engine.path import Path, TempDirPath, toUnicode
-from exe.engine.node import Node
-from exe.engine.genericidevice import GenericIdevice
-from exe.engine.multichoiceidevice import MultichoiceIdevice
-from exe.engine.quiztestidevice import QuizTestIdevice
-from exe.engine.truefalseidevice import TrueFalseIdevice
-from exe.engine.wikipediaidevice import WikipediaIdevice
-from exe.engine.casestudyidevice import CasestudyIdevice
-from exe.engine.casopracticofpdidevice import CasopracticofpdIdevice
-from exe.engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
-from exe.engine.clozefpdidevice import ClozefpdIdevice
-from exe.engine.clozeidevice import ClozeIdevice
-from exe.engine.clozelangfpdidevice import ClozelangfpdIdevice
-from exe.engine.debesconocerfpdidevice import DebesconocerfpdIdevice
-from exe.engine.destacadofpdidevice import DestacadofpdIdevice
-from exe.engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
-from exe.engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
-from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
-from exe.engine.galleryidevice import GalleryIdevice
-from exe.engine.imagemagnifieridevice import ImageMagnifierIdevice
-from exe.engine.listaidevice import ListaIdevice
-from exe.engine.multiselectidevice import MultiSelectIdevice
-from exe.engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
-from exe.engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
-from exe.engine.parasabermasfpdidevice import ParasabermasfpdIdevice
-from exe.engine.recomendacionfpdidevice import RecomendacionfpdIdevice
-from exe.engine.reflectionfpdidevice import ReflectionfpdIdevice
-from exe.engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
-from exe.engine.reflectionidevice import ReflectionIdevice
-from exe.engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
-from exe.engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
-from exe.engine.persist import Persistable, encodeObject, decodeObjectRaw
+from engine.path import Path, TempDirPath, toUnicode
+from engine.node import Node
+from engine.genericidevice import GenericIdevice
+from engine.multichoiceidevice import MultichoiceIdevice
+from engine.quiztestidevice import QuizTestIdevice
+from engine.truefalseidevice import TrueFalseIdevice
+from engine.wikipediaidevice import WikipediaIdevice
+from engine.casestudyidevice import CasestudyIdevice
+from engine.casopracticofpdidevice import CasopracticofpdIdevice
+from engine.citasparapensarfpdidevice import CitasparapensarfpdIdevice
+from engine.clozefpdidevice import ClozefpdIdevice
+from engine.clozeidevice import ClozeIdevice
+from engine.clozelangfpdidevice import ClozelangfpdIdevice
+from engine.debesconocerfpdidevice import DebesconocerfpdIdevice
+from engine.destacadofpdidevice import DestacadofpdIdevice
+from engine.ejercicioresueltofpdidevice import EjercicioresueltofpdIdevice
+from engine.eleccionmultiplefpdidevice import EleccionmultiplefpdIdevice
+from engine.freetextfpdidevice import FreeTextfpdIdevice
+from engine.galleryidevice import GalleryIdevice
+from engine.imagemagnifieridevice import ImageMagnifierIdevice
+from engine.listaidevice import ListaIdevice
+from engine.multiselectidevice import MultiSelectIdevice
+from engine.orientacionesalumnadofpdidevice import OrientacionesalumnadofpdIdevice
+from engine.orientacionestutoriafpdidevice import OrientacionestutoriafpdIdevice
+from engine.parasabermasfpdidevice import ParasabermasfpdIdevice
+from engine.recomendacionfpdidevice import RecomendacionfpdIdevice
+from engine.reflectionfpdidevice import ReflectionfpdIdevice
+from engine.reflectionfpdmodifidevice import ReflectionfpdmodifIdevice
+from engine.reflectionidevice import ReflectionIdevice
+from engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
+from engine.verdaderofalsofpdidevice import VerdaderofalsofpdIdevice
+from engine.persist import Persistable, encodeObject, decodeObjectRaw
 from exe import globals as G
-from exe.engine.resource import Resource
+from engine.resource import Resource
 from twisted.persisted.styles import doUpgrade
 from twisted.spread.jelly import Jellyable, Unjellyable
 from bs4 import BeautifulSoup
-from exe.engine.field import Field, TextAreaField
-from exe.engine.persistxml import encodeObjectToXML, decodeObjectFromXML
-from exe.engine.lom import lomsubs
-from exe.engine.checker import Checker
-from exe.webui import common
-from exe.engine.version import release, revision
+from engine.field import Field, TextAreaField
+from engine.persistxml import encodeObjectToXML, decodeObjectFromXML
+from engine.lom import lomsubs
+from engine.checker import Checker
+from webui import common
+from engine.version import release, revision
 
 log = logging.getLogger(__name__)
 

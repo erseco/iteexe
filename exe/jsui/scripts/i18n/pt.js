@@ -2089,7 +2089,7 @@ translations = {
  "Timeline": "Linha de tempo", 
  "Overlays main area when player guesses wrong": "Imagem a mostrar na \u00e1rea principal quando o jogador coloca um objeto de forma errada", 
  "Select target language": "Escolha a l\u00edngua de chegada", 
- "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from eXe.": "Clique no bot\u00e3o \"Adicionar ficheiros\" para selecionar o ficheiro .jclic.zip e depois clique no bot\u00e3o \"Upload\".<p>A atividade ficar\u00e1 vis\u00edvel depois de eXe gerar o ficheiro HTML.", 
+ "Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from ": "Clique no bot\u00e3o \"Adicionar ficheiros\" para selecionar o ficheiro .jclic.zip e depois clique no bot\u00e3o \"Upload\".<p>A atividade ficar\u00e1 vis\u00edvel depois de eXe gerar o ficheiro HTML.", 
  "Sindhi ": "Sindi ", 
  "Show Image": "Mostrar imagem", 
  "Predefined Template Content": "Conte\u00fado predefinido para o modelo", 

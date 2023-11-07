@@ -6,13 +6,13 @@ import logging
 import re
 from html import escape
 from urllib.parse import quote
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
-from exe.engine.path import Path
-from exe.export.pages import Page, uniquifyNames
-from exe.webui import common
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
+from engine.path import Path
+from export.pages import Page, uniquifyNames
+from webui import common
 from exe import globals as G
-from exe.engine.version import release
+from engine.version import release
 
 log = logging.getLogger(__name__)
 

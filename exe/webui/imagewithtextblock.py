@@ -20,12 +20,12 @@
 ImageWithTextBlock can render and process ImageWithTextIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.imagewithtextidevice import ImageWithTextIdevice
+from webui.blockfactory import g_blockFactory
+from engine.imagewithtextidevice import ImageWithTextIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement, ImageElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import TextAreaElement, ImageElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

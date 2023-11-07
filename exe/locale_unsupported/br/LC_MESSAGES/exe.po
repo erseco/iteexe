@@ -481,7 +481,7 @@ msgid "Clic on AddFiles button for select the .ggb file and clic on Upload butto
 msgstr ""
 
 #: exe/engine/appletidevice.py:322
-msgid "Clic on AddFiles button for select the .jclic.zip file and clic on Upload button after.<p>The activity will be visible when the HTML file will be generated from eXe."
+msgid "Clic on AddFiles button for select the .jclic.zip file and clic on Upload button after.<p>The activity will be visible when the HTML file will be generated from "
 msgstr ""
 
 #: exe/engine/appletidevice.py:332

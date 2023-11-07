@@ -22,11 +22,11 @@ This Idevice makes a memory match game
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField
-from exe.engine.field import Field
-from exe.engine.path import Path, toUnicode
-from exe.engine.resource import Resource
+from engine.idevice import Idevice
+from engine.field import TextAreaField
+from engine.field import Field
+from engine.path import Path, toUnicode
+from engine.resource import Resource
 from .extendedfieldengine import *
 log = logging.getLogger(__name__)
 

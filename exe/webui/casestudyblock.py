@@ -20,14 +20,14 @@
 CasestudyBlock can render and process CasestudyIdevices as XHTML
 """
 
-from exe.engine.casestudyidevice import CasestudyIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.casestudyidevice import CasestudyIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui.questionelement import QuestionElement
-from exe.webui.element import ImageElement
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui.questionelement import QuestionElement
+from webui.element import ImageElement
+from webui import common
+from webui.element import TextAreaElement
 
 
 log = logging.getLogger(__name__)

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2015, Juan Rafael Fernández,
@@ -25,7 +24,7 @@ copyright, licenses... of eXeLearning and of the third libraries used.
 """
 
 import logging
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from nevow import rend
 
 log = logging.getLogger(__name__)

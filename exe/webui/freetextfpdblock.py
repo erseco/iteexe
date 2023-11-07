@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,12 +22,12 @@ FPD - FreeTextBlock
 can render and process FreeTextIdevices as XHTML
 """
 
-from exe.engine.freetextfpdidevice import FreeTextfpdIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.freetextfpdidevice import FreeTextfpdIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

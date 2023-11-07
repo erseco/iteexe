@@ -289,7 +289,7 @@ Ext.define('eXe.controller.Outline', {
     		authoring.submitLink('changeNode', node, 0);
     },
     
-    //called from exe.jsui.outlinepane.OutlinePane.handleSetTreeSelection
+    //called from jsui.outlinepane.OutlinePane.handleSetTreeSelection
     select: function(nodeid) {
     	var outlineTreePanel = this.getOutlineTreePanel(),
     		selmodel = outlineTreePanel.getSelectionModel(),

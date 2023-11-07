@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2005, University of Auckland
@@ -29,11 +28,11 @@ import sys
 from PIL import Image, ImageDraw
 from twisted.persisted.styles import requireUpgrade
 
-from exe.engine.idevice import Idevice
-from exe.engine.path import Path, toUnicode
-from exe.engine.persist import Persistable
-from exe.engine.resource import Resource
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.path import Path, toUnicode
+from engine.persist import Persistable
+from engine.resource import Resource
+from engine.translate import lateTranslate
 import importlib
 
 log = logging.getLogger(__name__)
@@ -592,7 +591,7 @@ you created in Geogebra.</p>""")
         self.appletCode = ""
         self.message = ""
         if self.type == "geogebra":
-            # from exe.application import application
+            # from application import application
             from exe import globals
             ideviceDir = globals.application.config.webDir / 'templates'
             for file in GEOGEBRA_FILE_NAMES:
@@ -603,7 +602,7 @@ you created in Geogebra.</p>""")
             self._typeInstruc = x_(
                 """Click on the AddFiles button to select the .ggb file and then click on the Upload button.""")
         if self.type == "jclic":
-            # from exe.application import application
+            # from application import application
             from exe import globals
             ideviceDir = globals.application.config.webDir / 'templates'
             for file in JCLIC_FILE_NAMES:
@@ -612,9 +611,9 @@ you created in Geogebra.</p>""")
             self.appletCode = self.getAppletcodeJClic("")
             self.message = ""
             self._typeInstruc = x_(
-                """Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from eXe.""")
+                """Click on the AddFiles button to select the .jclic.zip file and then click on the Upload button.<p>The activity will be visible when the HTML file will be generated from """)
         if self.type == "scratch":
-            # from exe.application import application
+            # from application import application
             from exe import globals
             ideviceDir = globals.application.config.webDir / 'templates'
             for file in SCRATCH_FILE_NAMES:
@@ -625,7 +624,7 @@ you created in Geogebra.</p>""")
             self._typeInstruc = x_(
                 """Click on the AddFiles button to select the .sb or .scratch file and then click on the Upload button.""")
         if self.type == "descartes":
-            # from exe.application import application
+            # from application import application
             from exe import globals
             ideviceDir = globals.application.config.webDir / 'templates'
             global DESC_PLUGIN

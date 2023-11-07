@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 ###! /usr/bin/python2.7
 """Interfaces for launching and remotely controlling Web browsers.
 JRJ: Fichero parcheado de webbrowser.py para que acepte chrome y chromium"""

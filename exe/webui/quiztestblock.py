@@ -21,12 +21,12 @@
 QuizTestBlock can render and process QuizTestIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.quiztestidevice import QuizTestIdevice
+from webui.blockfactory import g_blockFactory
+from engine.quiztestidevice import QuizTestIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.testquestionelement import TestquestionElement
-from exe.webui import common
+from webui.block import Block
+from webui.testquestionelement import TestquestionElement
+from webui import common
 log = logging.getLogger(__name__)
 
 

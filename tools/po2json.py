@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 '''Transecma is a Python solution for javascript internationalization,
 written in 2012 by Nando Florestan.

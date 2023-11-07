@@ -23,10 +23,10 @@ Used by CaseStudyBlock
 """
 
 import logging
-from exe.webui import common
-from exe.webui.element import ImageElement
-from exe.webui.element import TextAreaElement
-from exe.webui.element import Feedback2Element
+from webui import common
+from webui.element import ImageElement
+from webui.element import TextAreaElement
+from webui.element import Feedback2Element
 
 
 log = logging.getLogger(__name__)

@@ -21,12 +21,12 @@
 MultiSelectBlock can render and process MultiSelectIdevices as XHTML
 """
 
-from exe.engine.multiselectidevice import MultiSelectIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.multiselectidevice import MultiSelectIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui.element import SelectquestionElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import SelectquestionElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

@@ -22,9 +22,9 @@ rendering and processing Idevices in XHTML
 """
 
 import sys
-from exe.webui import common
-from exe.webui.renderable import Renderable
-from exe.engine.idevice import Idevice
+from webui import common
+from webui.renderable import Renderable
+from engine.idevice import Idevice
 
 import logging
 log = logging.getLogger(__name__)

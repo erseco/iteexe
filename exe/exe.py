@@ -23,7 +23,8 @@
 The eXe main script
 """
 
-from exe.application import Application
+# from application import Application
+import application
 import os
 import sys
 
@@ -52,7 +53,7 @@ sys.path.insert(0, pythonPath)
 
 
 def main():
-    application = Application()
+    # application = Application()
     application.main()
 
 

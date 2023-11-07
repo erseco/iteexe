@@ -20,11 +20,11 @@
 import unittest
 import logging
 import builtins
-from exe.engine.packagestore import PackageStore
-from exe.engine.checker import Checker
-from exe.engine.freetextidevice import FreeTextIdevice
-from exe.engine.resource import Resource
-from exe.engine.path import Path
+from engine.packagestore import PackageStore
+from engine.checker import Checker
+from engine.freetextidevice import FreeTextIdevice
+from engine.resource import Resource
+from engine.path import Path
 from utils import SuperTestCase
 
 builtins._ = lambda t: t

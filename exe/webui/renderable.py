@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -33,7 +32,7 @@ template to do your rendering, even if you're part of a bigger block.
 """
 
 from twisted.web.resource import Resource
-from nevow import loaders
+# from nevow import loaders
 from twisted.web import static
 from nevow.i18n import render as render_i18n
 
@@ -50,7 +49,7 @@ Unset = object()
 DontHave = object()
 
 
-class Renderable(object):
+class Renderable:
     """
     A base class for all things rendered
     """
@@ -173,7 +172,7 @@ class Renderable(object):
                 rc.process(request)
 
 
-class _RenderablePage(Renderable):
+class _RenderablePage(Renderable, Resource):
     """
     For internal use only
     """
@@ -188,7 +187,7 @@ class _RenderablePage(Renderable):
             self.parent.putChild(self.name, self)
 
 
-class RenderableResource(_RenderablePage, Resource):
+class RenderableResource(_RenderablePage):
     """
     It is a page and renderable, but not live
     """

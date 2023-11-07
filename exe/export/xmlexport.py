@@ -27,16 +27,16 @@ import logging
 import re
 import imp
 from html import escape
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
-from exe.engine.path import Path, TempDirPath
-from exe.export.pages import uniquifyNames
-from exe.export.websitepage import WebsitePage
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
+from engine.path import Path, TempDirPath
+from export.pages import uniquifyNames
+from export.websitepage import WebsitePage
 from zipfile import ZipFile, ZIP_DEFLATED
-from exe.export.websiteexport import *
-from exe.export.websitepage import *
-from exe.export.xmlpage import XMLPage
-from exe.export.exportmediaconverter import ExportMediaConverter
+from export.websiteexport import *
+from export.websitepage import *
+from export.xmlpage import XMLPage
+from export.exportmediaconverter import ExportMediaConverter
 
 import sys
 import os

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -28,22 +27,22 @@ WebServer module
 
 # Redirect std err for importing twisted and nevow
 import logging
-from exe.webui.templatemanagerpage import TemplateManagerPage
+from webui.templatemanagerpage import TemplateManagerPage
 from exe import globals as G
-from exe.webui.oauthpage import OauthPage
-from exe.webui.session import eXeSite
-from exe.webui.dirtree import DirTreePage
-from exe.webui.xliffimportpreferencespage import XliffImportPreferencesPage
-from exe.webui.renderable import File
-from exe.webui.iecmwarning import IECMWarningPage
-from exe.webui.quitpage import QuitPage
-from exe.webui.legalpage import LegalPage
-from exe.webui.styledesigner import StyleDesigner
-from exe.webui.releasenotespage import ReleaseNotesPage
-from exe.webui.aboutpage import AboutPage
-from exe.webui.preferencespage import PreferencesPage
-from exe.webui.stylemanagerpage import StyleManagerPage
-from exe.webui.editorpage import EditorPage
+from webui.oauthpage import OauthPage
+from webui.session import eXeSite
+from webui.dirtree import DirTreePage
+from webui.xliffimportpreferencespage import XliffImportPreferencesPage
+from webui.renderable import File
+from webui.iecmwarning import IECMWarningPage
+from webui.quitpage import QuitPage
+from webui.legalpage import LegalPage
+from webui.styledesigner import StyleDesigner
+from webui.releasenotespage import ReleaseNotesPage
+from webui.aboutpage import AboutPage
+from webui.preferencespage import PreferencesPage
+from webui.stylemanagerpage import StyleManagerPage
+from webui.editorpage import EditorPage
 import sys
 from io import StringIO
 sys.stderr, oldStdErr = StringIO(), sys.stderr
@@ -51,7 +50,7 @@ sys.stdout, oldStdOut = StringIO(), sys.stdout
 try:
     from twisted.internet import reactor
     from twisted.internet.error import CannotListenError
-    from exe.webui.packageredirectpage import PackageRedirectPage
+    from webui.packageredirectpage import PackageRedirectPage
 finally:
     sys.stderr = oldStdErr
     sys.stdout = oldStdOut

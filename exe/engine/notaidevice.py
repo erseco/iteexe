@@ -23,9 +23,9 @@ Fran Macias , exelearning.net
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.translate import lateTranslate
-from exe.engine.field import TextAreaField
+from engine.idevice import Idevice
+from engine.translate import lateTranslate
+from engine.field import TextAreaField
 import re
 log = logging.getLogger(__name__)
 

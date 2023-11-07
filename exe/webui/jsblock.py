@@ -16,21 +16,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
-from exe.engine.jsidevice import JsIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.jsidevice import JsIdevice
+from webui.blockfactory import g_blockFactory
 from webassets.utils import common_path_prefix
-from exe.engine.idevice import Idevice
+from engine.idevice import Idevice
 """
 JsBlock can render and process JsIdevices as XHTML
 """
 
 import logging
-from exe.webui.block import Block
-from exe.webui.elementfactory import g_elementFactory
-from exe.webui import common
+from webui.block import Block
+from webui.elementfactory import g_elementFactory
+from webui import common
 
 from exe import globals as G
-from exe.engine.path import Path
+from engine.path import Path
 
 log = logging.getLogger(__name__)
 

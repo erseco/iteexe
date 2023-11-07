@@ -6,9 +6,9 @@ from PIL import Image
 from subprocess import call
 
 from exe import globals
-from exe.engine.config import Config
-from exe.engine.package import Package
-from exe.engine.path import Path
+from engine.config import Config
+from engine.package import Package
+from engine.path import Path
 
 '''
 This class is designed to go over through a given exported object

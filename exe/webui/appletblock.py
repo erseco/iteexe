@@ -22,11 +22,11 @@
 AppletBlock can render and process AppletIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.appletidevice import AppletIdevice
+from webui.blockfactory import g_blockFactory
+from engine.appletidevice import AppletIdevice
 import os.path
-from exe.webui.block import Block
-from exe.webui import common
+from webui.block import Block
+from webui import common
 from exe import globals as G
 # from string            import Template
 

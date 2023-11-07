@@ -6,7 +6,7 @@ import logging
 import warnings
 import subprocess
 from tempfile import mkstemp
-from exe.engine.path import Path
+from engine.path import Path
 from exe import globals as G
 
 warnings.filterwarnings(

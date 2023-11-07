@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2011-2012, Pedro Peña Pérez
@@ -31,22 +30,22 @@ if os.name == 'posix':
 
 # Try to work even with no python path
 try:
-    from exe.application import Application
+    from application import Application
 except ImportError as error:
     if str(error) == "No module named exe.application":
         exePath = os.path.abspath(sys.argv[0])
         exeDir = os.path.dirname(exePath)
         pythonPath = os.path.split(exeDir)[0]
         sys.path.insert(0, pythonPath)
-        from exe.application import Application
+        from application import Application
     else:
         import traceback
         traceback.print_exc()
         sys.exit(1)
-from exe.export.cmdlineexporter import CmdlineExporter
-from exe.importers.cmdlineimporter import CmdlineImporter
-from exe.engine.package import Package
-from exe.engine.path import Path, TempDirPath
+from export.cmdlineexporter import CmdlineExporter
+from importers.cmdlineimporter import CmdlineImporter
+from engine.package import Package
+from engine.path import Path, TempDirPath
 
 ENCODING = sys.stdout.encoding or "UTF-8"
 

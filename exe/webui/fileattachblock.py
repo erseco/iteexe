@@ -21,12 +21,12 @@ FileAttachBlockInc will render the File Attachments Idevice
 
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.fileattachidevice import FileAttachIdeviceInc
+from webui.blockfactory import g_blockFactory
+from engine.fileattachidevice import FileAttachIdeviceInc
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.engine.extendedfieldengine import *
+from webui.block import Block
+from webui.element import TextAreaElement
+from engine.extendedfieldengine import *
 log = logging.getLogger(__name__)
 
 

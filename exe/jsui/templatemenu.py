@@ -22,8 +22,8 @@
 TemplateMenu provides a list of Templates used in eXe and handle related client events
 """
 
-from exe.webui.livepage import allSessionClients
-from exe.webui.renderable import Renderable
+from webui.livepage import allSessionClients
+from webui.renderable import Renderable
 from twisted.web.resource import Resource
 import json
 import locale

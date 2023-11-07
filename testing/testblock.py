@@ -20,13 +20,13 @@
 import unittest
 import sys
 import zipfile
-from exe.webui.block import Block
-from exe.engine.idevice import Idevice
-from exe.webui.blockfactory import g_blockFactory
-from exe.webui.renderable import Renderable
-from exe.engine.node import Node
-from exe.engine.path import Path, TempDirPath
-from exe.export.scormexport import ScormExport
+from webui.block import Block
+from engine.idevice import Idevice
+from webui.blockfactory import g_blockFactory
+from webui.renderable import Renderable
+from engine.node import Node
+from engine.path import Path, TempDirPath
+from export.scormexport import ScormExport
 from utils import SuperTestCase, HTMLChecker
 from nevow.context import RequestContext, WovenContext
 from nevow.livepage import IClientHandle
@@ -60,7 +60,7 @@ class TestBlock(SuperTestCase):
 
             # at start mainpage.authoringPage is None - test will
             # currently fail - Mike Dawson 5/Feb/2014
-            from exe.webui.authoringpage import AuthoringPage
+            from webui.authoringpage import AuthoringPage
             self.mainpage.authoringPage = AuthoringPage(self.mainpage)
             return self.mainpage.authoringPage.render(request)
         ideviceCount = len(self.app.ideviceStore.getIdevices())

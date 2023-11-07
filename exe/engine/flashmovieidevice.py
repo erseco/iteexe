@@ -22,9 +22,9 @@ A FlashWithText Idevice is one built up from a flash file and free text.
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField, FlashMovieField
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.field import TextAreaField, FlashMovieField
+from engine.translate import lateTranslate
 
 log = logging.getLogger(__name__)
 

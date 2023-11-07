@@ -16,22 +16,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.hangmanidevice import HangmanIdeviceInc
-from exe.export.exportmediaconverter import ExportMediaConverter
-from exe.export.xmlpage import XMLPage
+from webui.blockfactory import g_blockFactory
+from engine.hangmanidevice import HangmanIdeviceInc
+from export.exportmediaconverter import ExportMediaConverter
+from export.xmlpage import XMLPage
 """
 HangmanBlock can render and process HangmanIdevices as XHTML and Javascript to
 make a game
 """
 
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui.element import ImageElement
-from exe.webui import common
-from exe.webui.element import TextElement
-from exe.engine.extendedfieldengine import field_engine_is_delete_request
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui.element import ImageElement
+from webui import common
+from webui.element import TextElement
+from engine.extendedfieldengine import field_engine_is_delete_request
 
 log = logging.getLogger(__name__)
 

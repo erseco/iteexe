@@ -22,15 +22,15 @@ Tests website and scorm exports.
 
 import unittest
 import utils
-from exe.engine.package import Package
-from exe.engine.path import Path, TempDirPath
-from exe.export.websiteexport import WebsiteExport
-from exe.export.scormexport import ScormExport
-from exe.export.imsexport import IMSExport
+from engine.package import Package
+from engine.path import Path, TempDirPath
+from export.websiteexport import WebsiteExport
+from export.scormexport import ScormExport
+from export.imsexport import IMSExport
 from zipfile import ZipFile
 from sets import Set
 from exe import globals as G
-from exe.application import Application
+from application import Application
 
 
 class TestWebsiteExport(unittest.TestCase):

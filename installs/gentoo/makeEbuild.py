@@ -1,5 +1,5 @@
 # Uses a specified branch of the svn tree to make and upload an ebuild
-from exe.engine.path import Path, TempDirPath
+from engine.path import Path, TempDirPath
 import os
 import sys
 

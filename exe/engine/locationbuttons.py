@@ -20,7 +20,7 @@
 
 import sys
 import os
-from exe.engine.path import Path
+from engine.path import Path
 from exe import globals as G
 
 

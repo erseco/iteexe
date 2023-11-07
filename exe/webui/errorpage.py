@@ -22,7 +22,7 @@ Displays a page with an error message
 """
 
 import logging
-from exe.webui import common
+from webui import common
 from twisted.web.resource import Resource
 
 log = logging.getLogger(__name__)

@@ -19,7 +19,7 @@
 # ===========================================================================
 
 import logging
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from nevow import rend
 
 log = logging.getLogger(__name__)

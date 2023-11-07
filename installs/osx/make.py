@@ -3,7 +3,7 @@
 # a thinly disguised shell script written in Python
 #
 
-from exe.engine import version
+from engine import version
 import sys
 import os
 import getopt

@@ -23,13 +23,13 @@ A multichoice Idevice is one built up from question and options
 """
 
 import logging
-from exe.engine.persist import Persistable
-from exe.engine.idevice import Idevice
-from exe.engine.field import ImageField
-from exe.engine.translate import lateTranslate
-from exe.engine.path import toUnicode
+from engine.persist import Persistable
+from engine.idevice import Idevice
+from engine.field import ImageField
+from engine.translate import lateTranslate
+from engine.path import toUnicode
 from exe import globals as G
-from exe.engine.field import TextAreaField
+from engine.field import TextAreaField
 import os
 import re
 
@@ -173,7 +173,7 @@ class Question(Persistable):
         # Not sure why this can't be imported up top, but it gives
         # ImportError: cannot import name GalleryImages,
         # so here it be:
-        from exe.engine.galleryidevice import GalleryImage
+        from engine.galleryidevice import GalleryImage
 
         full_image_path = self.image.imageResource.path
         # note: unapplicable caption set to '' in the 2nd parameter:

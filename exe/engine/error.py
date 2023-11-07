@@ -2,7 +2,7 @@
 # eXe
 # Copyright 2004-2006, University of Auckland
 #
-# Config settings loaded from exe.conf
+# Config settings loaded from conf
 # Is responsible for the system-wide settings we use
 #
 # This program is free software; you can redistribute it and/or modify

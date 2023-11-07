@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 """
 JRJ: Representación de un estilo
@@ -8,7 +7,7 @@ JRJ: Representación de un estilo
 
 
 import logging
-from exe.engine.persist import Persistable
+from engine.persist import Persistable
 from xml.dom import minidom
 import collections
 import chardet

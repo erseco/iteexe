@@ -22,12 +22,12 @@
 An JavaScript iDevice definition
 """
 
-from exe.engine.idevice import Idevice
+from engine.idevice import Idevice
 # For backward compatibility Jelly expects to find a Field class
-from exe.engine.field import Field, TextField, TextAreaField, FeedbackField
-from exe.engine.field import ImageField, AttachmentField
-from exe.engine.path import Path
-from exe.engine.exceptions.invalidconfigjsidevice import InvalidConfigJsIdevice
+from engine.field import Field, TextField, TextAreaField, FeedbackField
+from engine.field import ImageField, AttachmentField
+from engine.path import Path
+from engine.exceptions.invalidconfigjsidevice import InvalidConfigJsIdevice
 from xml.dom import minidom
 from exe import globals as G
 import re
@@ -239,7 +239,7 @@ class JsIdevice(Idevice):
         Implement the specific resource finding mechanism for these JS iDevices
         TODO: This is an exact copy from Generic iDevice
         """
-        from exe.engine.field import FieldWithResources
+        from engine.field import FieldWithResources
         if hasattr(self, 'fields'):
             # check through each of this idevice's fields,
             # to see if it is supposed to be there.
@@ -267,7 +267,7 @@ class JsIdevice(Idevice):
         # so this needs a bit more parsing:
         fields_list = []
 
-        from exe.engine.field import FieldWithResources
+        from engine.field import FieldWithResources
         if hasattr(self, 'fields'):
             for this_field in self.fields:
                 if isinstance(this_field, FieldWithResources):

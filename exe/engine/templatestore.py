@@ -21,7 +21,7 @@ TemplateStore is responsible for managing the Packages which the eXe server
 has loaded, (and loading and saving them?)
 """
 
-from exe.engine.template import Template
+from engine.template import Template
 from multiprocessing.sharedctypes import template
 import logging
 log = logging.getLogger(__name__)

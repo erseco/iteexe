@@ -22,12 +22,12 @@ Renders a paragraph where the content creator can choose which words the student
 must fill in.
 """
 
-from exe.engine.clozeidevice import ClozeIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.clozeidevice import ClozeIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import ClozeElement, TextAreaElement
+from webui.block import Block
+from webui import common
+from webui.element import ClozeElement, TextAreaElement
 
 
 log = logging.getLogger(__name__)

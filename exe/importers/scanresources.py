@@ -26,9 +26,9 @@ import re
 import sys
 from bs4 import BeautifulSoup, UnicodeDammit
 from urllib.parse import quote, unquote
-from exe.engine.freetextidevice import FreeTextIdevice
-from exe.engine.resource import Resource
-from exe.engine.path import Path
+from engine.freetextidevice import FreeTextIdevice
+from engine.resource import Resource
+from engine.path import Path
 import logging
 
 log = logging.getLogger(__name__)

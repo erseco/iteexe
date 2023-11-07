@@ -17,12 +17,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.notaidevice import NotaIdevice
+from webui.blockfactory import g_blockFactory
+from engine.notaidevice import NotaIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

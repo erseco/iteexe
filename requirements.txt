@@ -11,3 +11,5 @@ dateutils
 Pillow
 twisted
 git+https://github.com/perkinslr/nevow-py3.git#egg=nevow
+
+chardet

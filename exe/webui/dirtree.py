@@ -20,9 +20,9 @@
 
 import sys
 import logging
-from exe.webui.renderable import RenderableResource
+from webui.renderable import RenderableResource
 from twisted.web.resource import Resource
-from exe.engine.path import Path
+from engine.path import Path
 from exe import globals as G
 from urllib.parse import unquote
 import json

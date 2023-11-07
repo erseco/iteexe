@@ -18,10 +18,10 @@
 # ===========================================================================
 
 import unittest
-from exe.engine.packagestore import PackageStore, g_packageStore
-from exe.engine.package import Package
-from exe.engine.node import Node
-from exe.webui.outlinePaneForTest import OutlinePaneForTest
+from engine.packagestore import PackageStore, g_packageStore
+from engine.package import Package
+from engine.node import Node
+from webui.outlinePaneForTest import OutlinePaneForTest
 # ===========================================================================
 
 

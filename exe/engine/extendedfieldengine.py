@@ -7,21 +7,21 @@
 
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField
-from exe.engine.field import TextField
-from exe.engine.field import ImageField
-from exe.engine.field import Field
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui.element import TextElement
-from exe.webui.element import ImageElement
-from exe.webui.element import Element
+from engine.idevice import Idevice
+from engine.field import TextAreaField
+from engine.field import TextField
+from engine.field import ImageField
+from engine.field import Field
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui.element import TextElement
+from webui.element import ImageElement
+from webui.element import Element
 from string import Template
-from exe.webui import common
-from exe.engine.path import Path, toUnicode
-from exe.engine.persist import Persistable
-from exe.engine.resource import Resource
+from webui import common
+from engine.path import Path, toUnicode
+from engine.persist import Persistable
+from engine.resource import Resource
 from exe import globals
 from twisted.web.microdom import escape
 

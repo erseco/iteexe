@@ -24,13 +24,13 @@ The EditorPage is responsible for managing user created iDevices
 
 import logging
 from twisted.web.resource import Resource
-from exe.webui import common
-from exe.engine.genericidevice import GenericIdevice
-from exe.webui.editorpane import EditorPane
-from exe.webui.renderable import RenderableResource
-from exe.engine.package import Package
-from exe.engine.path import Path
-from exe.engine.field import MultimediaField
+from webui import common
+from engine.genericidevice import GenericIdevice
+from webui.editorpane import EditorPane
+from webui.renderable import RenderableResource
+from engine.package import Package
+from engine.path import Path
+from engine.field import MultimediaField
 from html import escape
 
 log = logging.getLogger(__name__)

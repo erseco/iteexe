@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2012, Pedro Peña Pérez, Open Phoenix IT
@@ -21,7 +20,7 @@
 
 
 import logging
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from nevow import rend
 
 log = logging.getLogger(__name__)

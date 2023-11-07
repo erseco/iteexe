@@ -26,9 +26,9 @@ import re
 import requests
 import feedparser
 
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.field import TextAreaField
+from engine.translate import lateTranslate
 
 
 # ===========================================================================

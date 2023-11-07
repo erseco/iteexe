@@ -24,8 +24,8 @@ configuration
 """
 import sys
 
-from exe.engine.config import Config
-from exe.engine.path import Path
+from engine.config import Config
+from engine.path import Path
 
 # Constants for directory name codes
 APPDATA = 0x001a

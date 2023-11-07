@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -28,11 +27,11 @@ The PreferencesPage is responsible for managing eXe preferences
 import logging
 import json
 from twisted.web.resource import Resource
-from exe.webui.renderable import RenderableResource
+from webui.renderable import RenderableResource
 from . import mywebbrowser
-from exe.engine.path import Path
+from engine.path import Path
 import os.path
-from exe.webui import common
+from webui import common
 
 log = logging.getLogger(__name__)
 

@@ -24,8 +24,8 @@
 
 import logging
 from twisted.web.resource import Resource
-from exe.webui import common
-from exe.webui.renderable import RenderableResource
+from webui import common
+from webui.renderable import RenderableResource
 from urllib.parse import quote
 
 log = logging.getLogger(__name__)

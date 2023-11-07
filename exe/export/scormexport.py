@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2005, University of Auckland
@@ -32,22 +31,22 @@ import imp
 import io
 from html import escape
 from zipfile import ZipFile, ZIP_DEFLATED
-from exe.webui import common
-from exe.engine.path import Path, TempDirPath
-from exe.export.pages import uniquifyNames
-from exe.engine.resource import Resource
-from exe.engine.uniqueidgenerator import UniqueIdGenerator
-from exe.export.singlepage import SinglePage
-from exe.export.websiteexport import WebsiteExport
-from exe.engine.persist import encodeObject
-from exe.engine.persistxml import encodeObjectToXML
+from webui import common
+from engine.path import Path, TempDirPath
+from export.pages import uniquifyNames
+from engine.resource import Resource
+from engine.uniqueidgenerator import UniqueIdGenerator
+from export.singlepage import SinglePage
+from export.websiteexport import WebsiteExport
+from engine.persist import encodeObject
+from engine.persistxml import encodeObjectToXML
 from exe import globals as G
-from exe.export.scormpage import ScormPage
-from exe.engine.lom import lomsubs
+from export.scormpage import ScormPage
+from engine.lom import lomsubs
 from .helper import exportMinFileJS
 from .helper import exportMinFileCSS
-from exe.webui.common import getFilesCSSToMinify
-from exe.webui.common import getFilesJSToMinify
+from webui.common import getFilesCSSToMinify
+from webui.common import getFilesJSToMinify
 
 log = logging.getLogger(__name__)
 

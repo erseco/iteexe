@@ -23,9 +23,9 @@ A multichoice Idevice is one built up from question and options
 
 import logging
 from twisted.spread import jelly
-from exe.engine.idevice import Idevice
-from exe.engine.field import QuizQuestionField, QuizOptionField
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.field import QuizQuestionField, QuizOptionField
+from engine.translate import lateTranslate
 from exe import globals as G
 import re
 log = logging.getLogger(__name__)

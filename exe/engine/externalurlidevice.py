@@ -23,8 +23,8 @@ ExternalUrlIdevice: just has a block of text
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.translate import lateTranslate
+from engine.idevice import Idevice
+from engine.translate import lateTranslate
 log = logging.getLogger(__name__)
 
 # ===========================================================================

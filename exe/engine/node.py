@@ -22,11 +22,11 @@ Nodes provide the structure to the package hierarchy
 
 import logging
 from copy import deepcopy
-from exe.engine.persist import Persistable
-from exe.engine.path import toUnicode
+from engine.persist import Persistable
+from engine.path import toUnicode
 from exe import globals as G
 from urllib.parse import quote
-from exe.webui import common
+from webui import common
 
 import re
 
@@ -333,7 +333,7 @@ class Node(Persistable):
                             # are NOT actually listed within its _nodeIdDict!
 
                             # could not import this at the top:
-                            from exe.engine.field import Field
+                            from engine.field import Field
 
                             this_link_node = None
                             this_anchor_name = common.getAnchorNameFromLinkName(

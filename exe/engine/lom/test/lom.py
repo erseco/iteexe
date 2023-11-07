@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import unittest
 import sys
-from exe.engine.lom import lomsubs
+from engine.lom import lomsubs
 import exe.jsui.propertiespage as pp
 
 
@@ -256,7 +255,7 @@ class TestLOM(unittest.TestCase):
         print(a)
 
     def test_encode_decode(self):
-        from exe.engine.persistxml import encodeObjectToXML, decodeObjectFromXML
+        from engine.persistxml import encodeObjectToXML, decodeObjectFromXML
         # self.root = lomsubs.parse('exe/engine/lom/test/examplelomes.xml')
         xml = encodeObjectToXML(self.root)
         root, success = decodeObjectFromXML(xml)

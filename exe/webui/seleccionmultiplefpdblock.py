@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,12 +22,12 @@
 MultiSelectfpdBlock can render and process MultiSelectIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
+from webui.blockfactory import g_blockFactory
+from engine.seleccionmultiplefpdidevice import SeleccionmultiplefpdIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import SelectquestionElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import SelectquestionElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

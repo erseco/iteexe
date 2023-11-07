@@ -20,11 +20,11 @@
 ExternalUrlBlock can render and process ExternalUrlIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.externalurlidevice import ExternalUrlIdevice
+from webui.blockfactory import g_blockFactory
+from engine.externalurlidevice import ExternalUrlIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui import common
+from webui.block import Block
+from webui import common
 
 log = logging.getLogger(__name__)
 

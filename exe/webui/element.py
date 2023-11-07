@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -27,10 +26,10 @@ import re
 import urllib.request
 import urllib.parse
 import urllib.error
-from exe.webui import common
-from exe.engine.path import Path
+from webui import common
+from engine.path import Path
 from exe import globals as G
-from exe.engine.jsidevice import JsIdevice
+from engine.jsidevice import JsIdevice
 from urllib.parse import quote
 
 log = logging.getLogger(__name__)
@@ -336,7 +335,7 @@ class TextAreaElement(ElementWithResources):
     """
 
     def getMediaAdaptedStrippedHTML(self, htmlContent, mediaParams={}):
-        from exe.export.exportmediaconverter import ExportMediaConverter
+        from export.exportmediaconverter import ExportMediaConverter
         mediaConverter = ExportMediaConverter.getInstance()
         htmlContentMediaAdapted = htmlContent
 
@@ -365,7 +364,7 @@ class TextAreaElement(ElementWithResources):
         return htmlContentMediaAdapted
 
     def getMediaAdaptedHTML(self):
-        from exe.export.exportmediaconverter import ExportMediaConverter
+        from export.exportmediaconverter import ExportMediaConverter
         mediaConverter = ExportMediaConverter.getInstance()
 
         if mediaConverter is not None:
@@ -433,8 +432,8 @@ class TextAreaElement(ElementWithResources):
             myId="",
             title="",
             icon=""):
-        from exe.export.exportmediaconverter import ExportMediaConverter
-        from exe.export.xmlpage import XMLPage
+        from export.exportmediaconverter import ExportMediaConverter
+        from export.xmlpage import XMLPage
 
         xml = ""
 
@@ -1465,7 +1464,7 @@ class ClozeElement(ElementWithResources):
         return self.renderView(feedbackId, preview)
 
     def renderXML(self):
-        from exe.export.exportmediaconverter import ExportMediaConverter
+        from export.exportmediaconverter import ExportMediaConverter
 
         missingWordCount = 0
 
@@ -2785,8 +2784,8 @@ class QuizOptionElement(Element):
         return html
 
     def renderXML(self):
-        from exe.export.xmlexport import remove_html_tags
-        from exe.export.exportmediaconverter import ExportMediaConverter
+        from export.xmlexport import remove_html_tags
+        from export.exportmediaconverter import ExportMediaConverter
         xml = "<answer iscorrect='%s'> " % str(self.field.isCorrect).lower()
         xml += "\n<![CDATA[\n"
         xml += self.answerElement.renderView()
@@ -3008,8 +3007,8 @@ class QuizQuestionElement(Element):
         return html
 
     def renderXML(self):
-        from exe.export.xmlexport import remove_html_tags
-        from exe.export.exportmediaconverter import ExportMediaConverter
+        from export.xmlexport import remove_html_tags
+        from export.exportmediaconverter import ExportMediaConverter
 
         questionStr = self.questionElement.renderView()
         questionMediaAdjusted = ExportMediaConverter.getInstance(

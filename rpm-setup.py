@@ -6,7 +6,7 @@
 import os.path
 import glob
 from distutils.core import setup
-from exe.engine import version
+from engine import version
 
 # Files that are going to be copied (We add these ones manually)
 g_files = {

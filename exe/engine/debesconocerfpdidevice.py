@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # iDevice Debes conocer creado para la FPD por José Ramón Jiménez Reyes
 # ===========================================================================
@@ -8,9 +7,9 @@ Debes conocer iDevice
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.translate import lateTranslate
-from exe.engine.field import TextAreaField
+from engine.idevice import Idevice
+from engine.translate import lateTranslate
+from engine.field import TextAreaField
 import re
 log = logging.getLogger(__name__)
 

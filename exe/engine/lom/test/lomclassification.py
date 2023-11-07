@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import unittest
-from exe.engine.lom.lomclassification import Classification
+from engine.lom.lomclassification import Classification
 
 
 class TestLOM(unittest.TestCase):

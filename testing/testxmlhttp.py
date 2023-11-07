@@ -18,12 +18,12 @@
 # ===========================================================================
 
 import unittest
-from exe.webui.outlinepane import OutlinePane
-from exe.engine.package import Package
-from exe.webui.webserver import WebServer
-from exe.webui.packageredirectpage import PackageRedirectPage
-from exe.application import Application
-from exe.engine.path import Path
+from webui.outlinepane import OutlinePane
+from engine.package import Package
+from webui.webserver import WebServer
+from webui.packageredirectpage import PackageRedirectPage
+from application import Application
+from engine.path import Path
 
 
 class FakeClient(object):

@@ -27,10 +27,10 @@ import json
 import logging
 from xml.dom.minidom import parse
 from exe import globals as G
-from exe.engine.path import Path
-from exe.webui.renderable import Renderable
+from engine.path import Path
+from webui.renderable import Renderable
 from twisted.web.resource import Resource
-from exe.webui.livepage import allSessionClients
+from webui.livepage import allSessionClients
 log = logging.getLogger(__name__)
 
 

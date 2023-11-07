@@ -22,7 +22,7 @@ RecentMenu provides a list of Recent Projects used in eXe and handle related cli
 """
 
 import logging
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from twisted.web.resource import Resource
 from exe import globals as G
 import json

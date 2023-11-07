@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 JRJ: Almacén de los estilos disponibles
 (Store of available styles)
 """
 
-from exe.engine.style import Style
+from engine.style import Style
 import logging
 
 log = logging.getLogger(__name__)

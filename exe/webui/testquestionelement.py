@@ -23,9 +23,9 @@ Used by QuizTestBlock for SCORM Quiz
 """
 
 import logging
-from exe.webui.testoptionelement import TestoptionElement
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.testoptionelement import TestoptionElement
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

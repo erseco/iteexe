@@ -24,8 +24,8 @@ import logging
 import os
 from copy import deepcopy
 from string import Template
-from exe.engine.persist import Persistable
-from exe.engine.path import Path, toUnicode
+from engine.persist import Persistable
+from engine.path import Path, toUnicode
 from exe import globals as G
 
 log = logging.getLogger(__name__)
@@ -88,8 +88,8 @@ class _Resource(Persistable):
 
         try:
             self.checksum = resourceFile.md5
-            from exe.engine.idevice import Idevice
-            from exe.engine.field import FieldWithResources
+            from engine.idevice import Idevice
+            from engine.field import FieldWithResources
             if isinstance(owner, Idevice):
                 self._idevice = owner
                 if owner.parentNode:
@@ -717,8 +717,8 @@ class Resource(_Resource):
             newFullFileName = Path(old_path).rename(new_path)
 
             def updateIdevice(self):
-                from exe.engine.appletidevice import AppletIdevice
-                from exe.engine.galleryidevice import GalleryIdevice
+                from engine.appletidevice import AppletIdevice
+                from engine.galleryidevice import GalleryIdevice
 
                 if isinstance(self._idevice, AppletIdevice):
                     # note that it COULD make it this far IF an AppletIdevice
@@ -744,7 +744,7 @@ class Resource(_Resource):
                     # will need to be changed directly.
 
                     this_field = self._idevice.getResourcesField(self)
-                    from exe.engine.field import FieldWithResources
+                    from engine.field import FieldWithResources
                     if this_field is not None\
                             and isinstance(this_field, FieldWithResources):
                         # 1. just change .content_w_resourcePaths directly:

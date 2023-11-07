@@ -23,8 +23,8 @@ OutlinePane is responsible for creating the XHTML for the package outline
 """
 
 import logging
-from exe.webui.renderable import Renderable
-from exe.webui.livepage import allSessionPackageClients
+from webui.renderable import Renderable
+from webui.livepage import allSessionPackageClients
 from twisted.web.resource import Resource
 log = logging.getLogger(__name__)
 

@@ -21,57 +21,57 @@ BuiltInBlocks imports the iDevice blocks which are built-in (i.e. not
 plugins) to eXe
 """
 
-from exe.webui.freetextblock import FreeTextBlock
-from exe.webui.genericblock import GenericBlock
-from exe.webui.jsblock import JsBlock
-from exe.webui.multichoiceblock import MultichoiceBlock
-from exe.webui.reflectionblock import ReflectionBlock
-from exe.webui.casestudyblock import CasestudyBlock
-from exe.webui.truefalseblock import TrueFalseBlock
-from exe.webui.imagewithtextblock import ImageWithTextBlock
-from exe.webui.wikipediablock import WikipediaBlock
-from exe.webui.attachmentblock import AttachmentBlock
-from exe.webui.galleryblock import GalleryBlock
-from exe.webui.clozeblock import ClozeBlock
-# from exe.webui.clozelangblock             import ClozelangBlock
-from exe.webui.flashwithtextblock import FlashWithTextBlock
-from exe.webui.externalurlblock import ExternalUrlBlock
-from exe.webui.imagemagnifierblock import ImageMagnifierBlock
-from exe.webui.mathblock import MathBlock
-from exe.webui.multimediablock import MultimediaBlock
-from exe.webui.rssblock import RssBlock
-from exe.webui.multiselectblock import MultiSelectBlock
-from exe.webui.appletblock import AppletBlock
-from exe.webui.flashmovieblock import FlashMovieBlock
-from exe.webui.quiztestblock import QuizTestBlock
-from exe.webui.listablock import ListaBlock
-from exe.webui.notablock import NotaBlock
+from webui.freetextblock import FreeTextBlock
+from webui.genericblock import GenericBlock
+from webui.jsblock import JsBlock
+from webui.multichoiceblock import MultichoiceBlock
+from webui.reflectionblock import ReflectionBlock
+from webui.casestudyblock import CasestudyBlock
+from webui.truefalseblock import TrueFalseBlock
+from webui.imagewithtextblock import ImageWithTextBlock
+from webui.wikipediablock import WikipediaBlock
+from webui.attachmentblock import AttachmentBlock
+from webui.galleryblock import GalleryBlock
+from webui.clozeblock import ClozeBlock
+# from webui.clozelangblock             import ClozelangBlock
+from webui.flashwithtextblock import FlashWithTextBlock
+from webui.externalurlblock import ExternalUrlBlock
+from webui.imagemagnifierblock import ImageMagnifierBlock
+from webui.mathblock import MathBlock
+from webui.multimediablock import MultimediaBlock
+from webui.rssblock import RssBlock
+from webui.multiselectblock import MultiSelectBlock
+from webui.appletblock import AppletBlock
+from webui.flashmovieblock import FlashMovieBlock
+from webui.quiztestblock import QuizTestBlock
+from webui.listablock import ListaBlock
+from webui.notablock import NotaBlock
 
-from exe.webui.sortblock import SortBlockInc
-from exe.webui.hangmanblock import HangmanBlockInc
-from exe.webui.clickinorderblock import ClickInOrderBlockInc
-from exe.webui.memorymatchblock import MemoryMatchBlockInc
-from exe.webui.placetheobjectsblock import PlaceTheObjectsBlockInc
-from exe.webui.fileattachblock import FileAttachBlockInc
+from webui.sortblock import SortBlockInc
+from webui.hangmanblock import HangmanBlockInc
+from webui.clickinorderblock import ClickInOrderBlockInc
+from webui.memorymatchblock import MemoryMatchBlockInc
+from webui.placetheobjectsblock import PlaceTheObjectsBlockInc
+from webui.fileattachblock import FileAttachBlockInc
 # JR
 # Necesarios para la FPD
-from exe.webui.clozefpdblock import ClozefpdBlock
-from exe.webui.clozelangfpdblock import ClozelangfpdBlock
-from exe.webui.reflectionfpdblock import ReflectionfpdBlock
-from exe.webui.reflectionfpdmodifblock import ReflectionfpdmodifBlock
-from exe.webui.parasabermasfpdblock import ParasabermasfpdBlock
-from exe.webui.debesconocerfpdblock import DebesconocerfpdBlock
-from exe.webui.citasparapensarfpdblock import CitasparapensarfpdBlock
-from exe.webui.recomendacionfpdblock import RecomendacionfpdBlock
-from exe.webui.verdaderofalsofpdblock import VerdaderofalsofpdBlock
-from exe.webui.seleccionmultiplefpdblock import SeleccionmultiplefpdBlock
-from exe.webui.eleccionmultiplefpdblock import EleccionmultiplefpdBlock
-from exe.webui.casopracticofpdblock import CasopracticofpdBlock
-from exe.webui.ejercicioresueltofpdblock import EjercicioresueltofpdBlock
-from exe.webui.destacadofpdblock import DestacadofpdBlock
-# from exe.webui.correccionfpdblock	import CorreccionfpdBlock
-from exe.webui.orientacionesalumnadofpdblock import OrientacionesalumnadofpdBlock
-from exe.webui.orientacionestutoriafpdblock import OrientacionestutoriafpdBlock
-from exe.webui.freetextfpdblock import FreeTextfpdBlock
+from webui.clozefpdblock import ClozefpdBlock
+from webui.clozelangfpdblock import ClozelangfpdBlock
+from webui.reflectionfpdblock import ReflectionfpdBlock
+from webui.reflectionfpdmodifblock import ReflectionfpdmodifBlock
+from webui.parasabermasfpdblock import ParasabermasfpdBlock
+from webui.debesconocerfpdblock import DebesconocerfpdBlock
+from webui.citasparapensarfpdblock import CitasparapensarfpdBlock
+from webui.recomendacionfpdblock import RecomendacionfpdBlock
+from webui.verdaderofalsofpdblock import VerdaderofalsofpdBlock
+from webui.seleccionmultiplefpdblock import SeleccionmultiplefpdBlock
+from webui.eleccionmultiplefpdblock import EleccionmultiplefpdBlock
+from webui.casopracticofpdblock import CasopracticofpdBlock
+from webui.ejercicioresueltofpdblock import EjercicioresueltofpdBlock
+from webui.destacadofpdblock import DestacadofpdBlock
+# from webui.correccionfpdblock	import CorreccionfpdBlock
+from webui.orientacionesalumnadofpdblock import OrientacionesalumnadofpdBlock
+from webui.orientacionestutoriafpdblock import OrientacionestutoriafpdBlock
+from webui.freetextfpdblock import FreeTextfpdBlock
 
 # ===========================================================================

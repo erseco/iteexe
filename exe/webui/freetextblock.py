@@ -20,12 +20,12 @@
 FreeTextBlock can render and process FreeTextIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.freetextidevice import FreeTextIdevice
+from webui.blockfactory import g_blockFactory
+from engine.freetextidevice import FreeTextIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import TextAreaElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

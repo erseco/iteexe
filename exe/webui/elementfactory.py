@@ -22,11 +22,11 @@ a given field.
 """
 
 import logging
-from exe.engine.field import TextField, TextAreaField, ImageField, FeedbackField
-from exe.engine.field import MultimediaField, FlashField, AttachmentField
-from exe.webui.element import TextElement, TextAreaElement, ImageElement
-from exe.webui.element import FeedbackElement, MultimediaElement, FlashElement
-from exe.webui.element import AttachmentElement
+from engine.field import TextField, TextAreaField, ImageField, FeedbackField
+from engine.field import MultimediaField, FlashField, AttachmentField
+from webui.element import TextElement, TextAreaElement, ImageElement
+from webui.element import FeedbackElement, MultimediaElement, FlashElement
+from webui.element import AttachmentElement
 
 log = logging.getLogger(__name__)
 

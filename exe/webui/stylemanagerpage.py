@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXeLearning
 # Copyright 2013, Jose Ramón Jiménez Reyes
@@ -39,10 +38,10 @@ import locale
 from twisted.internet import threads
 from twisted.web.resource import Resource
 from twisted.web.xmlrpc import Proxy
-from exe.webui.livepage import allSessionClients
-from exe.webui.renderable import RenderableResource
-from exe.engine.path import Path
-from exe.engine.style import Style
+from webui.livepage import allSessionClients
+from webui.renderable import RenderableResource
+from engine.path import Path
+from engine.style import Style
 
 
 log = logging.getLogger(__name__)

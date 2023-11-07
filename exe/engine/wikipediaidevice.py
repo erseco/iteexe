@@ -27,11 +27,11 @@ import logging
 import re
 import mimetypes
 from bs4 import BeautifulSoup, Comment
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField
-from exe.engine.translate import lateTranslate
-from exe.engine.path import Path, TempDirPath
-from exe.engine.resource import Resource
+from engine.idevice import Idevice
+from engine.field import TextAreaField
+from engine.translate import lateTranslate
+from engine.path import Path, TempDirPath
+from engine.resource import Resource
 
 import urllib.request
 import urllib.parse

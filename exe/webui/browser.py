@@ -28,7 +28,7 @@ Browser module
 import logging
 from urllib.parse import quote
 from . import mywebbrowser
-from exe.engine.path import Path
+from engine.path import Path
 from exe import globals as G
 
 log = logging.getLogger(__name__)

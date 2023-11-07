@@ -27,9 +27,9 @@ import os
 from nevow import tags as T
 from nevow.flat import flatten
 from exe import globals as G
-from exe.engine.path import Path
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
+from engine.path import Path
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
 from html import escape
 # jrf:sorry if this a terrible mistake, I need to fix this to be able to test the translations
 # from BeautifulSoup             import BeautifulSoup
@@ -89,7 +89,7 @@ def getExtraHeadContent(package):
 
 def exportJavaScriptIdevicesFiles(iDevices, outputDir):
     """ Copy all the JS iDevices export files in outputDir """
-    from exe.engine.jsidevice import JsIdevice
+    from engine.jsidevice import JsIdevice
     # TODO: Find a way to not copy already existing files
     for idevice in iDevices:
         # We only want to copy JS iDevices resources
@@ -102,7 +102,7 @@ def exportJavaScriptIdevicesFiles(iDevices, outputDir):
 
 def printJavaScriptIdevicesScripts(mode, page):
     """ Prints the required scripts for the JS iDevices of the page """
-    from exe.engine.node import Node
+    from engine.node import Node
     html = ''
 
     resources = []

@@ -24,8 +24,8 @@ The Snap config overrides the Config class with Snap Package specific configurat
 
 import sys
 import os
-from exe.engine.config import Config
-from exe.engine.path import Path
+from engine.config import Config
+from engine.path import Path
 
 # ===========================================================================
 

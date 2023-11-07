@@ -18,9 +18,9 @@
 # ===========================================================================
 
 import unittest
-from exe.webui.block import Block
-from exe.engine.idevice import Idevice
-from exe.webui.blockfactory import g_blockFactory
+from webui.block import Block
+from engine.idevice import Idevice
+from webui.blockfactory import g_blockFactory
 
 # ===========================================================================
 

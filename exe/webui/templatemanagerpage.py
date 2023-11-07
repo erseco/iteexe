@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXeLearning
 # Copyright 2017, CeDeC
@@ -28,13 +27,13 @@ import logging
 import os
 from zipfile import ZipFile
 
-from exe.engine.path import Path
-from exe.engine.template import Template
-from exe.webui.livepage import allSessionClients
-from exe.webui.renderable import RenderableResource
+from engine.path import Path
+from engine.template import Template
+from webui.livepage import allSessionClients
+from webui.renderable import RenderableResource
 from exe import globals as G
-from exe.engine.package import Package
-from exe.export.pages import forbiddenPageNames
+from engine.package import Package
+from export.pages import forbiddenPageNames
 
 
 log = logging.getLogger(__name__)

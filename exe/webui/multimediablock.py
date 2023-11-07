@@ -20,13 +20,13 @@
 MultimediaBlock can render and process MultimediaIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.multimediaidevice import MultimediaIdevice
+from webui.blockfactory import g_blockFactory
+from engine.multimediaidevice import MultimediaIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement, MultimediaElement
-from exe.webui import common
-from exe.engine.idevice import Idevice
+from webui.block import Block
+from webui.element import TextAreaElement, MultimediaElement
+from webui import common
+from engine.idevice import Idevice
 
 log = logging.getLogger(__name__)
 

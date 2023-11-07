@@ -31,22 +31,22 @@ if os.name == 'posix':
 
 # Try to work even with no python path
 try:
-    from exe.application import Application
+    from application import Application
 except ImportError as error:
     if str(error) == "No module named exe.application":
         exePath = os.path.abspath(sys.argv[0])
         exeDir = os.path.dirname(exePath)
         pythonPath = os.path.split(exeDir)[0]
         sys.path.insert(0, pythonPath)
-        from exe.application import Application
+        from application import Application
     else:
         import traceback
         traceback.print_exc()
         sys.exit(1)
 
-from exe.engine.package import Package
-from exe.engine.path import Path
-from exe.engine.template import Template
+from engine.package import Package
+from engine.path import Path
+from engine.template import Template
 
 
 def normalize_text(text):

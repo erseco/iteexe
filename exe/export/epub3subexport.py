@@ -26,12 +26,12 @@ import datetime
 import uuid
 from html import escape
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
-from exe.webui import common
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
-from exe.engine.path import Path, TempDirPath
-from exe.engine.version import release
-from exe.export.pages import Page, uniquifyNames
+from webui import common
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
+from engine.path import Path, TempDirPath
+from engine.version import release
+from export.pages import Page, uniquifyNames
 from exe import globals as G
 from bs4 import BeautifulSoup
 from html.entities import name2codepoint

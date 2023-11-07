@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
-from exe.engine.idevicestore import IdeviceStore
+from engine.idevicestore import IdeviceStore
 import unittest
 import utils
 import os

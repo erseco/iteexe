@@ -35,18 +35,18 @@ if os.name == 'posix' and not (
     sys.path.insert(0, '/usr/share/exe')
 
 # This *must* always be the first import to prevent a warning on Windows
-from exe.webui.webserver import WebServer
+from webui.webserver import WebServer
 
 from getopt import getopt, GetoptError
 from twisted.internet import reactor
 from twisted.web.static import File
 
 from exe import globals as G
-from exe.engine import version
-from exe.engine.idevicestore import IdeviceStore
-from exe.engine.package import Package
-from exe.engine.translate import installSafeTranslate
-from exe.webui.browser import launchBrowser
+from engine import version
+from engine.idevicestore import IdeviceStore
+from engine.package import Package
+from engine.translate import installSafeTranslate
+from webui.browser import launchBrowser
 
 log = logging.getLogger(__name__)
 
@@ -228,19 +228,19 @@ class Application:
         Loads the config file and applies all the settings
         """
         if self.standalone:
-            from exe.engine.standaloneconfig import StandaloneConfig
+            from engine.standaloneconfig import StandaloneConfig
             configKlass = StandaloneConfig
         elif self.snap:
-            from exe.engine.snapconfig import SnapConfig
+            from engine.snapconfig import SnapConfig
             configKlass = SnapConfig
         elif sys.platform[:3] == "win":
-            from exe.engine.winconfig import WinConfig
+            from engine.winconfig import WinConfig
             configKlass = WinConfig
         elif sys.platform[:6] == "darwin":
-            from exe.engine.macconfig import MacConfig
+            from engine.macconfig import MacConfig
             configKlass = MacConfig
         else:
-            from exe.engine.linuxconfig import LinuxConfig
+            from engine.linuxconfig import LinuxConfig
             configKlass = LinuxConfig
 
         try:
@@ -329,7 +329,7 @@ class Application:
   -h, --help       display this help and exit
   --standalone     Run totally from current directory
   --portable       Run in portable mode
-Settings are read from exe.conf in $HOME/.exe on Linux/Unix/Mac OS or
+Settings are read from conf in $HOME/.exe on Linux/Unix/Mac OS or
 in Documents and Settings/<user name>/Application Data/exe on Windows XP or
 Users/<user name>/AppData/Roaming/exe on Windows 7/8/10""") %
             os.path.basename(

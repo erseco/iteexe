@@ -21,8 +21,8 @@ ExampleBlock can render and process ExampleIdevices as XHTML
 """
 
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ class ExampleBlock(Block):
 def register():
     """Register this block with the BlockFactory"""
     from .exampleidevice import ExampleIdevice
-    from exe.webui.blockfactory import g_blockFactory
+    from webui.blockfactory import g_blockFactory
     g_blockFactory.registerBlockType(ExampleBlock, ExampleIdevice)
 
 # ===========================================================================

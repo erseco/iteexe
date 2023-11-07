@@ -22,20 +22,20 @@ The EditorPane is responsible for creating new idevice
 """
 
 import logging
-from exe.webui import common
-from exe.engine.field import TextField, TextAreaField, ImageField, FlashField
-from exe.engine.field import FeedbackField, MultimediaField, AttachmentField
-from exe.webui.editorelement import TextEditorElement
-from exe.webui.editorelement import TextAreaEditorElement
-from exe.webui.editorelement import ImageEditorElement
-from exe.webui.editorelement import FeedbackEditorElement
-from exe.webui.editorelement import FlashEditorElement
-from exe.webui.editorelement import MultimediaEditorElement
-from exe.webui.editorelement import AttachmentEditorElement
-from exe.engine.idevice import Idevice
-from exe.engine.genericidevice import GenericIdevice
-from exe.engine.path import Path
-from exe.engine.translate import lateTranslate
+from webui import common
+from engine.field import TextField, TextAreaField, ImageField, FlashField
+from engine.field import FeedbackField, MultimediaField, AttachmentField
+from webui.editorelement import TextEditorElement
+from webui.editorelement import TextAreaEditorElement
+from webui.editorelement import ImageEditorElement
+from webui.editorelement import FeedbackEditorElement
+from webui.editorelement import FlashEditorElement
+from webui.editorelement import MultimediaEditorElement
+from webui.editorelement import AttachmentEditorElement
+from engine.idevice import Idevice
+from engine.genericidevice import GenericIdevice
+from engine.path import Path
+from engine.translate import lateTranslate
 from exe import globals as G
 
 

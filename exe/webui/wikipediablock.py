@@ -21,15 +21,15 @@
 WikipediaBlock can render and process WikipediaIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.wikipediaidevice import WikipediaIdevice
+from webui.blockfactory import g_blockFactory
+from engine.wikipediaidevice import WikipediaIdevice
 import re
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
-from exe.engine.idevice import Idevice
-from exe.engine.resource import Resource
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
+from engine.idevice import Idevice
+from engine.resource import Resource
 from exe import globals as G
 
 log = logging.getLogger(__name__)

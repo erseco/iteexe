@@ -27,13 +27,13 @@ import time
 import exceptions
 import sys
 from twisted.web.resource import Resource
-from exe.webui import common
+from webui import common
 from html import escape
 import exe.webui.builtinblocks
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.error import Error
-from exe.webui.renderable import RenderableResource
-from exe.engine.path import Path
+from webui.blockfactory import g_blockFactory
+from engine.error import Error
+from webui.renderable import RenderableResource
+from engine.path import Path
 from exe import globals as G
 import re
 

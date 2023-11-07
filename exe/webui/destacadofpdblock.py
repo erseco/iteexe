@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # Bloque para el iDevice Destacado creado para la FPD por
 # José Ramón Jiménez Reyes
@@ -11,12 +10,12 @@ FPD - Highlighted
 Destacado bloque
 """
 
-from exe.engine.destacadofpdidevice import DestacadofpdIdevice
-from exe.webui.blockfactory import g_blockFactory
+from engine.destacadofpdidevice import DestacadofpdIdevice
+from webui.blockfactory import g_blockFactory
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

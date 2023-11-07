@@ -20,7 +20,7 @@
 import sys
 import os.path
 import unittest
-from exe.engine.uniqueidgenerator import UniqueIdGenerator
+from engine.uniqueidgenerator import UniqueIdGenerator
 
 # ===========================================================================
 

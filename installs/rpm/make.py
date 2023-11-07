@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from exe.engine import version
+from engine import version
 import sys
 import os
 import subprocess

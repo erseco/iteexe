@@ -20,12 +20,12 @@
 import unittest
 from os.path import join
 from utils import SuperTestCase
-from exe.engine.package import Package
-from exe.engine.config import Config
-from exe.engine.packagestore import PackageStore
-from exe.engine.node import Node
-from exe.engine.genericidevice import GenericIdevice
-from exe.engine.path import Path
+from engine.package import Package
+from engine.config import Config
+from engine.packagestore import PackageStore
+from engine.node import Node
+from engine.genericidevice import GenericIdevice
+from engine.path import Path
 
 
 # ===========================================================================

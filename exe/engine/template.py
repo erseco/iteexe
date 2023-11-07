@@ -21,7 +21,7 @@ import chardet
 import logging
 from xml.dom import minidom
 from zipfile import ZipFile
-from exe.engine.path import Path, TempDirPath, toUnicode
+from engine.path import Path, TempDirPath, toUnicode
 
 import collections
 if hasattr(collections, 'OrderedDict'):

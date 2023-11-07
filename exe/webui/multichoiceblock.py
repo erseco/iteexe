@@ -21,12 +21,12 @@
 MultichoiceBlock can render and process MultichoiceIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.multichoiceidevice import MultichoiceIdevice
+from webui.blockfactory import g_blockFactory
+from engine.multichoiceidevice import MultichoiceIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import QuizQuestionElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import QuizQuestionElement
+from webui import common
 
 log = logging.getLogger(__name__)
 

@@ -22,17 +22,17 @@ SinglePageExport will export a package as a website of HTML pages
 """
 
 import os
-from exe.engine.path import Path
-from exe.export.singlepage import SinglePage
-from exe.webui import common
+from engine.path import Path
+from export.singlepage import SinglePage
+from webui import common
 from exe import globals as G
-from exe.engine.persist import encodeObject
-from exe.engine.persistxml import encodeObjectToXML
-from exe.engine.resource import Resource
+from engine.persist import encodeObject
+from engine.persistxml import encodeObjectToXML
+from engine.resource import Resource
 from .helper import exportMinFileJS
 from .helper import exportMinFileCSS
-from exe.webui.common import getFilesCSSToMinify
-from exe.webui.common import getFilesJSToMinify
+from webui.common import getFilesCSSToMinify
+from webui.common import getFilesJSToMinify
 
 import logging
 log = logging.getLogger(__name__)

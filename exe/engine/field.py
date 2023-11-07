@@ -23,19 +23,19 @@ Simple fields which can be used to build up a generic iDevice.
 """
 
 import logging
-from exe.engine.persist import Persistable
-from exe.engine.path import Path, toUnicode
-from exe.engine.resource import Resource
-from exe.engine.translate import lateTranslate
-from exe.engine.mimetex import compile
+from engine.persist import Persistable
+from engine.path import Path, toUnicode
+from engine.resource import Resource
+from engine.translate import lateTranslate
+from engine.mimetex import compile
 from html.parser import HTMLParser
-from exe.engine.flvreader import FLVReader
+from engine.flvreader import FLVReader
 from html.entities import name2codepoint
-from exe.engine.htmlToText import HtmlToText
+from engine.htmlToText import HtmlToText
 from twisted.persisted.styles import Versioned
-from exe.webui import common
+from webui import common
 from exe import globals as G
-from exe.engine.node import Node
+from engine.node import Node
 import os
 import re
 import urllib.request
@@ -251,7 +251,7 @@ class FieldWithResources(Field):
         # Not sure why this can't be imported up top, but it gives
         # ImportError: cannot import name GalleryImages,
         # so here it be:
-        from exe.engine.galleryidevice import GalleryImages
+        from engine.galleryidevice import GalleryImages
         ############
         # using GalleryImages' ease in handling all the resource details.
         # the following are expected by GalleryImages:
@@ -313,7 +313,7 @@ class FieldWithResources(Field):
         if hasattr(self, 'images'):
             if isinstance(self.images, list):
                 images = self.images
-                from exe.engine.galleryidevice import GalleryImages
+                from engine.galleryidevice import GalleryImages
                 self.images = GalleryImages(self)
                 while len(images) > 0:
                     self.images.append(images.pop())
@@ -1293,7 +1293,7 @@ class FieldWithResources(Field):
                     # Not sure why this can't be imported up top, but it gives
                     # ImportError: cannot import name GalleryImages,
                     # so here it be:
-                    from exe.engine.galleryidevice import GalleryImage
+                    from engine.galleryidevice import GalleryImage
 
                     # note: the middle GalleryImage field is currently
                     # an unused caption:
@@ -1538,7 +1538,7 @@ class FieldWithResources(Field):
             # Not sure why this can't be imported up top, but it gives
             # ImportError: cannot import name GalleryImages,
             # so here it be:
-            from exe.engine.galleryidevice import GalleryImage
+            from engine.galleryidevice import GalleryImage
 
             # note: the middle GalleryImage field is currently
             # an unused caption:
@@ -1746,7 +1746,7 @@ class FieldWithResources(Field):
                     # Not sure why this can't be imported up top, but it gives
                     # ImportError: cannot import name GalleryImages,
                     # so here it be:
-                    from exe.engine.galleryidevice import GalleryImage
+                    from engine.galleryidevice import GalleryImage
 
                     # note: the middle GalleryImage field is currently
                     # an unused caption:
@@ -1985,7 +1985,7 @@ class FieldWithResources(Field):
                     # Not sure why this can't be imported up top, but it gives
                     # ImportError: cannot import name GalleryImages,
                     # so here it be:
-                    from exe.engine.galleryidevice import GalleryImage
+                    from engine.galleryidevice import GalleryImage
 
                     # note: the middle GalleryImage field is currently
                     # an unused caption:
@@ -2196,7 +2196,7 @@ class FieldWithResources(Field):
                     # Not sure why this can't be imported up top, but it gives
                     # ImportError: cannot import name GalleryImages,
                     # so here it be:
-                    from exe.engine.galleryidevice import GalleryImage
+                    from engine.galleryidevice import GalleryImage
 
                     # note: the middle GalleryImage field is currently
                     # an unused caption:
@@ -2639,7 +2639,7 @@ class FieldWithResources(Field):
         # Not sure why this can't be imported up top, but it gives
         # ImportError: cannot import name GalleryImages,
         # so here it be:
-        from exe.engine.galleryidevice import GalleryImages
+        from engine.galleryidevice import GalleryImages
 
         self.images = GalleryImages(self)
         self.nextImageId = 0

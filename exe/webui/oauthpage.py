@@ -20,7 +20,7 @@
 from nevow import rend, inevow
 from oauthlib.oauth2 import InvalidClientError
 
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 
 
 class ProcomunOauth(Renderable, rend.Page):

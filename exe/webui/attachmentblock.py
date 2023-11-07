@@ -21,12 +21,12 @@
 AttachmentBlock can render and process AttachmentIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.attachmentidevice import AttachmentIdevice
+from webui.blockfactory import g_blockFactory
+from engine.attachmentidevice import AttachmentIdevice
 import os.path
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
 from exe import globals as G
 
 import logging

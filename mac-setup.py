@@ -3,8 +3,8 @@
 # setup.py
 import sys
 from distutils.core import setup
-from exe.engine.path import Path
-from exe.engine import version
+from engine.path import Path
+from engine import version
 import os
 import httplib2
 import certifi

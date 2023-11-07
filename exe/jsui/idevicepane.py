@@ -24,10 +24,10 @@ IdevicePane is responsible for creating the XHTML for iDevice links
 import logging
 import locale
 import json
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from twisted.web.resource import Resource
-from exe.webui.livepage import allSessionClients
-from exe.engine.jsidevice import JsIdevice
+from webui.livepage import allSessionClients
+from engine.jsidevice import JsIdevice
 from html import escape
 
 log = logging.getLogger(__name__)

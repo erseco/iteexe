@@ -18,12 +18,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ===========================================================================
 
-from exe.engine.resource import Resource
+from engine.resource import Resource
 import logging
-from exe.engine.field import FieldWithResources
-from exe.engine.node import Node
-from exe.engine.galleryidevice import GalleryImages, GalleryImage
-from exe.engine.idevice import Idevice
+from engine.field import FieldWithResources
+from engine.node import Node
+from engine.galleryidevice import GalleryImages, GalleryImage
+from engine.idevice import Idevice
 
 log = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ class Checker:
     def __init__(self, package, clear=True):
         log.info('****** Checking package at %s ******' % package.filename)
         self.package = package
-        from exe.engine.package import Package
+        from engine.package import Package
         self.tmppackage = Package('temp')
         self.inconsistencies = []
         self.nodes = [self.package.root] + \

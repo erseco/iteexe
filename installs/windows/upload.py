@@ -1,5 +1,5 @@
-from exe.engine.version import release
-from exe.engine.path import Path
+from engine.version import release
+from engine.path import Path
 from getpass import getpass
 import sys
 sys.path.insert(0, '../..')

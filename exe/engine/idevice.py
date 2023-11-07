@@ -26,9 +26,9 @@ import logging
 import re
 import collections
 from copy import deepcopy
-from exe.engine.persist import Persistable
-from exe.engine.translate import lateTranslate
-from exe.engine.resource import Resource
+from engine.persist import Persistable
+from engine.translate import lateTranslate
+from engine.resource import Resource
 
 log = logging.getLogger(__name__)
 

@@ -42,9 +42,9 @@ from xml.dom import minidom
 from PIL import ImageFile
 from twisted.web.resource import Resource
 
-from exe.webui.renderable import Renderable
-from exe.engine import version
-from exe.engine.style import Style
+from webui.renderable import Renderable
+from engine import version
+from engine.style import Style
 
 log = logging.getLogger(__name__)
 

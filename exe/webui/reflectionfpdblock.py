@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe
 # Copyright 2004-2006, University of Auckland
@@ -23,12 +22,12 @@ FPD - ReflectionBlock
 can render and process ReflectionIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.reflectionfpdidevice import ReflectionfpdIdevice
+from webui.blockfactory import g_blockFactory
+from engine.reflectionfpdidevice import ReflectionfpdIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui import common
-from exe.webui.element import TextAreaElement
+from webui.block import Block
+from webui import common
+from webui.element import TextAreaElement
 
 log = logging.getLogger(__name__)
 

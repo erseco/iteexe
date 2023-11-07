@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # ===========================================================================
 # eXe config
 # Copyright 2004-2006, University of Auckland
@@ -20,15 +19,15 @@
 # ===========================================================================
 
 """
-Config settings loaded from exe.conf
+Config settings loaded from conf
 Is responsible for the system-wide settings we use
 O/S specific config classes are derieved from here
 """
 
-from exe.engine.configparser import ConfigParser
-from exe.engine.path import Path
-from exe.engine.locales import chooseDefaultLocale
-from exe.engine import version
+from engine.configparser import ConfigParser
+from engine.path import Path
+from engine.locales import chooseDefaultLocale
+from engine import version
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
@@ -38,9 +37,9 @@ import tempfile
 import twisted
 import shutil
 from exe import globals as G
-from exe.engine.stylestore import StyleStore
-from exe.engine.templatestore import TemplateStore
-from exe.webui import common
+from engine.stylestore import StyleStore
+from engine.templatestore import TemplateStore
+from webui import common
 
 
 def x_(s): return s

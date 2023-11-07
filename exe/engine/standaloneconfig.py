@@ -24,8 +24,8 @@ configuration
 
 import sys
 import os
-from exe.engine.config import Config
-from exe.engine.path import Path
+from engine.config import Config
+from engine.path import Path
 
 # ===========================================================================
 

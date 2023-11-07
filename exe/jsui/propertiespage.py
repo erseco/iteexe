@@ -24,11 +24,11 @@ PropertiesPage maps properties forms to Package options
 
 import logging
 import json
-from exe.webui.renderable import Renderable
+from webui.renderable import Renderable
 from twisted.web.resource import Resource
-from exe.engine.path import toUnicode, Path
-from exe.engine.lom import lomsubs
-from exe.webui import common
+from engine.path import toUnicode, Path
+from engine.lom import lomsubs
+from webui import common
 import re
 
 

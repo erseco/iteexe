@@ -22,10 +22,10 @@ A ImageWithText Idevice is one built up from an image and free text.
 """
 
 import logging
-from exe.engine.idevice import Idevice
-from exe.engine.field import TextAreaField, ImageField
-from exe.engine.translate import lateTranslate
-from exe.engine.freetextidevice import FreeTextIdevice
+from engine.idevice import Idevice
+from engine.field import TextAreaField, ImageField
+from engine.translate import lateTranslate
+from engine.freetextidevice import FreeTextIdevice
 from exe import globals as G
 import os
 
@@ -220,7 +220,7 @@ you have just inserted.""")
             # Not sure why this can't be imported up top, but it gives
             # ImportError: cannot import name GalleryImages,
             # so here it be:
-            from exe.engine.galleryidevice import GalleryImage
+            from engine.galleryidevice import GalleryImage
 
             full_image_path = self.image.imageResource.path
             new_GalleryImage = GalleryImage(

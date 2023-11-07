@@ -20,12 +20,12 @@
 FlashWithTextBlock can render and process FlashWithTextIdevices as XHTML
 """
 
-from exe.webui.blockfactory import g_blockFactory
-from exe.engine.flashmovieidevice import FlashMovieIdevice
+from webui.blockfactory import g_blockFactory
+from engine.flashmovieidevice import FlashMovieIdevice
 import logging
-from exe.webui.block import Block
-from exe.webui.element import TextAreaElement, FlashMovieElement
-from exe.webui import common
+from webui.block import Block
+from webui.element import TextAreaElement, FlashMovieElement
+from webui import common
 
 log = logging.getLogger(__name__)
 
