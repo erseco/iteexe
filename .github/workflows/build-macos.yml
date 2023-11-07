@@ -38,7 +38,7 @@ jobs:
       - name: Build package
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 20
       - run: |
           pip install py2app httplib2
           npm install -g appdmg
