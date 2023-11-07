@@ -17,7 +17,7 @@ parts:
   exelearning:
     source: .
     plugin: python
-    python-version: python2
+    python-version: python3
     requirements: [requirements.txt]
     build-packages: [mimetex]
     stage-packages: [mimetex]
@@ -31,7 +31,7 @@ plugs:
 apps:
   exelearning:
     environment:
-      PYTHONPATH: $SNAP/lib:$SNAP/usr/lib/:$SNAP/lib/python2.7/site-packages:$SNAP/lib/python2.7/site-packages/usr/share/exe/:$PYTHONPATH
+      PYTHONPATH: $SNAP/lib:$SNAP/usr/lib/:$SNAP/lib/python3.9/site-packages:$SNAP/lib/python3.9/site-packages/usr/share/exe/:$PYTHONPATH
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
       HOME: /home/$USER
