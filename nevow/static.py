@@ -22,7 +22,7 @@ from twisted.web import error
 from twisted.web.util import redirectTo
 
 # Twisted Imports
-from twisted.protocols import http
+from twisted.web import http
 from twisted.python import threadable, log, components, failure, filepath
 from twisted.internet import abstract
 from twisted.spread import pb

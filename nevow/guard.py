@@ -24,7 +24,7 @@ from twisted.cred.credentials import UsernamePassword, Anonymous
 try:
     from twisted.web import http
 except ImportError:
-    from twisted.protocols import http
+    from twisted.web import http
 
 # Nevow imports
 from nevow import inevow, url, stan

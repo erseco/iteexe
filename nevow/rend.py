@@ -659,7 +659,7 @@ class FourOhFour:
         return NotFound
 
     def renderHTTP(self, ctx):
-        from twisted.protocols import http
+        from twisted.web import http
         inevow.IRequest(ctx).setResponseCode(404)
         try:
             notFoundHandler = ctx.locate(inevow.ICanHandleNotFound)

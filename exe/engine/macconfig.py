@@ -38,12 +38,15 @@ class MacConfig(LinuxConfig):
         Sets default mac values. Uses LinuxConfig's _getConfigPathOptions.
         """
         # Override the default settings
-        self.webDir      = Path("../Resources/exe")
-        self.jsDir      = Path("../Resources/exe")
-        self.localeDir   = Path("../Resources/exe/locale")
+        # self.webDir      = Path("../Resources/exe")
+        # self.jsDir      = Path("../Resources/exe")
+        # self.localeDir   = Path("../exe/locale")
         self.dataDir     = Path(os.environ['HOME'])
         self.configDir   = Path(self.dataDir)/'.exe'
         self.lastDir     = Path(os.environ['HOME'])
         self.eXeUIversion = 0
+
+        self.dest_template = Path("../Resources/exe/templates")
+
 
 # ===========================================================================

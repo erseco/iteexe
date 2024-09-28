@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2004 Divmod.
 # See LICENSE for details.
 
@@ -5,8 +7,14 @@
 so that nevow works with it. This module shadows nevow.compy
 when using the new Twisted's Zope components system.
 """
+from zope.interface import Interface
 
 import warnings
+
+# Definir la advertencia si no está presente
+class ComponentsDeprecationWarning(DeprecationWarning):
+    pass
+
 from twisted.python.components import *
 warnings.filterwarnings('ignore', category=ComponentsDeprecationWarning)
 from twisted.python.reflect import namedAny as _namedAny

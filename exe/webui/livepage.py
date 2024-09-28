@@ -22,10 +22,18 @@ import logging
 from exe.webui.renderable import _RenderablePage
 import nevow
 from nevow.livepage import LivePage, DefaultClientHandleFactory, _js,\
-    ClientHandle, IClientHandle, jquote
+    ClientHandle, IClientHandle
 from nevow import inevow, tags
 
 log = logging.getLogger(__name__)
+
+def jquote(jscript):
+    """
+    Escapes JavaScript code by replacing certain characters
+    to prevent syntax errors or injection attacks.
+    """
+    return jscript.replace('\\', '\\\\').replace("'", "\\'").replace('\n', '\\n')
+
 
 def allClients(client1, client2):
     return True

@@ -11,7 +11,7 @@ import py2app
 
 # Make main.py if it doesn't exist
 if not Path('exe/main.py').exists():
-    lines = open('exe/exe').readlines()
+    lines = open('exe/exe.py').readlines()
     for i, line in enumerate(lines):
         if line.startswith('import'):
             lines.insert(i, 'import decimal\n')

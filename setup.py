@@ -71,7 +71,8 @@ def dataFiles(dirs, excludes=[]):
 # Source dir
 g_oldBase = "exe/webui"
 # Destination dir
-g_newBase = "/usr/share/exe"
+# g_newBase = "/usr/share/exe"
+g_newBase = "/Users/ernesto/Downloads/iteexe_flask"
 
 # Process WebUI files
 dataFiles(
@@ -152,7 +153,7 @@ any Learning Management System.
     # Project license
     license="GPL",
     # Executable files
-    scripts=["exe/exe", "exe/exe_do"],
+    scripts=["exe/exe.py", "exe/exe_do.py"],
     # Project packages
     packages=[
         "exe",

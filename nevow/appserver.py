@@ -16,7 +16,7 @@ from twisted.web import server
 from twisted.web import resource
 from twisted.web import util as webutil
 
-from twisted.protocols import http
+from twisted.web import http
 
 from twisted.python import log
 from twisted.python import failure

@@ -26,6 +26,10 @@ from exe.engine.packagestore import PackageStore
 from exe import globals as G
 import logging
 
+# Import the missing AdapterRegistry
+from twisted.python.components import AdapterRegistry
+from twisted.python.components import registerAdapter
+
 log = logging.getLogger(__name__)
 
 
@@ -41,18 +45,9 @@ def setLocaleFromRequest(request):
     G.application.config.locale = locale
     return locale
 
-    def renderHTTP(self, ctx):
-        request = inevow.IRequest(ctx)
-        if self.real_prepath_len is not None:
-            path = request.postpath = request.prepath[self.real_prepath_len:]
-            del request.prepath[self.real_prepath_len:]
-        result = defer.maybeDeferred(self.renderLocalized, request).addCallback(
-            self._handle_NOT_DONE_YET, request)
-        return result
-
 class eXeResourceAdapter(appserver.OldResourceAdapter):
     def renderLocalized(self, request):
-#        setLocaleFromRequest(request)
+        # setLocaleFromRequest(request)  # Descomentar si es necesario
         return self.original.render(request)
 
     def renderHTTP(self, ctx):
@@ -64,10 +59,18 @@ class eXeResourceAdapter(appserver.OldResourceAdapter):
             self._handle_NOT_DONE_YET, request)
         return result
 
-compy.registerAdapter(eXeResourceAdapter, resource.IResource, inevow.IResource)
+# Crear una instancia del registro de adaptadores
+registry = AdapterRegistry()
 
-
-compy.registerAdapter(eXeResourceAdapter, resource.IResource, inevow.IResource)
+# Intentar registrar el nuevo adaptador y manejar el error si ya existe
+try:
+    registerAdapter(eXeResourceAdapter, resource.IResource, inevow.IResource)
+except ValueError as e:
+    # Si el error es porque ya está registrado, lo ignoramos
+    if "was already registered" in str(e):
+        pass  # El adaptador ya está registrado, no hacemos nada
+    else:
+        raise  # Si es otro error, lo lanzamos
 
 
 class eXeRequest(appserver.NevowRequest):
@@ -76,11 +79,9 @@ class eXeRequest(appserver.NevowRequest):
         self.locale = None
 
     def gotPageContext(self, pageContext):
-#         request = inevow.IRequest(pageContext)
-#        self.locale = setLocaleFromRequest(request)
         appserver.NevowRequest.gotPageContext(self, pageContext)
 
-    def getSession(self, sessionInterface = None):
+    def getSession(self, sessionInterface=None):
         self.sitepath = [str(self.host.port)]
         log.debug("In Cookie's: %s" % self.received_cookies)
         session = appserver.NevowRequest.getSession(self, sessionInterface)
@@ -89,7 +90,7 @@ class eXeRequest(appserver.NevowRequest):
 
     def getPackageName(self):
         try:
-            return u''+self.getHeader('referer').split('/')[-1]
+            return u'' + self.getHeader('referer').split('/')[-1]
         except:
             return None
 
@@ -99,13 +100,11 @@ class eXeSession(server.Session):
         self.packageStore = PackageStore()
         self.oauthToken = {}
 
-
 class eXeSite(appserver.NevowSite):
     requestFactory = eXeRequest
 
     def makeSession(self):
-        """Generate a new Session instance, and store it for future reference.
-        """
+        """Generate a new Session instance, and store it for future reference."""
         uid = self._mkuid()
         s = eXeSession(self, uid)
         session = self.sessions[uid] = s

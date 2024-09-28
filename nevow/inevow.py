@@ -521,21 +521,17 @@ class IViewParameters(compy.Interface):
         of keyword arguments to pass to this method.
         """
 
+
+
 class II18NConfig(compy.Interface):
     """
     Interface for I18N configuration.
-
-    @ivar domain: the gettext domain
-
-    @type domain: str
-
-    @ivar localeDir: path to the messages files or None to use the
-    system default
-
-    @type localeDir: str or None
     """
-    domain = None
-    localeDir = None
+    def get_domain():
+        """Return the gettext domain."""
+
+    def get_locale_dir():
+        """Return the path to the messages files or None to use the system default."""
 
         
 class ILanguages(compy.Interface):

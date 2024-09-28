@@ -1,0 +1,14 @@
+Metadata-Version: 1.0
+Name: eXeLearning
+Version: 2.9
+Summary: The EXtremely Easy to use eLearning authoring tool
+Home-page: http://exelearning.net
+Author: INTEF-eXe Project
+Author-email: admin@exelearning.net
+License: GPL
+Description: The eXe project is an authoring environment to enable teachers
+        to publish web content without the need to become proficient in
+        HTML or XML markup.  Content generated using eXe can be used by
+        any Learning Management System.
+        
+Platform: UNKNOWN
