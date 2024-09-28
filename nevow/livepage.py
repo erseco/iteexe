@@ -460,7 +460,6 @@ class Output(object):
             request.notifyFinish().addErrback(clientHandle.outputGone, d)
             clientHandle.setOutput(d)
         except Exception, e:
-            traceback.print_stack()
             return "alert('Exception on server: %s')" % e.replace("'", '"')
         return d
 
