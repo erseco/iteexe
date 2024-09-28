@@ -332,7 +332,7 @@ class ClientHandle(object):
             log.err(RuntimeError(err))
             return
         if self.outputConduit:
-            if DEBUG: print "SENDING SCRIPT", script
+            if DEBUG: print("SENDING SCRIPT", script)
             output = str(script)
             self.outputConduit.callback(output)
             self.outputConduit = None
