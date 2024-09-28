@@ -25,24 +25,19 @@ import optparse
 import json
 import logging
 
-# Make it so we can import our own nevow and twisted etc.
-if os.name == 'posix':
-    sys.path.insert(0, '/usr/share/exe')
+# Ensure the 'exe' directory is in the sys.path
+exePath = os.path.abspath(sys.argv[0])
+exeDir = os.path.dirname(exePath)
+pythonPath = os.path.split(exeDir)[0]
+sys.path.insert(0, pythonPath)
 
 # Try to work even with no python path
 try:
     from exe.application import Application
-except ImportError, error:
-    if str(error) == "No module named exe.application":
-        exePath = os.path.abspath(sys.argv[0])
-        exeDir = os.path.dirname(exePath)
-        pythonPath = os.path.split(exeDir)[0]
-        sys.path.insert(0, pythonPath)
-        from exe.application import Application
-    else:
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+except ImportError as error:
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
 from exe.export.cmdlineexporter import CmdlineExporter
 from exe.importers.cmdlineimporter import CmdlineImporter
 from exe.engine.package import Package
