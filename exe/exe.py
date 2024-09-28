@@ -32,7 +32,7 @@ if '--portable' in sys.argv:
     exePath = os.path.abspath(sys.argv[0])
     exeDir  = os.path.dirname(exePath)
     pythonPath = os.path.split(exeDir)[0]
-    sys.path.insert(0, pythonPath)
+    sys.path.insert(0, exeDir)
     from exe.application import Application
 else:
     # Try to work even with no python path
