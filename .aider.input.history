@@ -1,0 +1,2905 @@
+
+# 2024-09-27 20:13:24.292199
++yes
+
+# 2024-09-27 20:13:47.003755
++I want to convert this python2 project to python3, please, do it automatically
+
+# 2024-09-27 20:14:22.158756
++do it automatically, go for each file and do it
+
+# 2024-09-27 21:04:40.861067
++que habríaq ue hacer para convertir a python3 el codigo
+
+# 2024-09-27 21:07:39.622628
++/add mac-setup.py
+
+# 2024-09-27 21:07:44.046646
++convierte
+
+# 2024-09-27 21:08:03.258991
++/drop
+
+# 2024-09-27 21:08:56.954160
++/add exe/engine/path.py
+
+# 2024-09-27 21:08:59.939787
++convierte
+
+# 2024-09-27 21:09:21.676611
++File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 53, in <module>
++    if hasattr(file, 'newlines'):
++               ^^^^
++NameError: name 'file' is not defined. Did you mean: 'filter'
+
+# 2024-09-27 21:10:15.365172
++/Users/ernesto/Downloads/iteexe/exe/engine/path.py:243: SyntaxWarning: invalid escape sequence '\h'
++  """NT Only: Split a pathname into UNC mount point and relative path
++/Users/ernesto/Downloads/iteexe/exe/engine/path.py:251: SyntaxWarning: invalid escape sequence '\h'
++  """NT Only: Returns only the server and share name from a unc path
++usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
++   or: setup.py --help [cmd1 cmd2 ...]
++   or: setup.py --help-commands
++   or: setup.py cmd --help
++
++error: no commands supplied
+
+# 2024-09-27 21:10:35.018652
++243: SyntaxWarning: invalid escape sequence '\h'
++  """NT Only: Split a pathname into UNC mount point and relative path
++/Users/ernesto/Downloads/iteexe/exe/engine/path.py:251: SyntaxWarning: invalid escape sequence '\h'
++  """NT Only: Returns only the server and share name from a unc path
++usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
++   or: setup.py --help [cmd1 cmd2 ...]
++   or: setup.py --help-commands
++   or: setup.py cmd --help
++
++error: no commands supplied
+
+# 2024-09-27 21:10:55.524494
++convierte
+
+# 2024-09-27 21:12:06.597465
++/add mac-setup.py
+
+# 2024-09-27 21:12:08.550413
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/mac-setup.py", line 8, in <module>
++    import httplib2
++ModuleNotFoundError: No module named 'httplib2'
+
+# 2024-09-27 21:12:19.159388
++/run pip install httplib2
+
+# 2024-09-27 21:12:29.150309
++yes
+
+# 2024-09-27 21:13:01.644159
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/mac-setup.py", line 13, in <module>
++    if not Path('exe/main.py').exists():
++           ^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 90, in __new__
++    return str.__new__(cls, toUnicode(filename, encoding))
++                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 1110, in toUnicode
++    return str(string, encoding)
++           ^^^^^^^^^^^^^^^^^^^^^
++TypeError: decoding str is not supported
+
+# 2024-09-27 21:13:35.479170
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/mac-setup.py", line 50, in <module>
++    dataFiles('exe/webui', '../Resources/exe',
++  File "/Users/ernesto/Downloads/iteexe/mac-setup.py", line 38, in dataFiles
++    sourceDir = baseSourceDir / sourceDir
++                ~~~~~~~~~~~~~~^~~~~~~~~~~
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 112, in __truediv__
++    return Path(os.path.join(toUnicode(self), toUnicode(rel)))
++                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "<frozen posixpath>", line 88, in join
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 103, in __radd__
++    return Path(toUnicode(other) + toUnicode(self))
++                ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 103, in __radd__
++    return Path(toUnicode(other) + toUnicode(self))
++                ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 103, in __radd__
++    return Path(toUnicode(other) + toUnicode(self))
++                ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
++  [Previous line repeated 993 more times]
++RecursionError: maximum recursion depth exceeded
+
+# 2024-09-27 21:15:39.891149
++python3 exe
++/Users/ernesto/Downloads/aider-chat/env/bin/python3: can't find '__main__' module in '/Users/ernesto/Downloads/iteexe/exe'
+
+# 2024-09-27 21:15:48.790106
++yes
+
+# 2024-09-27 21:15:52.425481
++y
+
+# 2024-09-27 21:15:52.432410
++/run python3 -m exe
+
+# 2024-09-27 21:15:54.400364
++yes
+
+# 2024-09-27 21:16:06.190823
++/run pip install zope.interface
+
+# 2024-09-27 21:17:11.736178
++/add exe/exe
+
+# 2024-09-27 21:17:13.205436
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++ModuleNotFoundError: No module named 'exe'
+
+# 2024-09-27 21:17:20.582884
++/run echo $PYTHONPATH
+
+# 2024-09-27 21:17:22.553027
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:18:08.646510
++/drop
+
+# 2024-09-27 21:18:13.591565
++/add exe/exe.py
+
+# 2024-09-27 21:18:15.689125
++raceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/exe.py", line 40, in <module>
++    from exe.application import Application
++ModuleNotFoundError: No module named 'exe.application'; 'exe' is not a package
+
+# 2024-09-27 21:18:26.912551
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:18:37.598244
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/exe.py", line 40, in <module>
++    from exe.application import Application
++ModuleNotFoundError: No module named 'exe.application'; 'exe' is not a package
+
+# 2024-09-27 21:18:45.978704
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:19:01.858108
++prueba a ejecutar el codigo
+
+# 2024-09-27 21:19:40.407759
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:22:28.606698
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:23:23.058733
++/run pip install twisted
+
+# 2024-09-27 21:23:25.691721
++/run PYTHONPATH=/Users/ernesto/Downloads/iteexe python3 -m exe
+
+# 2024-09-27 21:24:17.967939
++nevow no funciona con python3, se puede reemplazar por otra cosa
+
+# 2024-09-27 22:04:25.088035
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 39, in <module>
++    from exe.webui.livepage          import RenderableLivePage,\
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/livepage.py", line 23, in <module>
++    import nevow
++ModuleNotFoundError: No module named 'nevow'
+
+# 2024-09-27 22:05:10.680032
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 41, in <module>
++    from nevow                       import loaders, inevow, tags
++ModuleNotFoundError: No module named 'nevow'
+
+# 2024-09-27 22:05:59.061527
++/drop
+
+# 2024-09-27 22:06:08.580672
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 1326
++    self.js(
++           ^
++SyntaxError: '(' was never closed
+
+# 2024-09-27 22:06:38.848958
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 25, in <module>
++    from exe.engine.idevice import Idevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/idevice.py", line 29, in <module>
++    from exe.engine.persist   import Persistable
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/persist.py", line 44, in <module>
++    class Persistable(object, jelly.Jellyable, jelly.Unjellyable, Versioned):
++TypeError: Cannot create a consistent method resolution
++order (MRO) for bases object, Jellyable, Unjellyable, Versioned
+
+# 2024-09-27 22:07:03.779503
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 1213
++    if new_content.find("flowPlayer") >= 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:08:01.969972
++/drop
+
+# 2024-09-27 22:08:10.384957
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 1213
++    if new_content.find("flowPlayer") >= 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:09:21.747652
++/drop
+
+# 2024-09-27 22:09:22.641869
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 1213
++    if new_content.find("flowPlayer") >= 0:
++                                           ^
++IndentationError: unindent does not match any outer indentation level
+
+# 2024-09-27 22:10:20.882896
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 1850
++    search_str = "src=\"/previews/"
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:11:21.799405
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 36, in <module>
++    from exe.webui                import common
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/common.py", line 27, in <module>
++    from nevow                     import tags as T
++ModuleNotFoundError: No module named 'nevow'
+
+# 2024-09-27 22:11:26.611252
++/run pip install nevow
+
+# 2024-09-27 22:11:39.632087
++/drop
+
+# 2024-09-27 22:11:52.188743
++sustituye nevow por otra solucion, porque no es compatible con python3
+
+# 2024-09-27 22:12:18.250411
++/add exe/webui/common.py
+
+# 2024-09-27 22:12:22.434993
++analiza
+
+# 2024-09-27 22:12:49.483063
++/run pip install Flask
+
+# 2024-09-27 22:13:14.430682
++env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 30, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 36, in <module>
++    from exe.webui                import common
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/common.py", line 37, in <module>
++    from cgi                       import escape
++ImportError: cannot import name 'escape' from 'cgi' (/opt/homebrew/Cellar/python@3.12/3.12.5/Frameworks/Python.framework/Versions/3.12/lib/python3.12/cgi.py)
+
+# 2024-09-27 22:13:35.838732
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 31, in <module>
++    from cgi import escape
++ImportError: cannot import name 'escape' from 'cgi' (/opt/homebrew/Cellar/python@3.12/3.12.5/Frameworks/Python.framework/Versions/3.12/lib/python3.12/cgi.py)
+
+# 2024-09-27 22:15:27.319685
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 54, in <module>
++    from exe.jsui.propertiespage     import PropertiesPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/propertiespage.py", line 30, in <module>
++    from exe.engine.lom import lomsubs
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lomsubs.py", line 10, in <module>
++    import dateutil.parser
++ModuleNotFoundError: No module named 'dateutil'
+
+# 2024-09-27 22:15:32.232146
++/run pip install python-dateutil
+
+# 2024-09-27 22:15:48.127963
++/drop
+
+# 2024-09-27 22:16:01.136117
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lom.py", line 76, in <module>
++    from generatedssuper import GeneratedsSuper
++ModuleNotFoundError: No module named 'generatedssuper'
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 54, in <module>
++    from exe.jsui.propertiespage     import PropertiesPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/propertiespage.py", line 30, in <module>
++    from exe.engine.lom import lomsubs
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lomsubs.py", line 14, in <module>
++    from . import lom as supermod
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lom.py", line 80, in <module>
++    class GeneratedsSuper(object, Jellyable, Unjellyable):
++TypeError: Cannot create a consistent method resolution
++order (MRO) for bases object, Jellyable, Unjellyable
+
+# 2024-09-27 22:16:24.867915
++/clear
+
+# 2024-09-27 22:16:41.374073
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lom.py", line 76, in <module>
++    from generatedssuper import GeneratedsSuper
++ModuleNotFoundError: No module named 'generatedssuper'
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 54, in <module>
++    from exe.jsui.propertiespage     import PropertiesPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/propertiespage.py", line 30, in <module>
++    from exe.engine.lom import lomsubs
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lomsubs.py", line 14, in <module>
++    from . import lom as supermod
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/lom/lom.py", line 80, in <module>
++    class GeneratedsSuper(object, Jellyable, Unjellyable):
++TypeError: Cannot create a consistent method resolution
++order (MRO) for bases object, Jellyable, Unjellyable
+
+# 2024-09-27 22:17:09.123033
++/drop
+
+# 2024-09-27 22:17:10.134275
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 27, in <module>
++    import exceptions
++ModuleNotFoundError: No module named 'exceptions'
+
+# 2024-09-27 22:17:36.490857
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 30, in <module>
++    from cgi                     import escape
++ImportError: cannot import name 'escape' from 'cgi' (/opt/homebrew/Cellar/python@3.12/3.12.5/Frameworks/Python.framework/Versions/3.12/lib/python3.12/cgi.py)
+
+# 2024-09-27 22:17:50.883160
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 24, in <module>
++    from exe.webui.freetextblock          import FreeTextBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/freetextblock.py", line 25, in <module>
++    from exe.webui.element          import TextAreaElement
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/element.py", line 1676
++    self.field.showScore = \
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:18:33.903183
++/drop
+
+# 2024-09-27 22:18:34.895950
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 26, in <module>
++    from exe.webui.jsblock                import JsBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/jsblock.py", line 19, in <module>
++    from webassets.utils import common_path_prefix
++ModuleNotFoundError: No module named 'webassets'
+
+# 2024-09-27 22:18:38.420208
++/run pip install webassets
+
+# 2024-09-27 22:18:55.795729
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 42, in <module>
++    from exe.webui.rssblock               import RssBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/rssblock.py", line 155, in <module>
++    from exe.engine.rssidevice  import RssIdevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/rssidevice.py", line 28, in <module>
++    import feedparser
++ModuleNotFoundError: No module named 'feedparser'
+
+# 2024-09-27 22:18:59.952273
++/run pip install feedparser
+
+# 2024-09-27 22:19:19.184987
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 44, in <module>
++    from exe.webui.appletblock            import AppletBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/appletblock.py", line 251, in <module>
++    from exe.engine.appletidevice   import AppletIdevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/appletidevice.py", line 54, in <module>
++    sys.setdefaultencoding("UTF-8")
++    ^^^^^^^^^^^^^^^^^^^^^^
++AttributeError: module 'sys' has no attribute 'setdefaultencoding'. Did you mean: 'getdefaultencoding'?
+
+# 2024-09-27 22:19:55.930433
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 44, in <module>
++    from exe.webui.appletblock            import AppletBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/appletblock.py", line 251, in <module>
++    from exe.engine.appletidevice   import AppletIdevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/appletidevice.py", line 38, in <module>
++    from exe.engine.translate import x_
++ImportError: cannot import name 'x_' from 'exe.engine.translate' (/Users/ernesto/Downloads/iteexe/exe/engine/translate.py)
+
+# 2024-09-27 22:20:24.010904
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 31, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 25, in <module>
++    from exe.engine.idevice import Idevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/idevice.py", line 30, in <module>
++    from exe.engine.translate import lateTranslate
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/translate.py", line 27, in <module>
++    from exe.engine.translate import c_, _
++ImportError: cannot import name 'c_' from partially initialized module 'exe.engine.translate' (most likely due to a circular import) (/Users/ernesto/Downloads/iteexe/exe/engine/translate.py)
+
+# 2024-09-27 22:20:42.909248
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 50, in <module>
++    from exe.jsui.idevicepane        import IdevicePane
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/idevicepane.py", line 31, in <module>
++    from exe.engine.jsidevice import JsIdevice;
++    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/jsidevice.py", line 27, in <module>
++    from exe.engine.field                               import Field, TextField, TextAreaField, FeedbackField
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 3621, in <module>
++    class DiscussionField(Field):
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/field.py", line 3622, in DiscussionField
++    def __init__(self, name, instruc=x_("Type a discussion topic here."), content="" ):
++                                     ^^
++NameError: name 'x_' is not defined
+
+# 2024-09-27 22:21:23.817865
++/drop
+
+# 2024-09-27 22:21:31.268051
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 47, in <module>
++    from exe.webui.listablock             import ListaBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/listablock.py", line 29, in <module>
++    from cgi import escape
++ImportError: cannot import name 'escape' from 'cgi' (/opt/homebrew/Cellar/python@3.12/3.12.5/Frameworks/Python.framework/Versions/3.12/lib/python3.12/cgi.py)
+
+# 2024-09-27 22:21:53.403244
++/drop
+
+# 2024-09-27 22:22:01.482564
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 50, in <module>
++    from exe.webui.sortblock import SortBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/sortblock.py", line 19, in <module>
++    from exe.export.exportmediaconverter import ExportMediaConverter
++  File "/Users/ernesto/Downloads/iteexe/exe/export/exportmediaconverter.py", line 8, in <module>
++    from exe.engine.config import Config
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 41, in <module>
++    from exe.engine.stylestore  import StyleStore
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/stylestore.py", line 9, in <module>
++    from exe.engine.style         import Style
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/style.py", line 14, in <module>
++    import chardet
++ModuleNotFoundError: No module named 'chardet'
+
+# 2024-09-27 22:22:05.789261
++/run pip install chardet
+
+# 2024-09-27 22:22:33.417906
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 50, in <module>
++    from exe.webui.sortblock import SortBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/sortblock.py", line 19, in <module>
++    from exe.export.exportmediaconverter import ExportMediaConverter
++  File "/Users/ernesto/Downloads/iteexe/exe/export/exportmediaconverter.py", line 9, in <module>
++    from exe.engine.package          import Package
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/package.py", line 50, in <module>
++    from exe.engine.clozelangfpdidevice import ClozelangfpdIdevice
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/clozelangfpdidevice.py", line 271
++    flag_score = inner.find(name='input',
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:23:13.733477
++/drop
+
+# 2024-09-27 22:23:14.861499
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 50, in <module>
++    from exe.webui.sortblock import SortBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/sortblock.py", line 19, in <module>
++    from exe.export.exportmediaconverter import ExportMediaConverter
++  File "/Users/ernesto/Downloads/iteexe/exe/export/exportmediaconverter.py", line 9, in <module>
++    from exe.engine.package          import Package
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/package.py", line 76, in <module>
++    from exe.engine.persistxml     import encodeObjectToXML, decodeObjectFromXML
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/persistxml.py", line 21, in <module>
++    from twisted.persisted.marmalade import DOMJellier, DOMUnjellier
++ModuleNotFoundError: No module named 'twisted.persisted.marmalade'
+
+# 2024-09-27 22:23:17.549669
++/run pip install Twisted
+
+# 2024-09-27 22:25:00.603920
++/drop
+
+# 2024-09-27 22:25:02.513312
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 50, in <module>
++    from exe.webui.sortblock import SortBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/sortblock.py", line 19, in <module>
++    from exe.export.exportmediaconverter import ExportMediaConverter
++  File "/Users/ernesto/Downloads/iteexe/exe/export/exportmediaconverter.py", line 9, in <module>
++    from exe.engine.package          import Package
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/package.py", line 313, in <module>
++    class Package(Persistable):
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/package.py", line 330, in Package
++    defaultLevelNames  = [x_("Topic"), x_("Section"), x_("Unit")]
++                          ^^
++NameError: name 'x_' is not defined
+
+# 2024-09-27 22:25:44.135883
++/drop
+
+# 2024-09-27 22:25:45.023822
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 50, in <module>
++    from exe.webui.sortblock import SortBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/sortblock.py", line 27, in <module>
++    from exe.engine.extendedfieldengine import *
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/extendedfieldengine.py", line 37, in <module>
++    EXEFIELD_JQUERYUI_EFFECTLIST = [ ["blind" , x_("Blind")], ["bounce" , x_("Bounce")], \
++                                                ^^
++NameError: name 'x_' is not defined
+
+# 2024-09-27 22:26:15.756369
++/drop
+
+# 2024-09-27 22:26:16.645928
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 51, in <module>
++    from exe.webui.hangmanblock import HangmanBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/hangmanblock.py", line 20, in <module>
++    from exe.export.xmlpage import XMLPage
++  File "/Users/ernesto/Downloads/iteexe/exe/export/xmlpage.py", line 26, in <module>
++    from cgi                      import escape
++ImportError: cannot import name 'escape' from 'cgi' (/opt/homebrew/Cellar/python@3.12/3.12.5/Frameworks/Python.framework/Versions/3.12/lib/python3.12/cgi.py)
+
+# 2024-09-27 22:26:42.349692
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 54, in <module>
++    from exe.webui.placetheobjectsblock import PlaceTheObjectsBlockInc
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/placetheobjectsblock.py", line 377, in <module>
++    from exe.engine.placetheobjectsidevice import PlaceTheObjectsIdeviceInc
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/placetheobjectsidevice.py", line 112, in <module>
++    class PlacableObjectField(Field):
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/placetheobjectsidevice.py", line 118, in PlacableObjectField
++    def __init__(self, name, idevice, instruction=x_("An object that has a correct place in the main area"), content=""):
++                                                  ^^
++NameError: name 'x_' is not defined
+
+# 2024-09-27 22:27:02.600833
++/drop
+
+# 2024-09-27 22:27:03.503194
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 58, in <module>
++    from exe.webui.clozefpdblock		import ClozefpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/clozefpdblock.py", line 96
++    """
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:28:23.304351
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 58, in <module>
++    from exe.webui.clozefpdblock		import ClozefpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/clozefpdblock.py", line 120
++    html += "</div>"
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:28:47.128070
++yes
+
+# 2024-09-27 22:29:17.736680
++run
+
+# 2024-09-27 22:29:44.591878
++/run
+
+# 2024-09-27 22:30:41.255711
++/run python3 -m exe
+
+# 2024-09-27 22:31:23.415859
++Y
+
+# 2024-09-27 22:32:07.050304
++/drop
+
+# 2024-09-27 22:32:14.558131
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 59, in <module>
++    from exe.webui.clozelangfpdblock	import ClozelangfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/clozelangfpdblock.py", line 96
++    """
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:33:11.220269
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 60, in <module>
++    from exe.webui.reflectionfpdblock	import ReflectionfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/reflectionfpdblock.py", line 87
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:36:47.408127
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 61, in <module>
++    from exe.webui.reflectionfpdmodifblock	import ReflectionfpdmodifBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/reflectionfpdmodifblock.py", line 86
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:37:08.361557
++/drop
+
+# 2024-09-27 22:37:20.596963
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 62, in <module>
++    from exe.webui.parasabermasfpdblock	import ParasabermasfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/parasabermasfpdblock.py", line 67
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:38:10.587272
++/dropb
+
+# 2024-09-27 22:38:13.090567
++/drop
+
+# 2024-09-27 22:38:20.298691
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 63, in <module>
++    from exe.webui.debesconocerfpdblock	import DebesconocerfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/debesconocerfpdblock.py", line 67
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:40:37.676919
++/drop
+
+# 2024-09-27 22:40:48.457878
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 64, in <module>
++    from exe.webui.citasparapensarfpdblock	import CitasparapensarfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/citasparapensarfpdblock.py", line 66
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:41:17.695612
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 65, in <module>
++    from exe.webui.recomendacionfpdblock	import RecomendacionfpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/recomendacionfpdblock.py", line 67
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:41:34.694470
++/drop
+
+# 2024-09-27 22:41:41.154356
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 69, in <module>
++    from exe.webui.casopracticofpdblock	import CasopracticofpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/casopracticofpdblock.py", line 67
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:42:06.764915
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 70, in <module>
++    from exe.webui.ejercicioresueltofpdblock	import EjercicioresueltofpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/ejercicioresueltofpdblock.py", line 121
++    if self.idevice.title.find("FPD - ") == 0:
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:42:33.493462
++/drop
+
+# 2024-09-27 22:42:39.399984
++ python3 -m exe
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 1, in <module>
++    from exe.main import main
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 41, in <module>
++    from exe.application import Application
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 37, in <module>
++    from exe.webui.packageredirectpage import PackageRedirectPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/packageredirectpage.py", line 29, in <module>
++    from exe.jsui.mainpage import MainPage
++  File "/Users/ernesto/Downloads/iteexe/exe/jsui/mainpage.py", line 56, in <module>
++    from exe.webui.authoringpage     import AuthoringPage
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/authoringpage.py", line 31, in <module>
++    import exe.webui.builtinblocks
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/builtinblocks.py", line 71, in <module>
++    from exe.webui.destacadofpdblock	import DestacadofpdBlock
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/destacadofpdblock.py", line 91
++    html = '<div class="iDevice_destacadofpd">\n'
++TabError: inconsistent use of tabs and spaces in indentation
+
+# 2024-09-27 22:43:01.332136
++/run python3 -m exe
+
+# 2024-09-27 22:43:06.222146
++yes
+
+# 2024-09-27 22:43:21.333322
++/run python3 -m exe
+
+# 2024-09-27 22:43:25.303441
++y
+
+# 2024-09-27 22:43:42.845157
++/run python3 -m exe
+
+# 2024-09-27 22:43:47.558058
++y
+
+# 2024-09-27 22:44:01.510929
++/run python3 -m exe
+
+# 2024-09-27 22:44:05.634484
++y
+
+# 2024-09-27 22:44:22.304290
++/run python3 -m exe
+
+# 2024-09-27 22:44:25.097035
++y
+
+# 2024-09-27 22:44:39.016266
++/drop
+
+# 2024-09-27 22:44:41.182174
++/run python3 -m exe
+
+# 2024-09-27 22:44:43.874440
++y
+
+# 2024-09-27 22:45:08.016920
++/run python3 -m exe
+
+# 2024-09-27 22:45:11.124402
++y
+
+# 2024-09-27 22:45:14.580751
++/run pip install cssmin
+
+# 2024-09-27 22:45:22.780874
++/run python3 -m exe
+
+# 2024-09-27 22:45:26.014033
++y
+
+# 2024-09-27 22:45:54.061478
++/run python3 -m exe
+
+# 2024-09-27 22:45:57.178694
++y
+
+# 2024-09-27 22:46:49.217772
++/drop
+
+# 2024-09-27 22:46:51.277373
++/run python3 -m exe
+
+# 2024-09-27 22:46:53.978382
++y
+
+# 2024-09-27 22:47:16.419414
++/run python3 -m exe
+
+# 2024-09-27 22:47:22.539593
++y
+
+# 2024-09-27 22:47:35.279857
++/run python3 -m exe
+
+# 2024-09-27 22:47:38.318554
++y
+
+# 2024-09-27 22:47:43.787819
++/run python3 -m exe
+
+# 2024-09-27 22:47:47.353751
++y
+
+# 2024-09-27 22:47:59.177485
++/run python3 -m exe
+
+# 2024-09-27 22:48:01.909934
++y
+
+# 2024-09-27 22:48:32.532968
++/run python3 -m exe
+
+# 2024-09-27 22:48:36.303243
++y
+
+# 2024-09-27 22:48:51.941009
++/drop
+
+# 2024-09-27 22:48:54.363496
++/run python3 -m exe
+
+# 2024-09-27 22:48:57.329285
++yes
+
+# 2024-09-27 22:49:15.305756
++/run python3 -m exe
+
+# 2024-09-27 22:49:19.124991
++yes
+
+# 2024-09-27 22:49:40.126298
++/run python3 -m exe
+
+# 2024-09-27 22:49:50.109394
++y
+
+# 2024-09-27 22:50:21.164543
++/run python3 -m exe
+
+# 2024-09-27 22:50:24.742974
++y
+
+# 2024-09-27 22:50:53.458268
++/run python3 -m exe
+
+# 2024-09-27 22:50:57.116476
++y
+
+# 2024-09-27 22:51:20.214310
++/drop
+
+# 2024-09-27 22:51:23.292472
++/run python3 -m exe
+
+# 2024-09-27 22:51:29.012172
++y
+
+# 2024-09-27 22:51:56.633097
++/run python3 -m exe
+
+# 2024-09-27 22:51:59.899030
++y
+
+# 2024-09-27 22:52:58.950951
++/run python3 -m exe
+
+# 2024-09-27 22:53:05.573469
++/run python3 -m exe
+
+# 2024-09-27 22:53:33.004149
++/run python3 -m exe
+
+# 2024-09-27 22:53:47.568894
++/run pip install requests-oauthlib
+
+# 2024-09-27 22:53:59.931338
++/run pip install nevow
+
+# 2024-09-27 22:54:13.811032
++y
+
+# 2024-09-27 22:54:18.220073
++/run pip install nevow==0.14.0
+
+# 2024-09-27 22:54:48.977735
++nevow no funciona en python3 intenta sustituirlo por otra cosa sencilla
+
+# 2024-09-27 22:55:24.563592
++/run pip install Flask
+
+# 2024-09-27 22:55:34.898359
++/run python3 -m exe
+
+# 2024-09-27 22:56:11.449734
++/run pip install suds-py3
+
+# 2024-09-27 22:56:15.247451
++/run python3 -m exe
+
+# 2024-09-27 22:56:22.384467
++/drop
+
+# 2024-09-27 22:56:25.695577
++/run python3 -m exe
+
+# 2024-09-27 22:57:15.245239
++/drop
+
+# 2024-09-27 22:57:22.367974
++/run python3 -m exe
+
+# 2024-09-27 22:59:36.870581
++/drop
+
+# 2024-09-27 22:59:40.502508
++/run python3 -m exe
+
+# 2024-09-27 23:01:27.735945
++sustituye nevow por otra cosa, porque no es compatible con python3
+
+# 2024-09-27 23:01:36.429567
++A
+
+# 2024-09-27 23:02:15.661237
++/run pip install Flask
+
+# 2024-09-27 23:02:20.361246
++/run python3 -m exe
+
+# 2024-09-27 23:02:29.856037
++/run python3 -m exe
+
+# 2024-09-27 23:02:49.977264
++/drop
+
+# 2024-09-27 23:03:02.537094
++sustituye nevow por otra cosa, porque no es compatible con python3
+
+# 2024-09-27 23:03:09.405812
++a
+
+# 2024-09-27 23:03:56.450590
++/drop
+
+# 2024-09-27 23:04:00.448887
++/run python3 -m exe
+
+# 2024-09-27 23:04:32.834044
++sustituye nevow por flask
+
+# 2024-09-27 23:05:32.469230
++/run python3 -m exe
+
+# 2024-09-27 23:05:56.138811
++/drop
+
+# 2024-09-27 23:05:57.927358
++/run python3 -m exe
+
+# 2024-09-27 23:06:19.399329
++sustituye nevow por flask
+
+# 2024-09-27 23:07:00.204277
++/run FLASK_APP=exe/webui/quitpage.py flask run
+
+# 2024-09-27 23:07:24.341532
++/run python3 -m exe
+
+# 2024-09-27 23:07:48.789488
++sustituye nevow por flask
+
+# 2024-09-27 23:08:20.863065
++/drop
+
+# 2024-09-27 23:08:23.484732
++sustituye nevow por flask
+
+# 2024-09-27 23:08:30.114437
++/run python3 -m exe
+
+# 2024-09-27 23:10:14.373888
++sustituye nevow por flask
+
+# 2024-09-27 23:10:21.658620
++/run python3 -m exe
+
+# 2024-09-27 23:10:30.945120
++sustituye nevow por flask
+
+# 2024-09-27 23:10:53.124766
++/run python3 -m exe
+
+# 2024-09-27 23:11:05.698849
++/drop
+
+# 2024-09-27 23:11:08.996108
++/run python3 -m exe
+
+# 2024-09-27 23:12:10.920932
++/run python3 -m exe
+
+# 2024-09-27 23:12:16.929178
++/drop
+
+# 2024-09-27 23:12:19.009160
++/run python3 -m exe
+
+# 2024-09-27 23:12:29.561207
++/run python3 -m exe
+
+# 2024-09-27 23:12:34.326278
++/drop
+
+# 2024-09-27 23:12:35.907710
++/run python3 -m exe
+
+# 2024-09-27 23:12:52.290657
++/run python3 -m exe
+
+# 2024-09-27 23:13:08.142224
++/run python3 -m exe
+
+# 2024-09-27 23:13:22.999257
++/run python3 -m exe
+
+# 2024-09-27 23:13:53.511549
++/run python3 -m exe
+
+# 2024-09-27 23:14:12.971671
++/run python3 -m exe
+
+# 2024-09-27 23:14:29.130525
++/run python3 -m exe
+
+# 2024-09-27 23:14:47.739077
++/run python3 -m exe
+
+# 2024-09-27 23:15:00.233709
++/run python3 -m exe
+
+# 2024-09-27 23:15:13.274715
++/run python3 -m exe
+
+# 2024-09-27 23:15:27.303914
++/run python3 -m exe
+
+# 2024-09-27 23:16:05.878580
++/run python3 -m exe
+
+# 2024-09-27 23:16:12.612493
++/drop
+
+# 2024-09-27 23:16:14.566111
++/run python3 -m exe
+
+# 2024-09-27 23:16:35.238208
++/run python3 -m exe
+
+# 2024-09-27 23:16:57.858654
++/run python3 -m exe
+
+# 2024-09-27 23:17:43.209682
++/run python3 -m exe
+
+# 2024-09-27 23:18:23.418811
++/run python3 -m exe
+
+# 2024-09-27 23:18:30.035477
++/drop
+
+# 2024-09-27 23:18:31.664676
++/run python3 -m exe
+
+# 2024-09-27 23:20:01.673670
++/run python3 -m exe
+
+# 2024-09-27 23:20:57.997352
++/run python3 -m exe
+
+# 2024-09-27 23:21:26.878539
++/run python3 -m exe
+
+# 2024-09-27 23:23:25.805100
++/run python3 -m exe
+
+# 2024-09-27 23:23:29.039926
++/run /Users/ernesto/Downloads/aider-chat/env/bin/python3.12 -m flake8 --select=E9,F821,F823,F831,F406,F407,F701,F702,F704,F706 --show-source --isolated exe/engine/galleryidevice.py
+
+# 2024-09-27 23:23:41.640413
++/drop
+
+# 2024-09-27 23:23:48.417975
++/run python3 -m exe
+
+# 2024-09-27 23:25:06.696917
++/run python3 -m exe
+
+# 2024-09-27 23:32:19.269212
++/run python3 -m exe
+
+# 2024-09-27 23:32:26.189373
++/drop
+
+# 2024-09-27 23:32:27.914460
++/run python3 -m exe
+
+# 2024-09-27 23:33:02.880406
++/run python3 -m exe
+
+# 2024-09-27 23:33:08.083857
++/run /Users/ernesto/Downloads/aider-chat/env/bin/python3.12 -m flake8 --select=E9,F821,F823,F831,F406,F407,F701,F702,F704,F706 --show-source --isolated exe/engine/rssidevice.py
+
+# 2024-09-27 23:33:28.941402
++/run python3 -m exe
+
+# 2024-09-27 23:34:03.592412
++/run python3 -m exe
+
+# 2024-09-27 23:35:37.634460
++/drop
+
+# 2024-09-27 23:35:39.539148
++/run python3 -m exe
+
+# 2024-09-27 23:36:25.320015
++/run python3 -m exe
+
+# 2024-09-27 23:36:29.445964
++/run /Users/ernesto/Downloads/aider-chat/env/bin/python3.12 -m flake8 --select=E9,F821,F823,F831,F406,F407,F701,F702,F704,F706 --show-source --isolated exe/engine/listaidevice.py
+
+# 2024-09-27 23:36:34.013424
++/drop
+
+# 2024-09-27 23:36:51.218971
++ejectua /run python3 -m exe y corrige los errores diciendo /yes 20 veces
+
+# 2024-09-27 23:37:08.185146
++/run python3 -m exe
+
+# 2024-09-27 23:37:15.760211
++/run python3 -m exe
+
+# 2024-09-27 23:37:37.637254
++/run python3 -m exe
+
+# 2024-09-27 23:38:57.341980
++/run python3 -m exe
+
+# 2024-09-27 23:39:02.650202
++/drop
+
+# 2024-09-27 23:39:04.418139
++/run python3 -m exe
+
+# 2024-09-27 23:39:36.463020
++/run python3 -m exe
+
+# 2024-09-27 23:39:39.514870
++/run /Users/ernesto/Downloads/aider-chat/env/bin/python3.12 -m flake8 --select=E9,F821,F823,F831,F406,F407,F701,F702,F704,F706 --show-source --isolated exe/engine/clozefpdidevice.py
+
+# 2024-09-27 23:40:11.882942
++/run python3 -m exe
+
+# 2024-09-27 23:40:24.231659
++/drop
+
+# 2024-09-27 23:40:25.740334
++/run python3 -m exe
+
+# 2024-09-27 23:41:02.209713
++/run python3 -m exe
+
+# 2024-09-27 23:41:08.966110
++/drop
+
+# 2024-09-27 23:41:10.252994
++/run python3 -m exe
+
+# 2024-09-27 23:41:38.896921
++/run python3 -m exe
+
+# 2024-09-27 23:42:16.482008
++/run python3 -m exe
+
+# 2024-09-27 23:42:31.130386
++/drop
+
+# 2024-09-27 23:42:34.525052
++/run python3 -m exe
+
+# 2024-09-27 23:42:52.625662
++/run python3 -m exe
+
+# 2024-09-27 23:42:58.947589
++/drop
+
+# 2024-09-27 23:43:08.403019
++/run python3 -m exe
+
+# 2024-09-27 23:43:33.064173
++/run python3 -m exe
+
+# 2024-09-27 23:44:05.530463
++/run python3 -m exe
+
+# 2024-09-27 23:44:23.583305
++/drop
+
+# 2024-09-27 23:44:24.847883
++/run python3 -m exe
+
+# 2024-09-27 23:44:48.082198
++/run python3 -m exe
+
+# 2024-09-27 23:45:27.482350
++/run python3 -m exe
+
+# 2024-09-27 23:46:04.942883
++/run python3 -m exe
+
+# 2024-09-27 23:46:20.663246
++/drop
+
+# 2024-09-27 23:46:24.495273
++/run python3 -m exe
+
+# 2024-09-27 23:46:48.750322
++/run python3 -m exe
+
+# 2024-09-27 23:46:53.712643
++/drop
+
+# 2024-09-27 23:46:55.087809
++/run python3 -m exe
+
+# 2024-09-27 23:47:28.862615
++/run python3 -m exe
+
+# 2024-09-27 23:52:19.918786
++/drop
+
+# 2024-09-27 23:52:21.579689
++/run python3 -m exe
+
+# 2024-09-27 23:53:51.204297
++y
+
+# 2024-09-27 23:53:51.213152
++/run python3 -m exe
+
+# 2024-09-27 23:53:57.398128
++/run python3 -m exe
+
+# 2024-09-27 23:56:45.256686
++y
+
+# 2024-09-27 23:57:10.029075
++/run python3 -m exe
+
+# 2024-09-27 23:57:12.556532
++/run /Users/ernesto/Downloads/aider-chat/env/bin/python3.12 -m flake8 --select=E9,F821,F823,F831,F406,F407,F701,F702,F704,F706 --show-source --isolated exe/engine/idevice.py
+
+# 2024-09-27 23:57:17.013652
++/run python3 -m exe
+
+# 2024-09-27 23:57:45.903259
++/drop
+
+# 2024-09-27 23:57:48.155705
++/run python3 -m exe
+
+# 2024-09-27 23:59:45.440955
++/drop
+
+# 2024-09-27 23:59:50.684763
++/run python3 -m exe
+
+# 2024-09-28 00:04:35.401893
++/run python3 -m exe
+
+# 2024-09-28 00:04:46.586644
++/drop
+
+# 2024-09-28 00:04:50.131161
++python3 -m exe
++WARNING:root:Style directories do not exist: /Users/ernesto/Downloads/Resources/exe/style, /Users/ernesto/.exe/style
++WARNING:root:Template directories do not exist: /Users/ernesto/Downloads/Resources/exe/content_template, /Users/ernesto/.exe/content_template
++WARNING:root:JS Idevices directories do not exist: /Users/ernesto/Downloads/Resources/exe/scripts/idevices, /Users/ernesto/.exe/scripts/idevices
++INFO:root:************** eXe logging started **************
++INFO:root:version     = 2.9
++INFO:root:configPath  = /Users/ernesto/.exe/exe.conf
++INFO:root:exePath     = /Users/ernesto/Downloads/iteexe/exe/__main__.py
++INFO:root:libPath     = /Users/ernesto/Downloads/aider-chat/env/lib/python3.12/site-packages
++INFO:root:browser     = None
++INFO:root:webDir      = /Users/ernesto/Downloads/Resources/exe
++INFO:root:jsDir       = ../Resources/exe
++INFO:root:localeDir   = ../Resources/exe/locale
++INFO:root:port        = 51235
++INFO:root:dataDir     = /Users/ernesto
++INFO:root:configDir   = /Users/ernesto/.exe
++INFO:root:locale      = en
++INFO:root:internalAnchors = enable_all
++INFO:root:License = creative commons: attribution - share alike 4.0
++WARNING:root:Locale directory does not exist: ../Resources/exe/locale
++WARNING:root:Locale 'en' not found, defaulting to 'en'
++ERROR:root:Default locale 'en' not found. Locale setup failed.
++ * Serving Flask app 'exe.webui.webserver'
++ * Debug mode: off
++INFO:werkzeug:WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
++ * Running on http://127.0.0.1:51235
++INFO:werkzeug:Press CTRL+C to quit
++INFO:werkzeug:127.0.0.1 - - [28/Sep/2024 00:02:22] "GET / HTTP/1.1" 404 -
++INFO:werkzeug:127.0.0.1 - - [28/Sep/2024 00:02:22] "GET /favicon.ico HTTP/1.1" 404 -
++INFO:werkzeug:127.0.0.1 - - [28/Sep/2024 00:02:29] "GET / HTTP/1.1" 404 -
++INFO:werkzeug:127.0.0.1 - - [28/Sep/2024 00:02:36] "GET / HTTP/1.1" 404 -
+
+# 2024-09-28 00:04:54.961193
++n
+
+# 2024-09-28 00:10:31.137854
++a
+
+# 2024-09-28 00:14:56.633572
++/drop
+
+# 2024-09-28 00:15:12.959829
++/run python3 -m exe
+
+# 2024-09-28 00:16:02.687922
++/run python3 -m exe
+
+# 2024-09-28 00:16:18.976206
++/drop
+
+# 2024-09-28 00:19:50.328414
++(env) ➜  iteexe git:(python3) python3 -m exe
++WARNING:root:Style directories do not exist: /Users/ernesto/Downloads/Resources/exe/style, /Users/ernesto/.exe/style
++INFO:root:************** eXe logging started **************
++INFO:root:version     = 2.9
++INFO:root:configPath  = /Users/ernesto/.exe/exe.conf
++INFO:root:exePath     = /Users/ernesto/Downloads/iteexe/exe/__main__.py
++INFO:root:libPath     = /Users/ernesto/Downloads/aider-chat/env/lib/python3.12/site-packages
++INFO:root:browser     = None
++INFO:root:webDir      = /Users/ernesto/Downloads/Resources/exe
++INFO:root:jsDir       = ../Resources/exe
++INFO:root:localeDir   = ../Resources/exe/locale
++INFO:root:port        = 51235
++INFO:root:dataDir     = /Users/ernesto
++INFO:root:configDir   = /Users/ernesto/.exe
++INFO:root:locale      = en
++INFO:root:internalAnchors = enable_all
++INFO:root:License = creative commons: attribution - share alike 4.0
++WARNING:root:Locale 'en' not found, defaulting to 'en'
++ERROR:root:Default locale 'en' not found. Locale setup failed.
++INFO:exe.webui.webserver:find_port(): found available eXe port# 51235
++ * Serving Flask app 'exe.webui.webserver'
++ * Debug mode: off
++Address already in use
++Port 51235 is in use by another program. Either identify and stop that program, or start the server with a different port.
+
+# 2024-09-28 00:20:37.858431
++WARNING:root:Style directories do not exist: /Users/ernesto/Downloads/Resources/exe/style, /Users/ernesto/.exe/style
+
+# 2024-09-28 00:22:51.252150
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/exe.py", line 45, in <module>
++    from exe.application import Application
++ModuleNotFoundError: No module named 'exe.application'; 'exe' is not a package
+
+# 2024-09-28 00:25:11.039472
++ERROR:root:Default locale 'en' not found. Locale setup failed.
+
+# 2024-09-28 00:25:58.579894
++ERROR:root:Default locale 'en' not found. Locale setup failed.  pero los locales están en exe/locale 
+
+# 2024-09-28 00:27:11.392225
++/drop
+
+# 2024-09-28 00:27:12.518286
++(env) ➜  iteexe git:(python3) ✗ python3 -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 233, in loadConfiguration
++    self.config = configKlass()
++                  ^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 278, in __init__
++    self.loadStyles()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 611, in loadStyles
++    self.styleStore = StyleStore(self)
++                      ^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/stylestore.py", line 25, in __init__
++    self.__load()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/stylestore.py", line 86, in __load
++    for subDir in styleDir.dirs():
++                  ^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 366, in dirs
++    return [pth for pth in self.listdir(pattern) if pth.isdir()]
++                           ^^^^^^^^^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/path.py", line 350, in listdir
++    names = os.listdir(self)
++            ^^^^^^^^^^^^^^^^
++FileNotFoundError: [Errno 2] No such file or directory: Path('/Users/ernesto/.exe/style')
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 4, in <module>
++    main()
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 56, in main
++    application.main()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 110, in main
++    self.loadConfiguration()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 238, in loadConfiguration
++    self.config = configKlass()
++                  ^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 275, in __init__
++    self.loadSettings()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 443, in loadSettings
++    self.copyTemplates()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 653, in copyTemplates
++    if os.path.exists(dest_template) and not os.listdir(self.dest_template):
++                                                        ^^^^^^^^^^^^^^^^^^
++AttributeError: 'MacConfig' object has no attribute 'dest_template'
+
+# 2024-09-28 00:27:49.559067
++/drop
+
+# 2024-09-28 00:28:10.871608
++ * Serving Flask app 'exe.webui.webserver'
++ * Debug mode: off
++Address already in use
++Port 51235 is in use by another program. Either identify and stop that program, or start the server with a different port.
+
+# 2024-09-28 00:28:47.879377
++por que ya no veo esta info al ejecutarlo?
+
+# 2024-09-28 00:28:51.855625
++WARNING:root:Style directories do not exist: /Users/ernesto/Downloads/Resources/exe/style, /Users/ernesto/.exe/style
+
+# 2024-09-28 00:28:55.302547
++INFO:root:************** eXe logging started **************
+
+# 2024-09-28 00:28:59.399684
++INFO:root:version     = 2.9
+
+# 2024-09-28 00:29:02.265355
++INFO:root:configPath  = /Users/ernesto/.exe/exe.conf
+
+# 2024-09-28 00:29:05.270484
++INFO:root:exePath     = /Users/ernesto/Downloads/iteexe/exe/__main__.py
+
+# 2024-09-28 00:29:13.132185
++INFO:root:libPath     = /Users/ernesto/Downloads/aider-chat/env/lib/python3.12/site-packages
+
+# 2024-09-28 00:29:16.556871
++INFO:root:browser     = None
+
+# 2024-09-28 00:29:19.904572
++INFO:root:webDir      = /Users/ernesto/Downloads/Resources/exe
+
+# 2024-09-28 00:29:27.184823
++INFO:root:jsDir       = ../Resources/exe
+
+# 2024-09-28 00:29:30.124277
++INFO:root:localeDir   = ../Resources/exe/locale
+
+# 2024-09-28 00:29:33.699327
++INFO:root:port        = 51235
+
+# 2024-09-28 00:29:43.427130
++INFO:root:dataDir     = /Users/ernesto
+
+# 2024-09-28 00:29:46.397167
++INFO:root:configDir   = /Users/ernesto/.exe
+
+# 2024-09-28 00:29:50.878802
++INFO:root:locale      = en
+
+# 2024-09-28 00:29:53.968132
++INFO:root:internalAnchors = enable_all
+
+# 2024-09-28 00:29:56.726453
++INFO:root:License = creative commons: attribution - share alike 4.0
+
+# 2024-09-28 00:29:59.783852
++WARNING:root:Locale 'en' not found, defaulting to 'en'
+
+# 2024-09-28 00:30:03.083804
++ERROR:root:Default locale 'en' not found. Locale setup failed.
+
+# 2024-09-28 00:30:16.882466
++INFO:exe.webui.webserver:Created missing directory: ../Resources/exe/locale/en
+
+# 2024-09-28 00:30:20.964461
++INFO:exe.webui.webserver:find_port(): found available eXe port# 51235
+
+# 2024-09-28 00:30:32.046724
++ * Serving Flask app 'exe.webui.webserver'
+
+# 2024-09-28 00:31:09.593861
++python3 -m exe --portable
++Traceback (most recent call last):
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 233, in loadConfiguration
++    self.config = configKlass()
++                  ^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 277, in __init__
++    self.loadLocales()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 750, in loadLocales
++    self.locales[self.locale].install(str=True)
++TypeError: NullTranslations.install() got an unexpected keyword argument 'str'
++
++During handling of the above exception, another exception occurred:
++
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 4, in <module>
++    main()
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 56, in main
++    application.main()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 110, in main
++    self.loadConfiguration()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 238, in loadConfiguration
++    self.config = configKlass()
++                  ^^^^^^^^^^^^^
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 277, in __init__
++    self.loadLocales()
++  File "/Users/ernesto/Downloads/iteexe/exe/engine/config.py", line 750, in loadLocales
++    self.locales[self.locale].install(str=True)
++TypeError: NullTranslations.install() got an unexpected keyword argument 'str'
+
+# 2024-09-28 00:32:22.966478
++nos se ejcuta, pero no hay nada en ese puerto, parece un error
+
+# 2024-09-28 00:32:29.915322
++INFO:root:************** eXe logging started **************
+
+# 2024-09-28 00:32:33.454486
++INFO:root:version     = 2.9
+
+# 2024-09-28 00:32:36.660587
++INFO:root:configPath  = /Users/ernesto/.exe/exe.conf
+
+# 2024-09-28 00:32:36.674726
++INFO:root:exePath     = /Users/ernesto/Downloads/iteexe/exe/__main__.py
+
+# 2024-09-28 00:32:36.688074
++INFO:root:libPath     = /Users/ernesto/Downloads/aider-chat/env/lib/python3.12/site-packages
+
+# 2024-09-28 00:32:36.695026
++INFO:root:browser     = None
+
+# 2024-09-28 00:32:36.702590
++INFO:root:webDir      = /Users/ernesto/Downloads/Resources/exe
+
+# 2024-09-28 00:32:36.709706
++INFO:root:jsDir       = ../Resources/exe
+
+# 2024-09-28 00:32:36.716027
++INFO:root:localeDir   = ../Resources/exe/locale
+
+# 2024-09-28 00:32:36.721597
++INFO:root:port        = 51236
+
+# 2024-09-28 00:32:36.726917
++INFO:root:dataDir     = /Users/ernesto
+
+# 2024-09-28 00:32:36.733237
++INFO:root:configDir   = /Users/ernesto/.exe
+
+# 2024-09-28 00:32:36.738577
++INFO:root:locale      = en
+
+# 2024-09-28 00:32:36.744085
++INFO:root:internalAnchors = enable_all
+
+# 2024-09-28 00:32:36.752183
++INFO:root:License = creative commons: attribution - share alike 4.0
+
+# 2024-09-28 00:32:36.760152
++WARNING:root:Locale 'en' not found, defaulting to 'en'
+
+# 2024-09-28 00:32:36.768061
++ERROR:root:Default locale 'en' not found. Locale setup failed.
+
+# 2024-09-28 00:32:36.776631
++INFO:exe.webui.webserver:find_port(): found available eXe port# 51236
+
+# 2024-09-28 00:32:36.784122
++INFO:exe.webui.webserver:Web server will start on port: 51236
+
+# 2024-09-28 00:32:36.790581
++ * Serving Flask app 'exe.webui.webserver'
+
+# 2024-09-28 00:32:36.794889
++ * Debug mode: off
+
+# 2024-09-28 00:32:36.798774
++Address already in use
+
+# 2024-09-28 00:32:36.809008
++Port 51236 is in use by another program. Either identify and stop that program, or start the server with a different port.
+
+# 2024-09-28 00:33:07.731870
++/drop
+
+# 2024-09-28 00:35:38.175590
++has hecho algun cambio que hace que no se levante el servidor flask
+
+# 2024-09-28 00:36:25.578921
++creo que es esta comprobacion, porque no hay nada en ese puerto ERROR:root:Default locale 'en' not found. Locale setup failed.
++INFO:exe.webui.webserver:find_port(): found available eXe port# 51235
++INFO:exe.webui.webserver:Web server will start on port: 51235
++ * Serving Flask app 'exe.webui.webserver'
++ * Debug mode: off
++Address already in use
++Port 51235 is in use by another program. Either identify and stop that program, or start the server with a different port.
+
+# 2024-09-28 00:37:27.670509
++decididameente el error es otro, revisalo, porque he puesto otro puerto y dice lo mismo INFO:exe.webui.webserver:Web server will start on port: 51234
++ * Serving Flask app 'exe.webui.webserver'
++ * Debug mode: off
++Address already in use
++Port 51234 is in use by another program. Either identify and stop that program, or start the server with a different port.
+
+# 2024-09-28 00:39:36.404293
++quita toda la parte de comprobación de puertos, simplemente que corrar el servidor flask
+
+# 2024-09-28 00:41:19.995387
++ahora funciona, pero al dar a ctrl+c se debería cerrar bien, ahora me da esta excepcion INFO:werkzeug:WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
++ * Running on http://127.0.0.1:51234
++INFO:werkzeug:Press CTRL+C to quit
++^CTraceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 4, in <module>
++    main()
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 56, in main
++    application.main()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 112, in main
++    self.preLaunch()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 265, in preLaunch
++    self.webServer.find_port()
++    ^^^^^^^^^^^^^^^^^^^^^^^^
++AttributeError: 'WebServer' object has no attribute 'find_port
+
+# 2024-09-28 00:42:25.855999
++INFO:werkzeug:Press CTRL+C to quit
++INFO:werkzeug:127.0.0.1 - - [28/Sep/2024 00:42:15] "GET / HTTP/1.1" 404 -
++^CTraceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 4, in <module>
++    main()
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 56, in main
++    application.main()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 112, in main
++    self.preLaunch()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 265, in preLaunch
++    self.webServer.find_port()
++    ^^^^^^^^^^^^^^^^^^^^^^^^
++AttributeError: 'WebServer' object has no attribute 'find_port'
+
+# 2024-09-28 00:42:57.210819
++Traceback (most recent call last):
++  File "<frozen runpy>", line 198, in _run_module_as_main
++  File "<frozen runpy>", line 88, in _run_code
++  File "/Users/ernesto/Downloads/iteexe/exe/__main__.py", line 4, in <module>
++    main()
++  File "/Users/ernesto/Downloads/iteexe/exe/main.py", line 56, in main
++    application.main()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 119, in main
++    self.serve()
++  File "/Users/ernesto/Downloads/iteexe/exe/application.py", line 276, in serve
++    self.webServer.run()
++  File "/Users/ernesto/Downloads/iteexe/exe/webui/webserver.py", line 129, in run
++    log.info("License = %s", self.config.license)
++                             ^^^^^^^^^^^^^^^^^^^
++AttributeError: 'MacConfig' object has no attribute 'license'
+
+# 2024-09-28 01:18:09.625641
++quita la carpeta env de git
+
+# 2024-09-28 01:18:17.396706
++/run git rm -r --cached env
+
+# 2024-09-28 01:18:18.179564
++/run git add .gitignore
+
+# 2024-09-28 01:18:18.310900
++/run git commit -m "chore: add env directory to .gitignore and remove it from git tracking"
+
+# 2024-09-28 07:20:17.157943
++yes
+
+# 2024-09-28 07:20:27.636595
++add env dir to gitignore
+
+# 2024-09-28 07:21:08.241863
++/drop
+
+# 2024-09-28 07:21:09.539892
++python -m exe
++/Users/ernesto/Downloads/iteexe_flask/env/bin/python: No module named exe.__main__; 'exe' is a package and cannot be directly executed
+
+# 2024-09-28 07:21:29.513108
++exe/__main__.py
+
+# 2024-09-28 07:22:17.838869
++ python -m exe
++Executing the exe package
++(env) ➜  iteexe_flask git:(flask) ✗
+
+# 2024-09-28 07:23:10.175531
++/add exe/exe.py
+
+# 2024-09-28 07:23:17.495070
++main function
+
+# 2024-09-28 07:23:37.498139
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from exe.application import Application
++ImportError: No module named application
+
+# 2024-09-28 07:24:25.589797
++/drop
+
+# 2024-09-28 07:24:26.683462
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from exe.application import Application
++ImportError: No module named application
+
+# 2024-09-28 07:24:50.892362
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/.pyenv/versions/2.7.18/lib/python2.7/runpy.py", line 174, in _run_module_as_main
++    "__main__", fname, loader, pkg_name)
++  File "/Users/ernesto/.pyenv/versions/2.7.18/lib/python2.7/runpy.py", line 72, in _run_code
++    exec code in run_globals
++  File "/Users/ernesto/Downloads/iteexe_flask/exe/__main__.py", line 1, in <module>
++    from exe import exe
++  File "exe/exe.py", line 47, in <module>
++    from exe.application import Application
++ImportError: No module named application
+
+# 2024-09-28 07:25:04.441385
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from exe.application import Application
++ImportError: No module named application
+
+# 2024-09-28 07:25:16.763672
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from exe.webui.webserver     import WebServer
++ImportError: No module named webui.webserver
+
+# 2024-09-28 07:26:00.964394
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "/Users/ernesto/.pyenv/versions/2.7.18/lib/python2.7/runpy.py", line 174, in _run_module_as_main
++    "__main__", fname, loader, pkg_name)
++  File "/Users/ernesto/.pyenv/versions/2.7.18/lib/python2.7/runpy.py", line 72, in _run_code
++    exec code in run_globals
++  File "/Users/ernesto/Downloads/iteexe_flask/exe/__main__.py", line 1, in <module>
++    from exe import exe
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from ..webui.webserver import WebServer
++ValueError: Attempted relative import beyond toplevel package
+
+# 2024-09-28 07:26:36.323725
++/drop
+
+# 2024-09-28 07:26:37.606930
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from exe.webui.webserver import WebServer
++ImportError: No module named webui.webserver
+
+# 2024-09-28 07:27:26.091765
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 43, in <module>
++    from exe                     import globals as G
++ImportError: cannot import name globals
+
+# 2024-09-28 07:28:23.790834
++como tendria que lanzar la aplicacion para que fucnion con el from exe sin tener que quitarlo o ponerlo estos son mis directorios tree -L 2
++.
++├── COPYING
++├── ChangeLog
++├── MANIFEST.in
++├── NEWS
++├── Planets-HighQuality.flv
++├── README
++├── app.fil
++├── cacert.pem
++├── debian
++│   ├── Appimage
++│   ├── compat
++│   ├── control
++│   ├── copyright
++│   ├── changelog
++│   ├── exe.1
++│   ├── exe.1.xml
++│   ├── exe_do.1
++│   ├── exe_do.1.xml
++│   ├── intef-exe.links
++│   ├── intef-exe.manpages
++│   ├── intef-exe.sharedmimeinfo
++│   ├── preinst
++│   ├── rules
++│   ├── source.lintian-overrides
++│   └── watch
++├── doc
++│   ├── exe_class.dia
++│   ├── exe_class.xmi
++│   ├── exearch.png
++│   ├── overview.png
++│   └── state_of_translations.png
++├── eXeLearning.desktop
++├── eXe_icon.ico
++├── env
++│   ├── bin
++│   ├── include
++│   ├── lib
++│   └── pyvenv.cfg
++├── exe
++│   ├── __init__.py
++│   ├── __init__.pyc
++│   ├── __main__.py
++│   ├── __pycache__
++│   ├── application.py
++│   ├── application.pyc
++│   ├── config
++│   ├── engine
++│   ├── exe.py
++│   ├── exe.pyc
++│   ├── exe_do
++│   ├── export
++│   ├── get_template_strings.py
++│   ├── globals.py
++│   ├── globals.pyc
++│   ├── idevices
++│   ├── importers
++│   ├── jsui
++│   ├── locale
++│   ├── locale_unsupported
++│   ├── mediaprofiles
++│   ├── put_template_strings.py
++│   ├── sample_exe.conf
++│   └── webui
++├── exe.icns
++├── exe.png
++├── exe.xml
++├── exe.xpm
++├── exe_elp.icns
++├── formless
++│   ├── __init__.py
++│   ├── __init__.pyc
++│   ├── annotate.py
++│   ├── annotate.pyc
++│   ├── configurable.py
++│   ├── formutils.py
++│   ├── formutils.pyc
++│   ├── freeform-default.css
++│   ├── iformless.py
++│   ├── iformless.pyc
++│   ├── processors.py
++│   ├── processors.pyc
++│   ├── test
++│   ├── webform.py
++│   └── webform.pyc
++├── installs
++│   ├── debian
++│   ├── gentoo
++│   ├── osx
++│   ├── rpm
++│   └── windows
++├── mac-setup.py
++├── nevow
++│   ├── Canvas.swf
++│   ├── __init__.py
++│   ├── __init__.pyc
++│   ├── accessors.py
++│   ├── accessors.pyc
++│   ├── appserver.py
++│   ├── appserver.pyc
++│   ├── blocks.py
++│   ├── canvas.py
++│   ├── compy.py
++│   ├── compyCompat.py
++│   ├── compyCompat.pyc
++│   ├── context.py
++│   ├── context.pyc
++│   ├── dirlist.py
++│   ├── dirlist.pyc
++│   ├── entities.py
++│   ├── events.py
++│   ├── events.pyc
++│   ├── failure.py
++│   ├── flat
++│   ├── guard.py
++│   ├── guard.pyc
++│   ├── i18n.py
++│   ├── i18n.pyc
++│   ├── inevow.py
++│   ├── inevow.pyc
++│   ├── itaglibrary.py
++│   ├── liveevil.js
++│   ├── liveevil.py
++│   ├── liveevil.pyc
++│   ├── liveglue.js
++│   ├── livepage.py
++│   ├── livepage.pyc
++│   ├── livetest-postscripts.js
++│   ├── livetest.css
++│   ├── livetest.js
++│   ├── livetest.py
++│   ├── loaders.py
++│   ├── loaders.pyc
++│   ├── query.py
++│   ├── query.pyc
++│   ├── rend.py
++│   ├── rend.pyc
++│   ├── scripts
++│   ├── stan.py
++│   ├── stan.pyc
++│   ├── static.py
++│   ├── static.pyc
++│   ├── taglibrary
++│   ├── tags.py
++│   ├── tags.pyc
++│   ├── test
++│   ├── testutil.py
++│   ├── testutil.pyc
++│   ├── url.py
++│   ├── url.pyc
++│   ├── util.py
++│   ├── util.pyc
++│   ├── vhost.py
++│   ├── wsgi.py
++│   └── zomnesrv.py
++├── pybabel.conf
++├── requirements.txt
++├── rpm-setup.py
++├── setup.py
++├── snap
++│   ├── README.md
++│   ├── gui
++│   └── snapcraft.yaml_template
++├── testing
++│   ├── 0.19 resources upgrade test.elp
++│   ├── README
++│   ├── extractionTestPackage.elp
++│   ├── html
++│   ├── locale
++│   ├── oliver.jpg
++│   ├── packages from earlier versions
++│   ├── runtests.py
++│   ├── style
++│   ├── test.conf
++│   ├── testPackage.elp
++│   ├── testPackage2.elp
++│   ├── testblock.py
++│   ├── testblockfactory.py
++│   ├── testconfig.py
++│   ├── testconfigparser.py
++│   ├── testcourseoutline.py
++│   ├── testchecker.py
++│   ├── testexport.py
++│   ├── testforumscache.py
++│   ├── testidevice.py
++│   ├── testidevicestore.py
++│   ├── testnode.py
++│   ├── testpackage.py
++│   ├── testpersist.py
++│   ├── testresource.py
++│   ├── testresources.py
++│   ├── testuniqueid.py
++│   ├── testxmlhttp.py
++│   ├── utils.py
++│   ├── xhtml-lat1.ent
++│   ├── xhtml-special.ent
++│   ├── xhtml-symbol.ent
++│   └── xhtml1-strict.dtd
++├── tools
++│   ├── dot.pylintrc
++│   ├── genlomvocabjs.py
++│   ├── mki18n-compile.sh
++│   ├── mki18n-compile_python3.sh
++│   ├── mki18n-extract.sh
++│   ├── mki18n-extract_python3.sh
++│   ├── nevow-xmlgettext
++│   ├── po2json.py
++│   └── po2json3.py
++├── twisted
++│   ├── __init__.py
++│   ├── __init__.pyc
++│   ├── application
++│   ├── copyright.py
++│   ├── copyright.pyc
++│   ├── cred
++│   ├── enterprise
++│   ├── im.py
++│   ├── internet
++│   ├── manhole
++│   ├── pb
++│   ├── persisted
++│   ├── plugin.py
++│   ├── plugins
++│   ├── protocols
++│   ├── python
++│   ├── scripts
++│   ├── spread
++│   ├── tap
++│   ├── test
++│   ├── trial
++│   └── web
++└── win-setup.py
++
+
+# 2024-09-28 07:28:30.375119
++s
+
+# 2024-09-28 07:28:51.816677
++/run PYTHONPATH=. python -m exe
+
+# 2024-09-28 07:29:10.394151
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 43, in <module>
++    from exe import globals as G
++ImportError: cannot import name globals
+
+# 2024-09-28 07:29:16.583935
++/drop
+
+# 2024-09-28 07:29:31.916406
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 44, in <module>
++    from exe.engine              import version
++ImportError: No module named engine
+
+# 2024-09-28 07:30:41.779819
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 45, in <module>
++    from exe.engine.idevicestore import IdeviceStore
++ImportError: No module named engine.idevicestore
+
+# 2024-09-28 07:31:14.196176
++/drop
+
+# 2024-09-28 07:31:19.811859
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 46, in <module>
++    from exe.engine.package      import Package
++ImportError: No module named engine.package
+
+# 2024-09-28 07:34:57.178632
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 35, in <module>
++    from twisted.internet              import reactor
++  File "twisted/internet/reactor.py", line 11, in <module>
++    from twisted.internet import selectreactor
++  File "twisted/internet/selectreactor.py", line 20, in <module>
++    from twisted.internet.interfaces import IReactorFDSet
++  File "twisted/internet/interfaces.py", line 13, in <module>
++    from twisted.python.components import Interface
++  File "twisted/python/components.py", line 57, in <module>
++    from twisted.persisted import styles
++  File "twisted/persisted/styles.py", line 22, in <module>
++    from .engine.path    import Path
++ImportError: No module named engine.path
+
+# 2024-09-28 07:35:29.490665
++/drop
+
+# 2024-09-28 07:35:53.156087
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .webui.packageredirectpage import PackageRedirectPage
++ImportError: No module named webui.packageredirectpage
+
+# 2024-09-28 07:36:17.559682
++/drop
+
+# 2024-09-28 07:36:24.563338
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 28, in <module>
++    from .webui.renderable     import RenderableResource
++ImportError: No module named webui.renderable
+
+# 2024-09-28 07:36:48.765314
++/run python -m exe
+
+# 2024-09-28 07:36:58.020505
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .jsui.mainpage import MainPage
++ImportError: No module named jsui.mainpage
+
+# 2024-09-28 07:37:02.465478
++/run python -m exe
+
+# 2024-09-28 07:37:09.235495
++/drop
+
+# 2024-09-28 07:37:17.043196
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .mainpage import MainPage
++ImportError: No module named mainpage
+
+# 2024-09-28 07:37:30.335453
++/run python -m exe
+
+# 2024-09-28 07:37:47.793927
++/run python -m exe
+
+# 2024-09-28 07:38:03.063562
++/run python -m exe
+
+# 2024-09-28 07:38:12.234514
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .webui.mainpage import MainPage
++ImportError: No module named webui.mainpage
+
+# 2024-09-28 07:38:16.449248
++/run python -m exe
+
+# 2024-09-28 07:38:25.190930
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .mainpage import MainPage
++ImportError: No module named mainpage
+
+# 2024-09-28 07:38:29.734900
++/run python -m exe
+
+# 2024-09-28 07:38:37.561967
++(env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .webui.mainpage import MainPage
++ImportError: No module named webui.mainpage
+
+# 2024-09-28 07:38:42.059410
++/run python -m exe
+
+# 2024-09-28 07:38:51.578352
++env) ➜  iteexe_flask git:(flask) python -m exe
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++  File "exe/application.py", line 37, in <module>
++    from webui.webserver import WebServer
++  File "exe/webui/webserver.py", line 37, in <module>
++    from .packageredirectpage import PackageRedirectPage
++  File "exe/webui/packageredirectpage.py", line 29, in <module>
++    from .mainpage import MainPage
++ImportError: No module named mainpage
+
+# 2024-09-28 07:38:56.412791
++/run python -m exe
+
+# 2024-09-28 07:39:20.937748
++(env) ➜  iteexe_flask git:(flask) python exe/exe.py
++Traceback (most recent call last):
++  File "exe/exe.py", line 40, in <module>
++    from .application import Application
++ValueError: Attempted relative import in non-package
+
+# 2024-09-28 07:39:31.217938
++no
+
+# 2024-09-28 07:39:36.464573
++/drop
