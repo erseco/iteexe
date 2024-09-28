@@ -338,7 +338,7 @@ class ClientHandle(object):
             self.outputConduit = None
         else:
             self.outputBuffer.append(script)
-            if DEBUG: print "Output buffered!", script
+            if DEBUG: print("Output buffered!", script)
 
     def handleInput(self, identifier, *args):
         if self.closed:
