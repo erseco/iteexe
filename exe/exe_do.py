@@ -199,10 +199,10 @@ exclusive.').encode(ENCODING))
                 pkg2 = Package.load(args[0],False,pkg1,None)
                 pkg2.root.copyToPackage(pkg1,pkg1.root)             
                 pkg1.save()
-                print _(u"Successfully appended '%s' to '%s'.") % (args[0],args[1])                       
+                print(_(u"Successfully appended '%s' to '%s'.") % (args[0], args[1]))
             except:
-                print _(u"exe_do: error: Unable to append elp")
-                print sys.exc_value
+                print(_(u"exe_do: error: Unable to append elp"))
+                print(sys.exc_value)
                 exit()                
     else:
     
