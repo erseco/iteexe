@@ -32,7 +32,7 @@ from cStringIO import StringIO
 sys.stderr, oldStdErr = StringIO(), sys.stderr
 sys.stdout, oldStdOut = StringIO(), sys.stdout
 try:
-    from klein_app import app
+    from twisted.internet              import reactor
     from twisted.internet.error        import CannotListenError
     from exe.webui.packageredirectpage import PackageRedirectPage
 finally:
@@ -183,8 +183,14 @@ class WebServer:
         self.root.putChild("jsui", File(jsDir + "/scripts"))
         self.invalidPackageName.append("jsui")
 
-        # Start the Klein application
-        app.run('localhost', self.config.port)
+        # A port for this server was looked for earlier by find_port.
+        # Ensure that it is valid (>= 0):
+        if self.config.port >= 0:
+            log.info("run() using eXe port# %d", self.config.port)
+            reactor.run()
+        else:
+            log.error("ERROR: webserver's run() called, but a valid port " \
+                    + "was not available.")
 
     def monitor(self):
         if self.monitoring:
