@@ -250,9 +250,8 @@ exclusive.').encode(ENCODING))
                     inputf.move(path)
                     inputf = path
             except:
-                print _(u"exe_do: error: Unable to set values from '%s'.\nThe \
-    error was:") % (path)
-                print sys.exc_value
+                print(_(u"exe_do: error: Unable to set values from '%s'.\nThe error was:") % (path))
+                print(sys.exc_value)
                 exit()
     
         if options.report:
