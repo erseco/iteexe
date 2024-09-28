@@ -280,7 +280,7 @@ class Application:
         Starts the web server,
         this func doesn't return until after the app has finished
         """
-        print "Welcome to eXe: the EXtremely Easy to use eLearning authoring tool"
+        print("Welcome to eXe: the EXtremely Easy to use eLearning authoring tool")
         log.info("eXe running...")
         self.webServer.run()
 
