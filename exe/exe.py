@@ -37,7 +37,7 @@ if '--portable' in sys.argv:
 else:
     # Try to work even with no python path
     try:
-       from .application import Application
+       from exe.application import Application
     except ImportError as error:
        if str(error) == "No module named exe.application":
            exePath = os.path.abspath(sys.argv[0])
