@@ -350,7 +350,7 @@ class ClientHandle(object):
             # the output-side xmlhttp request, so .outputConduit will be
             # None and stay that way. This means we don't need to worry
             # about self.outputGone firing later on.
-            if DEBUG: print "CLIENT ACKED CLOSE"
+            if DEBUG: print("CLIENT ACKED CLOSE")
             ## This happens in a callLater(0) from the original request
             self._closeComplete(None)
             return
