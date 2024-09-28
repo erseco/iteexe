@@ -38,7 +38,7 @@ else:
     # Try to work even with no python path
     try:
        from exe.application import Application
-    except ImportError, error:
+    except ImportError as error:
        if str(error) == "No module named exe.application":
            exePath = os.path.abspath(sys.argv[0])
            exeDir  = os.path.dirname(exePath)
