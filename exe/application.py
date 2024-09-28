@@ -194,7 +194,7 @@ class Application:
 
         for option in options:
             if option[0] in ("-V", "--version"):
-                print "eXe", version.version
+                print("eXe", version.version)
                 sys.exit()
             elif option[0] in ("-h", "--help"):
                 self.usage()
