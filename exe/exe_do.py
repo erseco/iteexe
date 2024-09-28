@@ -267,8 +267,7 @@ exclusive.').encode(ENCODING))
                                                      "editable": options.editable})
             try:
                 outputf = x.do_export(inputf, outputf)
-                print _(u"Successfully exported '%s' from '%s'.") % (outputf, \
-    inputf)
+                print(_(u"Successfully exported '%s' from '%s'.") % (outputf, inputf))
             except:
                 print _(u"exe_do: error: Unable to export from '%s'.\nThe \
     error was:") % (inputf)
